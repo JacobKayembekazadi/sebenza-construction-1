@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects, allTasks } from "@/lib/data";
+import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast } from "@/lib/data";
 import Link from "next/link";
 import {
   Activity,
@@ -17,6 +17,11 @@ import {
 } from "lucide-react";
 import { ProjectStatusChart } from "@/components/dashboard/project-status-chart";
 import { cn } from "@/lib/utils";
+import { FinancialSnapshotChart } from "@/components/dashboard/financial-snapshot-chart";
+import { RecentActivityFeed } from "@/components/dashboard/recent-activity-feed";
+import { ResourceAllocationChart } from "@/components/dashboard/resource-allocation-chart";
+import { WeatherForecast } from "@/components/dashboard/weather-forecast";
+import { QuickAddButton } from "@/components/quick-add-button";
 
 export default function DashboardPage() {
   const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
@@ -72,106 +77,118 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Welcome back, Jane!</h1>
-          <p className="text-muted-foreground">Here's your project overview for today.</p>
+          <p className="text-muted-foreground">Here's your command center for today.</p>
         </div>
       </div>
       
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{projects.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Total projects currently in progress
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Budget Utilization</CardTitle>
-            <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{budgetUtilization.toFixed(0)}%</div>
-            <p className="text-xs text-muted-foreground">
-              ${totalSpent.toLocaleString()} / ${totalBudget.toLocaleString()}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Projects At Risk</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{projectsAtRisk}</div>
-            <p className="text-xs text-muted-foreground">
-              Projects that are 'At Risk' or 'Off Track'
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overdue Tasks</CardTitle>
-            <ListChecks className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+{overdueTasks}</div>
-            <p className="text-xs text-muted-foreground">
-              Across all active projects
-            </p>
-          </CardContent>
-        </Card>
+        <Link href="/dashboard/projects">
+            <Card className="hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold">{projects.length}</div>
+                <p className="text-xs text-muted-foreground">
+                Total projects currently in progress
+                </p>
+            </CardContent>
+            </Card>
+        </Link>
+        <Link href="/dashboard/expenses">
+            <Card className="hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Budget Utilization</CardTitle>
+                <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold">{budgetUtilization.toFixed(0)}%</div>
+                <p className="text-xs text-muted-foreground">
+                ${totalSpent.toLocaleString()} / ${totalBudget.toLocaleString()}
+                </p>
+            </CardContent>
+            </Card>
+        </Link>
+        <Link href="/dashboard/projects">
+            <Card className="hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Projects At Risk</CardTitle>
+                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold">{projectsAtRisk}</div>
+                <p className="text-xs text-muted-foreground">
+                'At Risk' or 'Off Track'
+                </p>
+            </CardContent>
+            </Card>
+        </Link>
+        <Link href="/dashboard/tasks">
+            <Card className="hover:bg-muted/50 transition-colors">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Overdue Tasks</CardTitle>
+                <ListChecks className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold">+{overdueTasks}</div>
+                <p className="text-xs text-muted-foreground">
+                Across all active projects
+                </p>
+            </CardContent>
+            </Card>
+        </Link>
       </div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="text-destructive" />
-                Needs Your Attention
-              </CardTitle>
-              <CardDescription>
-                These projects are 'At Risk' or 'Off Track'. Review them to take action.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                    {attentionProjects.map((project) => (
-                        <Link href={`/dashboard/projects/${project.id}`} key={project.id} className="block">
-                            <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
-                                <div>
-                                    <p className="font-semibold">{project.name}</p>
-                                    <p className="text-sm text-muted-foreground">{project.manager}</p>
+            <FinancialSnapshotChart data={financialData} />
+            <Card>
+                <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <AlertTriangle className="text-destructive" />
+                    Needs Your Attention
+                </CardTitle>
+                <CardDescription>
+                    These projects are 'At Risk' or 'Off Track'. Review them to take action.
+                </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {attentionProjects.map((project) => (
+                            <Link href={`/dashboard/projects/${project.id}`} key={project.id} className="block">
+                                <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
+                                    <div>
+                                        <p className="font-semibold">{project.name}</p>
+                                        <p className="text-sm text-muted-foreground">{project.manager}</p>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <Badge variant={statusVariant(project.status)}>{project.status}</Badge>
+                                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-4">
-                                    <Badge variant={statusVariant(project.status)}>{project.status}</Badge>
-                                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                                </div>
-                            </div>
-                        </Link>
-                    ))}
-                    {attentionProjects.length === 0 && (
-                        <p className="text-center text-muted-foreground py-8">All projects are on track!</p>
-                    )}
-                </div>
-            </CardContent>
-          </Card>
+                            </Link>
+                        ))}
+                        {attentionProjects.length === 0 && (
+                            <p className="text-center text-muted-foreground py-8">All projects are on track!</p>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+            <RecentActivityFeed activities={recentActivity} />
         </div>
 
         {/* Right Column */}
         <div className="space-y-8">
+          <WeatherForecast forecasts={weatherForecast} />
           <ProjectStatusChart projects={projects} />
+          <ResourceAllocationChart data={resourceAllocation} />
           <Card>
             <CardHeader>
-                <CardTitle>My Upcoming Tasks</CardTitle>
+                <CardTitle>My Tasks Due Soon</CardTitle>
                 <CardDescription>Top 5 tasks assigned to you across all projects.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -215,6 +232,7 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+      <QuickAddButton />
     </div>
   );
 }

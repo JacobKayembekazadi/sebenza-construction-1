@@ -25,6 +25,33 @@ export type Project = {
   tasks: Task[];
 };
 
+export type FinancialData = {
+  month: string;
+  revenue: number;
+  expenses: number;
+};
+
+export type Activity = {
+  id: string;
+  type: "TASK_ADDED" | "INVOICE_PAID" | "FILE_UPLOADED" | "PROJECT_STATUS";
+  description: string;
+  timestamp: string;
+  user: string;
+  projectId?: string;
+};
+
+export type Resource = {
+  name: string;
+  utilization: number;
+  team: string;
+};
+
+export type WeatherForecastData = {
+    day: string;
+    icon: 'Sun' | 'Cloud' | 'Cloudy' | 'CloudRain' | 'Wind';
+    temp: number;
+};
+
 const tasks: Task[] = [
     // Project 1 Tasks
     {
@@ -168,3 +195,35 @@ export const projects: Project[] = [
 ];
 
 export const allTasks = tasks;
+
+export const financialData: FinancialData[] = [
+  { month: "Jan", revenue: 150000, expenses: 95000 },
+  { month: "Feb", revenue: 175000, expenses: 110000 },
+  { month: "Mar", revenue: 210000, expenses: 120000 },
+  { month: "Apr", revenue: 190000, expenses: 130000 },
+  { month: "May", revenue: 220000, expenses: 145000 },
+  { month: "Jun", revenue: 250000, expenses: 160000 },
+];
+
+export const recentActivity: Activity[] = [
+  { id: "act-1", type: "INVOICE_PAID", description: "Invoice INV-003 was paid", timestamp: "2h ago", user: "Finance Bot", projectId: "proj-001" },
+  { id: "act-2", type: "TASK_ADDED", description: "Added task 'Install HVAC' to 'Downtown Tower'", timestamp: "8h ago", user: "Alice Johnson", projectId: "proj-001" },
+  { id: "act-3", type: "FILE_UPLOADED", description: "Uploaded 'Final Blueprints' to 'Coastal Highway Bridge'", timestamp: "1d ago", user: "Carol Danvers", projectId: "proj-003" },
+  { id: "act-4", type: "PROJECT_STATUS", description: "'Greenfield Park' status changed to At Risk", timestamp: "2d ago", user: "System", projectId: "proj-002" },
+  { id: "act-5", type: "TASK_ADDED", description: "Added task 'Client sign-off' to 'Suburban Complex'", timestamp: "3d ago", user: "Alice Johnson", projectId: "proj-004"},
+];
+
+export const resourceAllocation: Resource[] = [
+    { name: "Structural Team", utilization: 85, team: "A"},
+    { name: "Finishing Crew", utilization: 110, team: "B"},
+    { name: "Electrical & Plumbing", utilization: 60, team: "C"},
+    { name: "Heavy Equipment", utilization: 75, team: "D"},
+];
+
+export const weatherForecast: WeatherForecastData[] = [
+    { day: "Today", icon: "Sun", temp: 72 },
+    { day: "Tue", icon: "Cloudy", temp: 68 },
+    { day: "Wed", icon: "CloudRain", temp: 65 },
+    { day: "Thu", icon: "Cloud", temp: 70 },
+    { day: "Fri", icon: "Sun", temp: 75 },
+];
