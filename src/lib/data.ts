@@ -58,6 +58,35 @@ export type Invoice = {
   status: "Draft" | "Sent" | "Paid" | "Overdue";
 };
 
+export type Employee = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer";
+    avatar: string;
+};
+
+export type Expense = {
+    id: string;
+    description: string;
+    amount: number;
+    category: "Materials" | "Labor" | "Permits" | "Subcontractor" | "Other";
+    date: Date;
+    projectId: string;
+    projectName: string;
+};
+
+export type Document = {
+    id: string;
+    name: string;
+    type: "PDF" | "Image" | "Word" | "Excel";
+    uploadDate: Date;
+    projectId: string;
+    projectName: string;
+    url: string; // a dummy url
+};
+
 export type FinancialData = {
   month: string;
   revenue: number;
@@ -65,7 +94,7 @@ export type FinancialData = {
 };
 
 export type Activity = {
-  id: string;
+  id:string;
   type: "TASK_ADDED" | "INVOICE_PAID" | "FILE_UPLOADED" | "PROJECT_STATUS";
   description: string;
   timestamp: string;
@@ -85,22 +114,17 @@ export type WeatherForecastData = {
     temp: number;
 };
 
-export type Employee = {
-    name: string;
-    avatar: string;
-};
-
 export const employees: Employee[] = [
-    { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" },
-    { name: "Bob Builder", avatar: "https://placehold.co/32x32.png" },
-    { name: "Charlie Crane", avatar: "https://placehold.co/32x32.png" },
-    { name: "David Drill", avatar: "https://placehold.co/32x32.png" },
-    { name: "Eve Electric", avatar: "https://placehold.co/32x32.png" },
-    { name: "Frank Formwork", avatar: "https://placehold.co/32x32.png" },
-    { name: "Grace Grader", avatar: "https://placehold.co/32x32.png" },
-    { name: "Alice Johnson", avatar: "https://placehold.co/32x32.png" },
-    { name: "Bob Vance", avatar: "https://placehold.co/32x32.png" },
-    { name: "Carol Danvers", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-003", name: "Charlie Crane", email: "charlie.crane@example.com", phone: "555-0103", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-004", name: "David Drill", email: "david.drill@example.com", phone: "555-0104", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-005", name: "Eve Electric", email: "eve.electric@example.com", phone: "555-0105", role: "Electrician", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-006", name: "Frank Formwork", email: "frank.formwork@example.com", phone: "555-0106", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-007", name: "Grace Grader", email: "grace.grader@example.com", phone: "555-0107", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-008", name: "Alice Johnson", email: "alice.johnson@example.com", phone: "555-0108", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-009", name: "Bob Vance", email: "bob.vance@example.com", phone: "555-0109", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-010", name: "Carol Danvers", email: "carol.danvers@example.com", phone: "555-0110", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
 ];
 
 
@@ -276,6 +300,21 @@ export const invoices: Invoice[] = [
     { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 75000, issueDate: new Date("2024-06-05"), dueDate: new Date("2024-07-05"), status: "Sent" },
     { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date("2024-05-20"), dueDate: new Date("2024-06-20"), status: "Overdue" },
     { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 35000, issueDate: new Date("2024-06-10"), dueDate: new Date("2024-07-10"), status: "Draft" },
+];
+
+export const expenses: Expense[] = [
+    { id: 'exp-001', description: 'Steel Beams', amount: 25000, category: 'Materials', date: new Date('2024-06-15'), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
+    { id: 'exp-002', description: 'Plumbing Subcontractor', amount: 15000, category: 'Subcontractor', date: new Date('2024-06-18'), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
+    { id: 'exp-003', description: 'Landscaping Supplies', amount: 5000, category: 'Materials', date: new Date('2024-06-20'), projectId: 'proj-002', projectName: 'Greenfield Community Park' },
+    { id: 'exp-004', description: 'Building Permit Renewal', amount: 1500, category: 'Permits', date: new Date('2024-06-22'), projectId: 'proj-003', projectName: 'Coastal Highway Bridge' },
+    { id: 'exp-005', description: 'Overtime Labor', amount: 8000, category: 'Labor', date: new Date('2024-06-25'), projectId: 'proj-004', projectName: 'Suburban Residential Complex' },
+];
+
+export const documents: Document[] = [
+    { id: 'doc-001', name: 'Tower Blueprints v3.pdf', type: 'PDF', uploadDate: new Date('2024-01-20'), projectId: 'proj-001', projectName: 'Downtown Tower Renovation', url: '#' },
+    { id: 'doc-002', name: 'Site Survey.jpg', type: 'Image', uploadDate: new Date('2024-03-05'), projectId: 'proj-002', projectName: 'Greenfield Community Park', url: '#' },
+    { id: 'doc-003', name: 'Structural Analysis.docx', type: 'Word', uploadDate: new Date('2024-06-10'), projectId: 'proj-003', projectName: 'Coastal Highway Bridge', url: '#' },
+    { id: 'doc-004', name: 'Material Spec Sheet.xlsx', type: 'Excel', uploadDate: new Date('2024-05-15'), projectId: 'proj-004', projectName: 'Suburban Residential Complex', url: '#' },
 ];
 
 export const financialData: FinancialData[] = [

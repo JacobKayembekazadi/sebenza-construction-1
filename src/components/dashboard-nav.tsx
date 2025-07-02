@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -13,25 +14,25 @@ import {
   FileText,
   DollarSign,
   Receipt,
-  Truck,
   FileBox,
   Bot,
   GanttChartSquare,
   LayoutDashboard,
   Settings,
+  ListChecks,
 } from "lucide-react";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/projects", label: "Projects", icon: GanttChartSquare },
-  { href: "/dashboard/tasks", label: "Tasks", icon: Briefcase },
+  { href: "/dashboard/tasks", label: "Tasks", icon: ListChecks },
   { href: "/dashboard/ai-report", label: "AI Progress Report", icon: Bot },
   { href: "/dashboard/clients", label: "Clients", icon: Users },
+  { href: "/dashboard/employees", label: "Employees", icon: Briefcase },
   { href: "/dashboard/estimates", label: "Estimates", icon: FileText },
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/expenses", label: "Expenses", icon: DollarSign },
   { href: "/dashboard/documents", label: "Documents", icon: FileBox },
-  { href: "/dashboard/employees", label: "Employees", icon: Users },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
