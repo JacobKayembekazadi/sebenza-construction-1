@@ -134,8 +134,8 @@ const tasks: Task[] = [
         id: "task-001-1",
         name: "Foundation & Structural Work",
         assignee: { name: "Bob Builder", avatar: "https://placehold.co/32x32.png" },
-        dueDate: new Date("2023-04-30"),
-        startDate: new Date("2023-01-15"),
+        dueDate: new Date(2023, 3, 30),
+        startDate: new Date(2023, 0, 15),
         status: "Done",
         priority: "High",
         projectId: "proj-001",
@@ -144,8 +144,8 @@ const tasks: Task[] = [
         id: "task-001-2",
         name: "Exterior Cladding",
         assignee: { name: "Charlie Crane", avatar: "https://placehold.co/32x32.png" },
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 14)), // due in 14 days
-        startDate: new Date("2023-05-01"),
+        dueDate: new Date(2024, 7, 14), 
+        startDate: new Date(2023, 4, 1),
         status: "In Progress",
         priority: "High",
         dependencies: ["task-001-1"],
@@ -154,9 +154,9 @@ const tasks: Task[] = [
     {
         id: "task-001-3",
         name: "Interior Wiring and Plumbing",
-        assignee: { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" }, // Assigned to Jane Doe
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 30)), // due in 30 days
-        startDate: new Date("2023-08-16"),
+        assignee: { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" },
+        dueDate: new Date(2024, 8, 14), 
+        startDate: new Date(2023, 7, 16),
         status: "To Do",
         priority: "Medium",
         dependencies: ["task-001-2"],
@@ -166,8 +166,8 @@ const tasks: Task[] = [
         id: "task-001-4",
         name: "Finishing and Landscaping",
         assignee: { name: "Eve Electric", avatar: "https://placehold.co/32x32.png" },
-        dueDate: new Date("2024-12-15"),
-        startDate: new Date("2023-12-01"),
+        dueDate: new Date(2024, 11, 15),
+        startDate: new Date(2023, 11, 1),
         status: "To Do",
         priority: "Low",
         dependencies: ["task-001-3"],
@@ -178,8 +178,8 @@ const tasks: Task[] = [
         id: "task-002-1",
         name: "Site Clearing and Grading",
         assignee: { name: "Frank Formwork", avatar: "https://placehold.co/32x32.png" },
-        dueDate: new Date("2023-04-15"),
-        startDate: new Date("2023-03-01"),
+        dueDate: new Date(2023, 3, 15),
+        startDate: new Date(2023, 2, 1),
         status: "Done",
         priority: "High",
         projectId: "proj-002",
@@ -188,8 +188,8 @@ const tasks: Task[] = [
         id: "task-002-2",
         name: "Utility Installation",
         assignee: { name: "Grace Grader", avatar: "https://placehold.co/32x32.png" },
-        dueDate: new Date(new Date().setDate(new Date().getDate() - 5)), // Overdue by 5 days
-        startDate: new Date("2023-04-16"),
+        dueDate: new Date(2024, 6, 10), // Overdue
+        startDate: new Date(2023, 3, 16),
         status: "In Progress",
         priority: "Urgent",
         projectId: "proj-002",
@@ -197,9 +197,9 @@ const tasks: Task[] = [
     {
         id: "task-002-3",
         name: "Playground and Pavilion",
-        assignee: { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" }, // Assigned to Jane Doe
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 7)), // due in 7 days
-        startDate: new Date("2023-07-01"),
+        assignee: { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" },
+        dueDate: new Date(2024, 6, 22), 
+        startDate: new Date(2023, 6, 1),
         status: "To Do",
         priority: "Medium",
         projectId: "proj-002",
@@ -209,9 +209,9 @@ const tasks: Task[] = [
     {
         id: "task-004-1",
         name: "Finalize architectural plans",
-        assignee: { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" }, // Assigned to Jane Doe
-        dueDate: new Date(new Date().setDate(new Date().getDate() - 2)), // Overdue
-        startDate: new Date("2024-06-01"),
+        assignee: { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" },
+        dueDate: new Date(2024, 6, 13), // Overdue
+        startDate: new Date(2024, 5, 1),
         status: "To Do",
         priority: "Urgent",
         projectId: "proj-004",
@@ -220,8 +220,8 @@ const tasks: Task[] = [
         id: "task-004-2",
         name: "Client sign-off on materials",
         assignee: { name: "Alice Johnson", avatar: "https://placehold.co/32x32.png" },
-        dueDate: new Date(new Date().setDate(new Date().getDate() + 10)), // due in 10 days
-        startDate: new Date("2024-06-05"),
+        dueDate: new Date(2024, 6, 25), 
+        startDate: new Date(2024, 5, 5),
         status: "In Progress",
         priority: "High",
         projectId: "proj-004",
@@ -237,8 +237,8 @@ export const projects: Project[] = [
     completion: 65,
     budget: 5000000,
     spent: 3250000,
-    startDate: new Date("2023-01-15"),
-    endDate: new Date("2024-12-31"),
+    startDate: new Date(2023, 0, 15),
+    endDate: new Date(2024, 11, 31),
     tasks: tasks.filter(t => t.projectId === "proj-001"),
   },
   {
@@ -249,8 +249,8 @@ export const projects: Project[] = [
     completion: 40,
     budget: 1200000,
     spent: 600000,
-    startDate: new Date("2023-03-01"),
-    endDate: new Date("2024-08-30"),
+    startDate: new Date(2023, 2, 1),
+    endDate: new Date(2024, 7, 30),
     tasks: tasks.filter(t => t.projectId === "proj-002"),
   },
   {
@@ -261,8 +261,8 @@ export const projects: Project[] = [
     completion: 20,
     budget: 15000000,
     spent: 4500000,
-    startDate: new Date("2023-06-01"),
-    endDate: new Date("2025-05-31"),
+    startDate: new Date(2023, 5, 1),
+    endDate: new Date(2025, 4, 31),
     tasks: [],
   },
     {
@@ -273,8 +273,8 @@ export const projects: Project[] = [
     completion: 85,
     budget: 8500000,
     spent: 7225000,
-    startDate: new Date("2022-09-01"),
-    endDate: new Date("2024-06-30"),
+    startDate: new Date(2022, 8, 1),
+    endDate: new Date(2024, 5, 30),
     tasks: tasks.filter(t => t.projectId === "proj-004"),
   },
 ];
@@ -289,32 +289,32 @@ export const clients: Client[] = [
 ];
 
 export const estimates: Estimate[] = [
-    { id: "est-001", clientId: "client-1", clientName: "Global Corp", amount: 125000, issueDate: new Date("2024-05-15"), expiryDate: new Date("2024-06-15"), status: "Accepted" },
-    { id: "est-002", clientId: "client-2", clientName: "Innovate LLC", amount: 250000, issueDate: new Date("2024-06-01"), expiryDate: new Date("2024-07-01"), status: "Sent" },
-    { id: "est-003", clientId: "client-3", clientName: "Mega Builders", amount: 75000, issueDate: new Date("2024-06-05"), expiryDate: new Date("2024-07-05"), status: "Draft" },
-    { id: "est-004", clientId: "client-1", clientName: "Global Corp", amount: 30000, issueDate: new Date("2024-04-10"), expiryDate: new Date("2024-05-10"), status: "Declined" },
+    { id: "est-001", clientId: "client-1", clientName: "Global Corp", amount: 125000, issueDate: new Date(2024, 4, 15), expiryDate: new Date(2024, 5, 15), status: "Accepted" },
+    { id: "est-002", clientId: "client-2", clientName: "Innovate LLC", amount: 250000, issueDate: new Date(2024, 5, 1), expiryDate: new Date(2024, 6, 1), status: "Sent" },
+    { id: "est-003", clientId: "client-3", clientName: "Mega Builders", amount: 75000, issueDate: new Date(2024, 5, 5), expiryDate: new Date(2024, 6, 5), status: "Draft" },
+    { id: "est-004", clientId: "client-1", clientName: "Global Corp", amount: 30000, issueDate: new Date(2024, 3, 10), expiryDate: new Date(2024, 4, 10), status: "Declined" },
 ];
 
 export const invoices: Invoice[] = [
-    { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Downtown Tower Renovation", amount: 50000, issueDate: new Date("2024-06-01"), dueDate: new Date("2024-07-01"), status: "Paid" },
-    { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 75000, issueDate: new Date("2024-06-05"), dueDate: new Date("2024-07-05"), status: "Sent" },
-    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date("2024-05-20"), dueDate: new Date("2024-06-20"), status: "Overdue" },
-    { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 35000, issueDate: new Date("2024-06-10"), dueDate: new Date("2024-07-10"), status: "Draft" },
+    { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Downtown Tower Renovation", amount: 50000, issueDate: new Date(2024, 5, 1), dueDate: new Date(2024, 6, 1), status: "Paid" },
+    { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 75000, issueDate: new Date(2024, 5, 5), dueDate: new Date(2024, 6, 5), status: "Sent" },
+    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date(2024, 4, 20), dueDate: new Date(2024, 5, 20), status: "Overdue" },
+    { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 35000, issueDate: new Date(2024, 5, 10), dueDate: new Date(2024, 6, 10), status: "Draft" },
 ];
 
 export const expenses: Expense[] = [
-    { id: 'exp-001', description: 'Steel Beams', amount: 25000, category: 'Materials', date: new Date('2024-06-15'), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
-    { id: 'exp-002', description: 'Plumbing Subcontractor', amount: 15000, category: 'Subcontractor', date: new Date('2024-06-18'), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
-    { id: 'exp-003', description: 'Landscaping Supplies', amount: 5000, category: 'Materials', date: new Date('2024-06-20'), projectId: 'proj-002', projectName: 'Greenfield Community Park' },
-    { id: 'exp-004', description: 'Building Permit Renewal', amount: 1500, category: 'Permits', date: new Date('2024-06-22'), projectId: 'proj-003', projectName: 'Coastal Highway Bridge' },
-    { id: 'exp-005', description: 'Overtime Labor', amount: 8000, category: 'Labor', date: new Date('2024-06-25'), projectId: 'proj-004', projectName: 'Suburban Residential Complex' },
+    { id: 'exp-001', description: 'Steel Beams', amount: 25000, category: 'Materials', date: new Date(2024, 5, 15), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
+    { id: 'exp-002', description: 'Plumbing Subcontractor', amount: 15000, category: 'Subcontractor', date: new Date(2024, 5, 18), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
+    { id: 'exp-003', description: 'Landscaping Supplies', amount: 5000, category: 'Materials', date: new Date(2024, 5, 20), projectId: 'proj-002', projectName: 'Greenfield Community Park' },
+    { id: 'exp-004', description: 'Building Permit Renewal', amount: 1500, category: 'Permits', date: new Date(2024, 5, 22), projectId: 'proj-003', projectName: 'Coastal Highway Bridge' },
+    { id: 'exp-005', description: 'Overtime Labor', amount: 8000, category: 'Labor', date: new Date(2024, 5, 25), projectId: 'proj-004', projectName: 'Suburban Residential Complex' },
 ];
 
 export const documents: Document[] = [
-    { id: 'doc-001', name: 'Tower Blueprints v3.pdf', type: 'PDF', uploadDate: new Date('2024-01-20'), projectId: 'proj-001', projectName: 'Downtown Tower Renovation', url: '#' },
-    { id: 'doc-002', name: 'Site Survey.jpg', type: 'Image', uploadDate: new Date('2024-03-05'), projectId: 'proj-002', projectName: 'Greenfield Community Park', url: '#' },
-    { id: 'doc-003', name: 'Structural Analysis.docx', type: 'Word', uploadDate: new Date('2024-06-10'), projectId: 'proj-003', projectName: 'Coastal Highway Bridge', url: '#' },
-    { id: 'doc-004', name: 'Material Spec Sheet.xlsx', type: 'Excel', uploadDate: new Date('2024-05-15'), projectId: 'proj-004', projectName: 'Suburban Residential Complex', url: '#' },
+    { id: 'doc-001', name: 'Tower Blueprints v3.pdf', type: 'PDF', uploadDate: new Date(2024, 0, 20), projectId: 'proj-001', projectName: 'Downtown Tower Renovation', url: '#' },
+    { id: 'doc-002', name: 'Site Survey.jpg', type: 'Image', uploadDate: new Date(2024, 2, 5), projectId: 'proj-002', projectName: 'Greenfield Community Park', url: '#' },
+    { id: 'doc-003', name: 'Structural Analysis.docx', type: 'Word', uploadDate: new Date(2024, 5, 10), projectId: 'proj-003', projectName: 'Coastal Highway Bridge', url: '#' },
+    { id: 'doc-004', name: 'Material Spec Sheet.xlsx', type: 'Excel', uploadDate: new Date(2024, 4, 15), projectId: 'proj-004', projectName: 'Suburban Residential Complex', url: '#' },
 ];
 
 export const financialData: FinancialData[] = [

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -38,7 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { AddEditTaskDialog, type TaskFormValues } from "@/components/add-edit-task-dialog";
 import { DeleteTaskDialog } from "@/components/delete-task-dialog";
 
@@ -63,6 +63,28 @@ const prioritySortOrder: Record<Task['priority'], number> = {
   "Low": 1,
 };
 
+const DueDateDisplay = ({ dueDate, status }: { dueDate: Date, status: Task['status'] }) => {
+    const [text, setText] = useState<React.ReactNode>(() => format(dueDate, "PPP"));
+
+    useEffect(() => {
+        if (status === 'Done') {
+            setText(<span className="text-muted-foreground">Completed</span>);
+            return;
+        }
+
+        const now = new Date();
+        const isOverdue = dueDate < now;
+        const distance = formatDistanceToNow(dueDate, { addSuffix: true });
+
+        setText(
+            <span className={cn(isOverdue ? "text-destructive font-semibold" : "text-muted-foreground")}>
+                {isOverdue ? `Overdue (${distance.replace('about ', '')})` : `Due ${distance}`}
+            </span>
+        );
+    }, [dueDate, status]);
+
+    return text;
+};
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
@@ -199,21 +221,6 @@ export default function TasksPage() {
     }
   };
 
-  const getDueDateText = (dueDate: Date, status: Task['status']) => {
-      if (status === 'Done') {
-          return <span className="text-muted-foreground">Completed</span>
-      }
-      const now = new Date();
-      const isOverdue = dueDate < now;
-      const distance = formatDistanceToNow(dueDate, { addSuffix: true });
-
-      return (
-          <span className={cn(isOverdue ? "text-destructive font-semibold" : "text-muted-foreground")}>
-              {isOverdue ? `Overdue (${distance.replace('about ', '')})` : `Due ${distance}`}
-          </span>
-      )
-  }
-
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -345,7 +352,7 @@ export default function TasksPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {getDueDateText(task.dueDate, task.status)}
+                      <DueDateDisplay dueDate={task.dueDate} status={task.status} />
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2" title={task.priority}>

@@ -85,13 +85,13 @@ export default function InvoicesPage() {
       .filter(e => e.status === 'Sent' || e.status === 'Overdue')
       .reduce((sum, e) => sum + e.amount, 0);
     const overdueCount = invoices.filter((e) => e.status === "Overdue").length;
-    const paidLast30Days = invoices
-        .filter(e => e.status === 'Paid' && e.issueDate > new Date(new Date().setDate(new Date().getDate() - 30)))
+    const totalPaid = invoices
+        .filter(e => e.status === 'Paid')
         .reduce((sum, e) => sum + e.amount, 0);
     return {
       outstanding,
       overdueCount,
-      paidLast30Days,
+      totalPaid,
     };
   }, [invoices]);
 
@@ -172,11 +172,11 @@ export default function InvoicesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Paid (Last 30d)</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Paid</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${summary.paidLast30Days.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${summary.totalPaid.toLocaleString()}</div>
              <p className="text-xs text-muted-foreground">
               Total revenue from paid invoices
             </p>

@@ -1,3 +1,7 @@
+
+"use client";
+
+import { useEffect, useState, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -6,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast } from "@/lib/data";
+import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, Task } from "@/lib/data";
 import Link from "next/link";
 import {
   Activity,
@@ -23,7 +27,57 @@ import { ResourceAllocationChart } from "@/components/dashboard/resource-allocat
 import { WeatherForecast } from "@/components/dashboard/weather-forecast";
 import { QuickAddButton } from "@/components/quick-add-button";
 
+const MyTaskDueDate = ({ dueDate }: { dueDate: Date }) => {
+    const [text, setText] = useState<string | null>(null);
+
+    useEffect(() => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const due = new Date(dueDate);
+        due.setHours(0, 0, 0, 0);
+        const diffTime = due.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let dueDateText: string;
+        if (diffDays < 0) {
+            dueDateText = `${Math.abs(diffDays)}d overdue`;
+        } else if (diffDays === 0) {
+            dueDateText = 'Due today';
+        } else {
+            dueDateText = `in ${diffDays}d`;
+        }
+        setText(dueDateText);
+    }, [dueDate]);
+
+    const isOverdue = text?.includes('overdue');
+    const isDueToday = text === 'Due today';
+
+    if (text === null) {
+        return <span className="text-muted-foreground">Loading...</span>;
+    }
+
+    return (
+        <div className={cn(
+            "text-sm font-semibold whitespace-nowrap",
+            isOverdue ? "text-destructive" : "text-muted-foreground",
+            isDueToday && "font-extrabold text-foreground"
+        )}>
+            {text}
+        </div>
+    );
+};
+
 export default function DashboardPage() {
+  const [overdueTasksCount, setOverdueTasksCount] = useState(0);
+
+  useEffect(() => {
+    const now = new Date();
+    const count = allTasks.filter(
+      (task) => task.dueDate < now && task.status !== "Done"
+    ).length;
+    setOverdueTasksCount(count);
+  }, []);
+
   const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
   const totalSpent = projects.reduce((sum, p) => sum + p.spent, 0);
   const budgetUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
@@ -31,18 +85,16 @@ export default function DashboardPage() {
   const projectsAtRisk = projects.filter(
     (p) => p.status === "At Risk" || p.status === "Off Track"
   ).length;
-  
-  const overdueTasks = allTasks.filter(
-    (task) => task.dueDate < new Date() && task.status !== "Done"
-  ).length;
 
-  const myTasks = allTasks
-    .filter(
-      (task) =>
-        task.assignee.name === "Jane Doe" && task.status !== "Done"
-    )
-    .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
-    .slice(0, 5);
+  const myTasks = useMemo(() => {
+    return allTasks
+      .filter(
+        (task) =>
+          task.assignee.name === "Jane Doe" && task.status !== "Done"
+      )
+      .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
+      .slice(0, 5);
+  }, []);
 
   const attentionProjects = projects.filter(
     (p) => p.status === "At Risk" || p.status === "Off Track"
@@ -60,17 +112,6 @@ export default function DashboardPage() {
         return "outline";
     }
   };
-
-  const getDaysRemaining = (dueDate: Date) => {
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const due = new Date(dueDate);
-    due.setHours(0,0,0,0);
-    const diffTime = due.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-
 
   return (
     <div className="flex flex-col gap-8">
@@ -132,7 +173,7 @@ export default function DashboardPage() {
                 <ListChecks className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-                <div className="text-2xl font-bold">+{overdueTasks}</div>
+                <div className="text-2xl font-bold">+{overdueTasksCount}</div>
                 <p className="text-xs text-muted-foreground">
                 Across all active projects
                 </p>
@@ -193,20 +234,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
                 <div className="space-y-3">
-                    {myTasks.map((task) => {
-                       const daysRemaining = getDaysRemaining(task.dueDate);
-                       const isOverdue = daysRemaining < 0;
-                       
-                       let dueDateText: string;
-                       if (isOverdue) {
-                           dueDateText = `${Math.abs(daysRemaining)}d overdue`;
-                       } else if (daysRemaining === 0) {
-                           dueDateText = 'Due today';
-                       } else {
-                           dueDateText = `in ${daysRemaining}d`;
-                       }
-
-                       return (
+                    {myTasks.map((task) => (
                          <div key={task.id} className="flex items-center">
                            <div className="flex-1">
                              <p className="text-sm font-medium">{task.name}</p>
@@ -214,16 +242,10 @@ export default function DashboardPage() {
                                 {projects.find(p => p.id === task.projectId)?.name}
                              </Link>
                            </div>
-                           <div className={cn(
-                               "text-sm font-semibold whitespace-nowrap",
-                               isOverdue ? "text-destructive" : "text-muted-foreground",
-                               daysRemaining === 0 && "font-extrabold text-foreground"
-                           )}>
-                             {dueDateText}
-                           </div>
+                           <MyTaskDueDate dueDate={task.dueDate} />
                          </div>
-                       );
-                    })}
+                       )
+                    )}
                     {myTasks.length === 0 && (
                         <p className="text-center text-muted-foreground py-8">No upcoming tasks assigned to you.</p>
                     )}

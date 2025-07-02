@@ -70,9 +70,7 @@ export default function ExpensesPage() {
   }, [expenses, searchTerm, categoryFilter]);
 
   const summary = useMemo(() => {
-    const totalLast30Days = expenses
-      .filter(e => e.date > new Date(new Date().setDate(new Date().getDate() - 30)))
-      .reduce((sum, e) => sum + e.amount, 0);
+    const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
 
     const categoryTotals = expenses.reduce((acc, expense) => {
         acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
@@ -82,7 +80,7 @@ export default function ExpensesPage() {
     const topCategory = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
 
     return {
-      totalLast30Days,
+      totalExpenses,
       topCategory: topCategory ? { name: topCategory[0], amount: topCategory[1]} : { name: "N/A", amount: 0 },
     };
   }, [expenses]);
@@ -138,11 +136,11 @@ export default function ExpensesPage() {
        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total (Last 30d)</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${summary.totalLast30Days.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${summary.totalExpenses.toLocaleString()}</div>
           </CardContent>
         </Card>
         <Card>
