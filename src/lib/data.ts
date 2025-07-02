@@ -1,5 +1,4 @@
 
-
 export type Task = {
   id: string;
   name: string;
@@ -45,6 +44,18 @@ export type Estimate = {
   issueDate: Date;
   expiryDate: Date;
   status: "Draft" | "Sent" | "Accepted" | "Declined";
+};
+
+export type Invoice = {
+  id: string;
+  clientId: string;
+  clientName: string;
+  projectId: string;
+  projectName: string;
+  amount: number;
+  issueDate: Date;
+  dueDate: Date;
+  status: "Draft" | "Sent" | "Paid" | "Overdue";
 };
 
 export type FinancialData = {
@@ -258,6 +269,13 @@ export const estimates: Estimate[] = [
     { id: "est-002", clientId: "client-2", clientName: "Innovate LLC", amount: 250000, issueDate: new Date("2024-06-01"), expiryDate: new Date("2024-07-01"), status: "Sent" },
     { id: "est-003", clientId: "client-3", clientName: "Mega Builders", amount: 75000, issueDate: new Date("2024-06-05"), expiryDate: new Date("2024-07-05"), status: "Draft" },
     { id: "est-004", clientId: "client-1", clientName: "Global Corp", amount: 30000, issueDate: new Date("2024-04-10"), expiryDate: new Date("2024-05-10"), status: "Declined" },
+];
+
+export const invoices: Invoice[] = [
+    { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Downtown Tower Renovation", amount: 50000, issueDate: new Date("2024-06-01"), dueDate: new Date("2024-07-01"), status: "Paid" },
+    { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 75000, issueDate: new Date("2024-06-05"), dueDate: new Date("2024-07-05"), status: "Sent" },
+    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date("2024-05-20"), dueDate: new Date("2024-06-20"), status: "Overdue" },
+    { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 35000, issueDate: new Date("2024-06-10"), dueDate: new Date("2024-07-10"), status: "Draft" },
 ];
 
 export const financialData: FinancialData[] = [
