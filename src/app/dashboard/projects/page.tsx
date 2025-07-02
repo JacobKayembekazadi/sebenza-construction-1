@@ -52,13 +52,12 @@ export default function ProjectsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Project Name</TableHead>
+              <TableHead className="w-[350px]">Project Name</TableHead>
               <TableHead>Manager</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Completion</TableHead>
-              <TableHead>Start Date</TableHead>
+              <TableHead>Budget Usage</TableHead>
               <TableHead>End Date</TableHead>
-              <TableHead className="text-right">Budget</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -85,13 +84,13 @@ export default function ProjectsPage() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {project.startDate.toLocaleDateString()}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm w-8 text-right">{((project.spent / project.budget) * 100).toFixed(0)}%</span>
+                    <Progress value={(project.spent / project.budget) * 100} className="flex-1"/>
+                  </div>
                 </TableCell>
                 <TableCell>
                   {project.endDate.toLocaleDateString()}
-                </TableCell>
-                <TableCell className="text-right">
-                  ${project.budget.toLocaleString()}
                 </TableCell>
               </TableRow>
             ))}

@@ -2,7 +2,6 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { type Task } from "@/lib/data";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface GanttChartProps {
   tasks: Task[];
@@ -43,16 +42,9 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function GanttChart({ tasks }: GanttChartProps) {
   if (tasks.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Project Timeline</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center h-64 text-muted-foreground">
+        <div className="flex items-center justify-center h-64 text-muted-foreground border-2 border-dashed rounded-lg">
             No tasks to display in the timeline.
-          </div>
-        </CardContent>
-      </Card>
+        </div>
     )
   }
 
@@ -66,34 +58,29 @@ export function GanttChart({ tasks }: GanttChartProps) {
   const maxTimestamp = Math.max(...data.map(d => d.range[1]));
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Project Timeline</CardTitle>
-      </CardHeader>
-      <CardContent className="h-[400px]">
+    <div className="h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
+        <BarChart
             data={data}
             layout="vertical"
             margin={{ top: 5, right: 30, left: 50, bottom: 5 }}
             barCategoryGap={30}
-          >
+        >
             <XAxis
-              type="number"
-              domain={[minTimestamp, maxTimestamp]}
-              tickFormatter={(time) => new Date(time).toLocaleDateString()}
-              scale="time"
+            type="number"
+            domain={[minTimestamp, maxTimestamp]}
+            tickFormatter={(time) => new Date(time).toLocaleDateString()}
+            scale="time"
             />
             <YAxis type="category" dataKey="name" width={120} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="range" minPointSize={2}>
-              {data.map((entry, index) => (
+            {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={getStatusColor(entry.status)} />
-              ))}
+            ))}
             </Bar>
-          </BarChart>
+        </BarChart>
         </ResponsiveContainer>
-      </CardContent>
-    </Card>
+    </div>
   );
 }
