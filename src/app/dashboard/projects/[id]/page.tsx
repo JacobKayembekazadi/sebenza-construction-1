@@ -14,6 +14,7 @@ import { AddTaskDialog } from "@/components/add-task-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users2, PiggyBank, FolderArchive } from "lucide-react";
+import { format } from "date-fns";
 
 
 export default function ProjectDetailPage({ params }: { params: { id: string } }) {
@@ -75,10 +76,10 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
           <CardContent>
             <div className="text-sm space-y-1">
               <p>
-                <strong>Start:</strong> {project.startDate.toLocaleDateString()}
+                <strong>Start:</strong> {format(project.startDate, "PPP")}
               </p>
               <p>
-                <strong>End:</strong> {project.endDate.toLocaleDateString()}
+                <strong>End:</strong> {format(project.endDate, "PPP")}
               </p>
             </div>
           </CardContent>

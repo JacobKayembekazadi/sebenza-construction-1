@@ -46,6 +46,7 @@ import {
 } from "lucide-react";
 import { type ProjectFormValues, AddEditProjectDialog } from "@/components/add-edit-project-dialog";
 import { DeleteProjectDialog } from "@/components/delete-project-dialog";
+import { format } from "date-fns";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
@@ -324,7 +325,7 @@ export default function ProjectsPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      {project.endDate.toLocaleDateString()}
+                      {format(project.endDate, "PPP")}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>

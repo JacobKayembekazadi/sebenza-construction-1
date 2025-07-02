@@ -44,6 +44,7 @@ import {
 import { estimates as initialEstimates, clients, type Estimate } from "@/lib/data";
 import { AddEditEstimateDialog, type EstimateFormValues } from "@/components/add-edit-estimate-dialog";
 import { DeleteEstimateDialog } from "@/components/delete-estimate-dialog";
+import { format } from "date-fns";
 
 export default function EstimatesPage() {
   const [estimates, setEstimates] = useState<Estimate[]>(initialEstimates);
@@ -220,8 +221,8 @@ export default function EstimatesPage() {
                   <TableRow key={estimate.id}>
                     <TableCell className="font-medium">{estimate.id.toUpperCase()}</TableCell>
                     <TableCell>{estimate.clientName}</TableCell>
-                    <TableCell>{estimate.issueDate.toLocaleDateString()}</TableCell>
-                    <TableCell>{estimate.expiryDate.toLocaleDateString()}</TableCell>
+                    <TableCell>{format(estimate.issueDate, "PPP")}</TableCell>
+                    <TableCell>{format(estimate.expiryDate, "PPP")}</TableCell>
                     <TableCell>${estimate.amount.toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(estimate.status)}>

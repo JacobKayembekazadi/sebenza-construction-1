@@ -45,6 +45,7 @@ import { invoices as initialInvoices, clients, projects, type Invoice } from "@/
 import { AddEditInvoiceDialog, type InvoiceFormValues } from "@/components/add-edit-invoice-dialog";
 import { DeleteInvoiceDialog } from "@/components/delete-invoice-dialog";
 import Link from "next/link";
+import { format } from "date-fns";
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
@@ -245,7 +246,7 @@ export default function InvoicesPage() {
                       </Link>
                     </TableCell>
                     <TableCell>${invoice.amount.toLocaleString()}</TableCell>
-                    <TableCell>{invoice.dueDate.toLocaleDateString()}</TableCell>
+                    <TableCell>{format(invoice.dueDate, "PPP")}</TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(invoice.status)}>
                         {invoice.status}

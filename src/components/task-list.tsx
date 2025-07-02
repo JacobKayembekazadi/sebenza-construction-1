@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -11,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { type Task } from "@/lib/data";
+import { format } from "date-fns";
 
 interface TaskListProps {
   tasks: Task[];
@@ -57,7 +59,7 @@ export function TaskList({ tasks }: TaskListProps) {
                 <span>{task.assignee.name}</span>
             </div>
             </TableCell>
-            <TableCell>{task.dueDate.toLocaleDateString()}</TableCell>
+            <TableCell>{format(task.dueDate, "PPP")}</TableCell>
             <TableCell>
             <Badge variant={statusVariant(task.status)}>{task.status}</Badge>
             </TableCell>
