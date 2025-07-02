@@ -1,3 +1,4 @@
+
 export type Task = {
   id: string;
   name: string;
@@ -24,6 +25,15 @@ export type Project = {
   startDate: Date;
   endDate: Date;
   tasks: Task[];
+};
+
+export type Client = {
+  id: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  status: "Active" | "Inactive";
 };
 
 export type FinancialData = {
@@ -224,6 +234,13 @@ export const projects: Project[] = [
 ];
 
 export const allTasks = tasks;
+
+export const clients: Client[] = [
+  { id: "client-1", name: "Global Corp", company: "Global Corp Inc.", email: "contact@globalcorp.com", phone: "123-456-7890", status: "Active" },
+  { id: "client-2", name: "Innovate LLC", company: "Innovate LLC", email: "hello@innovate.com", phone: "234-567-8901", status: "Active" },
+  { id: "client-3", name: "Mega Builders", company: "Mega Builders Co.", email: "info@megabuilders.com", phone: "345-678-9012", status: "Inactive" },
+  { id: "client-4", name: "Quantum Solutions", company: "Quantum Solutions", email: "support@quantum.com", phone: "456-789-0123", status: "Active" },
+];
 
 export const financialData: FinancialData[] = [
   { month: "Jan", revenue: 150000, expenses: 95000 },
