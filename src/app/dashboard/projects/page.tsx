@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -26,21 +27,35 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { projects, allTasks } from "@/lib/data";
+import { projects as initialProjects, allTasks, type Project } from "@/lib/data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   PlusCircle,
   Search,
   GanttChartSquare,
   CircleDollarSign,
   AlertTriangle,
+  MoreHorizontal,
 } from "lucide-react";
+import { type ProjectFormValues, AddEditProjectDialog } from "@/components/add-edit-project-dialog";
+import { DeleteProjectDialog } from "@/components/delete-project-dialog";
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [managerFilter, setManagerFilter] = useState("All");
+  
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const managers = [
     "All",
@@ -69,7 +84,7 @@ export default function ProjectsPage() {
           managerFilter === "All" || project.manager === managerFilter;
         return matchesSearch && matchesStatus && matchesManager;
       });
-  }, [searchTerm, statusFilter, managerFilter]);
+  }, [projects, searchTerm, statusFilter, managerFilter]);
 
   const statusVariant = (status: string) => {
     switch (status) {
@@ -96,7 +111,45 @@ export default function ProjectsPage() {
       totalSpent,
       projectsAtRisk,
     };
-  }, []);
+  }, [projects]);
+
+  const handleOpenAddDialog = () => {
+    setSelectedProject(null);
+    setIsAddEditDialogOpen(true);
+  };
+  
+  const handleOpenEditDialog = (project: Project) => {
+    setSelectedProject(project);
+    setIsAddEditDialogOpen(true);
+  };
+
+  const handleOpenDeleteDialog = (project: Project) => {
+    setSelectedProject(project);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleSaveProject = (data: ProjectFormValues, projectId?: string) => {
+    if (projectId) {
+      setProjects(projects.map(p => p.id === projectId ? { ...p, ...data } : p));
+    } else {
+      const newProject: Project = {
+        id: `proj-${Date.now()}`,
+        completion: 0,
+        spent: 0,
+        tasks: [],
+        ...data,
+      };
+      setProjects([newProject, ...projects]);
+    }
+  };
+
+  const handleDeleteProject = () => {
+    if (selectedProject) {
+      setProjects(projects.filter(p => p.id !== selectedProject.id));
+      setIsDeleteDialogOpen(false);
+      setSelectedProject(null);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -198,7 +251,7 @@ export default function ProjectsPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
               New Project
             </Button>
@@ -215,6 +268,7 @@ export default function ProjectsPage() {
                 <TableHead>Completion</TableHead>
                 <TableHead>Budget Usage</TableHead>
                 <TableHead>End Date</TableHead>
+                <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -272,12 +326,30 @@ export default function ProjectsPage() {
                     <TableCell>
                       {project.endDate.toLocaleDateString()}
                     </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleOpenEditDialog(project)}>
+                            Edit Project
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleOpenDeleteDialog(project)} className="text-destructive focus:bg-destructive/20">
+                            Delete Project
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={8}
                     className="h-24 text-center text-muted-foreground"
                   >
                     No projects found. Try adjusting your filters.
@@ -288,6 +360,18 @@ export default function ProjectsPage() {
           </Table>
         </CardContent>
       </Card>
+      <AddEditProjectDialog
+        open={isAddEditDialogOpen}
+        onOpenChange={setIsAddEditDialogOpen}
+        onSave={handleSaveProject}
+        project={selectedProject}
+      />
+      <DeleteProjectDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDeleteProject}
+        project={selectedProject}
+      />
     </div>
   );
 }
