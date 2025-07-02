@@ -1,4 +1,5 @@
 
+
 export type Task = {
   id: string;
   name: string;
@@ -34,6 +35,16 @@ export type Client = {
   email: string;
   phone: string;
   status: "Active" | "Inactive";
+};
+
+export type Estimate = {
+  id: string;
+  clientId: string;
+  clientName: string; 
+  amount: number;
+  issueDate: Date;
+  expiryDate: Date;
+  status: "Draft" | "Sent" | "Accepted" | "Declined";
 };
 
 export type FinancialData = {
@@ -240,6 +251,13 @@ export const clients: Client[] = [
   { id: "client-2", name: "Innovate LLC", company: "Innovate LLC", email: "hello@innovate.com", phone: "234-567-8901", status: "Active" },
   { id: "client-3", name: "Mega Builders", company: "Mega Builders Co.", email: "info@megabuilders.com", phone: "345-678-9012", status: "Inactive" },
   { id: "client-4", name: "Quantum Solutions", company: "Quantum Solutions", email: "support@quantum.com", phone: "456-789-0123", status: "Active" },
+];
+
+export const estimates: Estimate[] = [
+    { id: "est-001", clientId: "client-1", clientName: "Global Corp", amount: 125000, issueDate: new Date("2024-05-15"), expiryDate: new Date("2024-06-15"), status: "Accepted" },
+    { id: "est-002", clientId: "client-2", clientName: "Innovate LLC", amount: 250000, issueDate: new Date("2024-06-01"), expiryDate: new Date("2024-07-01"), status: "Sent" },
+    { id: "est-003", clientId: "client-3", clientName: "Mega Builders", amount: 75000, issueDate: new Date("2024-06-05"), expiryDate: new Date("2024-07-05"), status: "Draft" },
+    { id: "est-004", clientId: "client-1", clientName: "Global Corp", amount: 30000, issueDate: new Date("2024-04-10"), expiryDate: new Date("2024-05-10"), status: "Declined" },
 ];
 
 export const financialData: FinancialData[] = [
