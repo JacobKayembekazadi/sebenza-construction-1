@@ -14,101 +14,9 @@ import {
   ArrowRight,
   CircleDollarSign,
   ListChecks,
-  Sparkles,
-  Lightbulb,
-  TrendingUp,
 } from "lucide-react";
 import { ProjectStatusChart } from "@/components/dashboard/project-status-chart";
 import { cn } from "@/lib/utils";
-import { generateDailyBriefing } from "@/ai/flows/generate-daily-briefing";
-import React from "react";
-
-function BriefingSkeleton() {
-  return (
-    <Card className="bg-primary/5 border-primary/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="text-primary" />
-          Your Daily AI Briefing
-        </CardTitle>
-        <CardDescription>Generating your personalized summary...</CardDescription>
-      </CardHeader>
-      <CardContent className="grid md:grid-cols-3 gap-6">
-        <div className="space-y-3">
-          <div className="h-5 w-32 bg-muted rounded-md animate-pulse"></div>
-          <div className="h-4 w-full bg-muted rounded-md animate-pulse mt-4"></div>
-          <div className="h-4 w-10/12 bg-muted rounded-md animate-pulse"></div>
-        </div>
-        <div className="space-y-3">
-          <div className="h-5 w-32 bg-muted rounded-md animate-pulse"></div>
-          <div className="h-4 w-full bg-muted rounded-md animate-pulse mt-4"></div>
-          <div className="h-4 w-10/12 bg-muted rounded-md animate-pulse"></div>
-        </div>
-        <div className="space-y-3">
-          <div className="h-5 w-32 bg-muted rounded-md animate-pulse"></div>
-          <div className="h-4 w-full bg-muted rounded-md animate-pulse mt-4"></div>
-          <div className="h-4 w-10/12 bg-muted rounded-md animate-pulse"></div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-async function DailyAiBriefing() {
-  const briefing = await generateDailyBriefing({
-    userName: "Jane Doe",
-    projects,
-    tasks: allTasks,
-  }).catch(err => {
-    console.error("Failed to generate daily briefing:", err);
-    return null;
-  });
-
-  if (!briefing) {
-    return null;
-  }
-
-  return (
-    <Card className="bg-primary/5 border-primary/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Sparkles className="text-primary" />
-          Your Daily AI Briefing
-        </CardTitle>
-        <CardDescription>{briefing.greeting}</CardDescription>
-      </CardHeader>
-      <CardContent className="grid md:grid-cols-3 gap-6">
-        <div className="space-y-3">
-          <h3 className="font-semibold flex items-center gap-2 text-sm">
-            <Lightbulb className="text-accent" />
-            Key Priorities
-          </h3>
-          <ul className="space-y-2 list-disc pl-5 text-sm text-muted-foreground">
-            {briefing.keyPriorities.map((item, i) => <li key={i}>{item}</li>)}
-          </ul>
-        </div>
-        <div className="space-y-3">
-          <h3 className="font-semibold flex items-center gap-2 text-sm">
-            <AlertTriangle className="text-destructive" />
-            Potential Risks
-          </h3>
-          <ul className="space-y-2 list-disc pl-5 text-sm text-muted-foreground">
-             {briefing.potentialRisks.map((item, i) => <li key={i}>{item}</li>)}
-          </ul>
-        </div>
-        <div className="space-y-3">
-          <h3 className="font-semibold flex items-center gap-2 text-sm">
-            <TrendingUp className="text-green-500" />
-            Positive Updates
-          </h3>
-           <ul className="space-y-2 list-disc pl-5 text-sm text-muted-foreground">
-            {briefing.positiveUpdates.map((item, i) => <li key={i}>{item}</li>)}
-          </ul>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default function DashboardPage() {
   const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
@@ -167,10 +75,6 @@ export default function DashboardPage() {
           <p className="text-muted-foreground">Here's your project overview for today.</p>
         </div>
       </div>
-      
-      <React.Suspense fallback={<BriefingSkeleton />}>
-        <DailyAiBriefing />
-      </React.Suspense>
       
       {/* KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
