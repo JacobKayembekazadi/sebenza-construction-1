@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { allTasks as initialTasks, projects, employees, type Task } from "@/lib/data";
 import Link from "next/link";
-import { Search, MoreHorizontal, PlusCircle } from "lucide-react";
+import { Search, MoreHorizontal, PlusCircle, ArrowDown, ArrowUp, ChevronsUpDown, AlertCircle, Equal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,12 +42,35 @@ import { formatDistanceToNow } from "date-fns";
 import { AddEditTaskDialog, type TaskFormValues } from "@/components/add-edit-task-dialog";
 import { DeleteTaskDialog } from "@/components/delete-task-dialog";
 
+type SortableColumn = keyof Task | 'projectName';
+
+type SortConfig = {
+  key: SortableColumn;
+  direction: "ascending" | "descending";
+} | null;
+
+const priorityIcons = {
+    "Urgent": <AlertCircle className="h-5 w-5 text-destructive" />,
+    "High": <ArrowUp className="h-5 w-5 text-accent" />,
+    "Medium": <Equal className="h-5 w-5 text-blue-500" />,
+    "Low": <ArrowDown className="h-5 w-5 text-muted-foreground" />,
+};
+
+const prioritySortOrder: Record<Task['priority'], number> = {
+  "Urgent": 4,
+  "High": 3,
+  "Medium": 2,
+  "Low": 1,
+};
+
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState("All");
+  const [assigneeFilter, setAssigneeFilter] = useState("All");
+  const [sortConfig, setSortConfig] = useState<SortConfig>(null);
 
   const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -55,10 +78,11 @@ export default function TasksPage() {
 
   const projectOptions = ["All", ...projects.map((p) => p.name)];
   const statusOptions = ["All", "To Do", "In Progress", "Done"];
+  const assigneeOptions = ["All", ...employees.map((e) => e.name)];
   const projectMap = useMemo(() => new Map(projects.map(p => [p.id, p.name])), []);
 
-  const filteredTasks = useMemo(() => {
-    return tasks
+  const sortedAndFilteredTasks = useMemo(() => {
+    let filtered = tasks
       .map(task => ({
           ...task,
           projectName: projectMap.get(task.projectId) || "N/A"
@@ -71,9 +95,56 @@ export default function TasksPage() {
           statusFilter === "All" || task.status === statusFilter;
         const matchesProject =
           projectFilter === "All" || task.projectName === projectFilter;
-        return matchesSearch && matchesStatus && matchesProject;
+        const matchesAssignee =
+          assigneeFilter === 'All' || task.assignee.name === assigneeFilter;
+        return matchesSearch && matchesStatus && matchesProject && matchesAssignee;
       });
-  }, [tasks, searchTerm, statusFilter, projectFilter, projectMap]);
+
+    if (sortConfig !== null) {
+      filtered.sort((a, b) => {
+        let aValue: any;
+        let bValue: any;
+
+        if (sortConfig.key === 'priority') {
+          aValue = prioritySortOrder[a.priority];
+          bValue = prioritySortOrder[b.priority];
+        } else {
+          aValue = a[sortConfig.key];
+          bValue = b[sortConfig.key];
+        }
+        
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return filtered;
+  }, [tasks, searchTerm, statusFilter, projectFilter, assigneeFilter, sortConfig, projectMap]);
+
+  const requestSort = (key: SortableColumn) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (columnKey: SortableColumn) => {
+    if (!sortConfig || sortConfig.key !== columnKey) {
+      return <ChevronsUpDown className="ml-2 h-4 w-4 text-muted-foreground" />;
+    }
+    return sortConfig.direction === 'ascending' ? (
+      <ArrowUp className="ml-2 h-4 w-4" />
+    ) : (
+      <ArrowDown className="ml-2 h-4 w-4" />
+    );
+  };
+
 
   const handleOpenAddDialog = () => {
     setSelectedTask(null);
@@ -166,31 +237,43 @@ export default function TasksPage() {
               <Input
                 type="search"
                 placeholder="Search tasks..."
-                className="pl-8 w-full sm:w-[200px] lg:w-[250px]"
+                className="pl-8 w-full sm:w-auto lg:w-[250px]"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                {statusOptions.map((status) => (
-                  <SelectItem key={status} value={status}>
-                    {status}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             <Select value={projectFilter} onValueChange={setProjectFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by project" />
+              <SelectTrigger className="w-full sm:w-[150px]">
+                <SelectValue placeholder="Project" />
               </SelectTrigger>
               <SelectContent>
                 {projectOptions.map((project) => (
                   <SelectItem key={project} value={project}>
-                    {project}
+                    {project === "All" ? "All Projects" : project}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+             <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
+              <SelectTrigger className="w-full sm:w-[150px]">
+                <SelectValue placeholder="Assignee" />
+              </SelectTrigger>
+              <SelectContent>
+                {assigneeOptions.map((assignee) => (
+                  <SelectItem key={assignee} value={assignee}>
+                    {assignee === "All" ? "All Assignees" : assignee}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-[150px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status === "All" ? "All Statuses" : status}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -205,17 +288,43 @@ export default function TasksPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[350px]">Task</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Assignee</TableHead>
-                <TableHead>Due Date</TableHead>
+                <TableHead className="w-[300px]">
+                   <Button variant="ghost" onClick={() => requestSort('name')} className="px-0">
+                    Task
+                    {getSortIcon('name')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                   <Button variant="ghost" onClick={() => requestSort('projectName')} className="px-0">
+                    Project
+                    {getSortIcon('projectName')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestSort('assignee')} className="px-0">
+                    Assignee
+                    {getSortIcon('assignee')}
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button variant="ghost" onClick={() => requestSort('dueDate')} className="px-0">
+                    Due Date
+                    {getSortIcon('dueDate')}
+                  </Button>
+                </TableHead>
+                 <TableHead>
+                  <Button variant="ghost" onClick={() => requestSort('priority')} className="px-0">
+                    Priority
+                    {getSortIcon('priority')}
+                  </Button>
+                </TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredTasks.length > 0 ? (
-                filteredTasks.map((task) => (
+              {sortedAndFilteredTasks.length > 0 ? (
+                sortedAndFilteredTasks.map((task) => (
                   <TableRow key={task.id}>
                     <TableCell className="font-medium">{task.name}</TableCell>
                     <TableCell>
@@ -237,6 +346,12 @@ export default function TasksPage() {
                     </TableCell>
                     <TableCell>
                       {getDueDateText(task.dueDate, task.status)}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2" title={task.priority}>
+                        {priorityIcons[task.priority]}
+                        <span className="sr-only">{task.priority}</span>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(task.status)}>
@@ -266,7 +381,7 @@ export default function TasksPage() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="h-24 text-center text-muted-foreground"
                   >
                     No tasks found. Try adjusting your filters.

@@ -7,6 +7,7 @@ export type Task = {
   };
   dueDate: Date;
   status: "Done" | "In Progress" | "To Do";
+  priority: "Low" | "Medium" | "High" | "Urgent";
   dependencies?: string[];
   startDate: Date;
   projectId: string;
@@ -80,6 +81,7 @@ const tasks: Task[] = [
         dueDate: new Date("2023-04-30"),
         startDate: new Date("2023-01-15"),
         status: "Done",
+        priority: "High",
         projectId: "proj-001",
     },
     {
@@ -89,6 +91,7 @@ const tasks: Task[] = [
         dueDate: new Date(new Date().setDate(new Date().getDate() + 14)), // due in 14 days
         startDate: new Date("2023-05-01"),
         status: "In Progress",
+        priority: "High",
         dependencies: ["task-001-1"],
         projectId: "proj-001",
     },
@@ -99,6 +102,7 @@ const tasks: Task[] = [
         dueDate: new Date(new Date().setDate(new Date().getDate() + 30)), // due in 30 days
         startDate: new Date("2023-08-16"),
         status: "To Do",
+        priority: "Medium",
         dependencies: ["task-001-2"],
         projectId: "proj-001",
     },
@@ -109,6 +113,7 @@ const tasks: Task[] = [
         dueDate: new Date("2024-12-15"),
         startDate: new Date("2023-12-01"),
         status: "To Do",
+        priority: "Low",
         dependencies: ["task-001-3"],
         projectId: "proj-001",
     },
@@ -120,6 +125,7 @@ const tasks: Task[] = [
         dueDate: new Date("2023-04-15"),
         startDate: new Date("2023-03-01"),
         status: "Done",
+        priority: "High",
         projectId: "proj-002",
     },
     {
@@ -129,6 +135,7 @@ const tasks: Task[] = [
         dueDate: new Date(new Date().setDate(new Date().getDate() - 5)), // Overdue by 5 days
         startDate: new Date("2023-04-16"),
         status: "In Progress",
+        priority: "Urgent",
         projectId: "proj-002",
     },
     {
@@ -138,6 +145,7 @@ const tasks: Task[] = [
         dueDate: new Date(new Date().setDate(new Date().getDate() + 7)), // due in 7 days
         startDate: new Date("2023-07-01"),
         status: "To Do",
+        priority: "Medium",
         projectId: "proj-002",
     },
     // Project 3 Tasks (none)
@@ -149,6 +157,7 @@ const tasks: Task[] = [
         dueDate: new Date(new Date().setDate(new Date().getDate() - 2)), // Overdue
         startDate: new Date("2024-06-01"),
         status: "To Do",
+        priority: "Urgent",
         projectId: "proj-004",
     },
     {
@@ -158,6 +167,7 @@ const tasks: Task[] = [
         dueDate: new Date(new Date().setDate(new Date().getDate() + 10)), // due in 10 days
         startDate: new Date("2024-06-05"),
         status: "In Progress",
+        priority: "High",
         projectId: "proj-004",
     },
 ];
