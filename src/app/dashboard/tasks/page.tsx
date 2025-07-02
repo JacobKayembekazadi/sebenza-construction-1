@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -25,28 +26,39 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { allTasks, projects, type Task } from "@/lib/data";
+import { allTasks as initialTasks, projects, employees, type Task } from "@/lib/data";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, MoreHorizontal, PlusCircle } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import { AddEditTaskDialog, type TaskFormValues } from "@/components/add-edit-task-dialog";
+import { DeleteTaskDialog } from "@/components/delete-task-dialog";
+
 
 export default function TasksPage() {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [projectFilter, setProjectFilter] = useState("All");
 
-  const projectOptions = [
-    "All",
-    ...projects.map((p) => p.name),
-  ];
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  const projectOptions = ["All", ...projects.map((p) => p.name)];
   const statusOptions = ["All", "To Do", "In Progress", "Done"];
   const projectMap = useMemo(() => new Map(projects.map(p => [p.id, p.name])), []);
 
-
   const filteredTasks = useMemo(() => {
-    return allTasks
+    return tasks
       .map(task => ({
           ...task,
           projectName: projectMap.get(task.projectId) || "N/A"
@@ -61,7 +73,47 @@ export default function TasksPage() {
           projectFilter === "All" || task.projectName === projectFilter;
         return matchesSearch && matchesStatus && matchesProject;
       });
-  }, [searchTerm, statusFilter, projectFilter, projectMap]);
+  }, [tasks, searchTerm, statusFilter, projectFilter, projectMap]);
+
+  const handleOpenAddDialog = () => {
+    setSelectedTask(null);
+    setIsAddEditDialogOpen(true);
+  };
+  
+  const handleOpenEditDialog = (task: Task) => {
+    setSelectedTask(task);
+    setIsAddEditDialogOpen(true);
+  };
+
+  const handleOpenDeleteDialog = (task: Task) => {
+    setSelectedTask(task);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleSaveTask = (data: TaskFormValues, taskId?: string) => {
+    const assignee = employees.find(e => e.name === data.assigneeName);
+    if (!assignee) return;
+
+    if (taskId) {
+      setTasks(tasks.map(t => t.id === taskId ? { ...t, ...data, assignee } : t));
+    } else {
+      const newTask: Task = {
+        id: `task-${Date.now()}`,
+        dependencies: [],
+        ...data,
+        assignee,
+      };
+      setTasks([newTask, ...tasks]);
+    }
+  };
+
+  const handleDeleteTask = () => {
+    if (selectedTask) {
+      setTasks(tasks.filter(t => t.id !== selectedTask.id));
+      setIsDeleteDialogOpen(false);
+      setSelectedTask(null);
+    }
+  };
 
   const statusVariant = (status: Task['status']) => {
     switch (status) {
@@ -143,6 +195,10 @@ export default function TasksPage() {
                 ))}
               </SelectContent>
             </Select>
+            <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              New Task
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -153,7 +209,8 @@ export default function TasksPage() {
                 <TableHead>Project</TableHead>
                 <TableHead>Assignee</TableHead>
                 <TableHead>Due Date</TableHead>
-                <TableHead className="text-right">Status</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -181,17 +238,35 @@ export default function TasksPage() {
                     <TableCell>
                       {getDueDateText(task.dueDate, task.status)}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell>
                       <Badge variant={statusVariant(task.status)}>
                         {task.status}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleOpenEditDialog(task)}>
+                            Edit Task
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleOpenDeleteDialog(task)} className="text-destructive focus:bg-destructive/20">
+                            Delete Task
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={6}
                     className="h-24 text-center text-muted-foreground"
                   >
                     No tasks found. Try adjusting your filters.
@@ -202,6 +277,20 @@ export default function TasksPage() {
           </Table>
         </CardContent>
       </Card>
+      <AddEditTaskDialog
+        open={isAddEditDialogOpen}
+        onOpenChange={setIsAddEditDialogOpen}
+        onSave={handleSaveTask}
+        task={selectedTask}
+        projects={projects}
+        employees={employees}
+      />
+      <DeleteTaskDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDeleteTask}
+        task={selectedTask}
+      />
     </div>
   );
 }

@@ -52,6 +52,25 @@ export type WeatherForecastData = {
     temp: number;
 };
 
+export type Employee = {
+    name: string;
+    avatar: string;
+};
+
+export const employees: Employee[] = [
+    { name: "Jane Doe", avatar: "https://placehold.co/32x32.png" },
+    { name: "Bob Builder", avatar: "https://placehold.co/32x32.png" },
+    { name: "Charlie Crane", avatar: "https://placehold.co/32x32.png" },
+    { name: "David Drill", avatar: "https://placehold.co/32x32.png" },
+    { name: "Eve Electric", avatar: "https://placehold.co/32x32.png" },
+    { name: "Frank Formwork", avatar: "https://placehold.co/32x32.png" },
+    { name: "Grace Grader", avatar: "https://placehold.co/32x32.png" },
+    { name: "Alice Johnson", avatar: "https://placehold.co/32x32.png" },
+    { name: "Bob Vance", avatar: "https://placehold.co/32x32.png" },
+    { name: "Carol Danvers", avatar: "https://placehold.co/32x32.png" },
+];
+
+
 const tasks: Task[] = [
     // Project 1 Tasks
     {
