@@ -1,19 +1,207 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Briefcase } from "lucide-react";
+"use client";
+
+import { useState, useMemo } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { allTasks, projects, type Task } from "@/lib/data";
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 export default function TasksPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [projectFilter, setProjectFilter] = useState("All");
+
+  const projectOptions = [
+    "All",
+    ...projects.map((p) => p.name),
+  ];
+  const statusOptions = ["All", "To Do", "In Progress", "Done"];
+  const projectMap = useMemo(() => new Map(projects.map(p => [p.id, p.name])), []);
+
+
+  const filteredTasks = useMemo(() => {
+    return allTasks
+      .map(task => ({
+          ...task,
+          projectName: projectMap.get(task.projectId) || "N/A"
+      }))
+      .filter((task) => {
+        const matchesSearch = task.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+        const matchesStatus =
+          statusFilter === "All" || task.status === statusFilter;
+        const matchesProject =
+          projectFilter === "All" || task.projectName === projectFilter;
+        return matchesSearch && matchesStatus && matchesProject;
+      });
+  }, [searchTerm, statusFilter, projectFilter, projectMap]);
+
+  const statusVariant = (status: Task['status']) => {
+    switch (status) {
+      case "Done":
+        return "default";
+      case "In Progress":
+        return "secondary";
+      case "To Do":
+        return "outline";
+      default:
+        return "outline";
+    }
+  };
+
+  const getDueDateText = (dueDate: Date, status: Task['status']) => {
+      if (status === 'Done') {
+          return <span className="text-muted-foreground">Completed</span>
+      }
+      const now = new Date();
+      const isOverdue = dueDate < now;
+      const distance = formatDistanceToNow(dueDate, { addSuffix: true });
+
+      return (
+          <span className={cn(isOverdue ? "text-destructive font-semibold" : "text-muted-foreground")}>
+              {isOverdue ? `Overdue (${distance.replace('about ', '')})` : `Due ${distance}`}
+          </span>
+      )
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Task Management</CardTitle>
-        <CardDescription>This page will contain a comprehensive list of all tasks across all projects.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed rounded-lg">
-            <Briefcase className="w-16 h-16 text-muted-foreground" />
-            <p className="mt-4 text-muted-foreground">Task management feature coming soon.</p>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Task Management</h1>
+        <p className="text-muted-foreground">
+          View, search, and filter all tasks across your projects.
+        </p>
+      </div>
+
+      <Card>
+        <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <CardTitle>All Tasks</CardTitle>
+            <CardDescription>
+              A comprehensive list of every task in your portfolio.
+            </CardDescription>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+            <div className="relative w-full sm:w-auto">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search tasks..."
+                className="pl-8 w-full sm:w-[200px] lg:w-[250px]"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={projectFilter} onValueChange={setProjectFilter}>
+              <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectValue placeholder="Filter by project" />
+              </SelectTrigger>
+              <SelectContent>
+                {projectOptions.map((project) => (
+                  <SelectItem key={project} value={project}>
+                    {project}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[350px]">Task</TableHead>
+                <TableHead>Project</TableHead>
+                <TableHead>Assignee</TableHead>
+                <TableHead>Due Date</TableHead>
+                <TableHead className="text-right">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredTasks.length > 0 ? (
+                filteredTasks.map((task) => (
+                  <TableRow key={task.id}>
+                    <TableCell className="font-medium">{task.name}</TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/dashboard/projects/${task.projectId}`}
+                        className="hover:underline text-muted-foreground"
+                      >
+                        {task.projectName}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                            <AvatarImage src={task.assignee.avatar} alt={task.assignee.name} data-ai-hint="employee avatar" />
+                            <AvatarFallback>{task.assignee.name.substring(0, 2)}</AvatarFallback>
+                        </Avatar>
+                        <span>{task.assignee.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {getDueDateText(task.dueDate, task.status)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Badge variant={statusVariant(task.status)}>
+                        {task.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No tasks found. Try adjusting your filters.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
