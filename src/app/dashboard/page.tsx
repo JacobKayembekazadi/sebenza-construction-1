@@ -261,64 +261,74 @@ export default function DashboardPage() {
       
       {/* Financial KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
               <CardTitle>Total Profit</CardTitle>
           </CardHeader>
-          <CardContent>
-              <Scale className="h-4 w-4 text-muted-foreground mb-4" />
-              <div className="text-6xl font-bold">${financialSummary.totalProfit.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
+          <CardContent className="flex-1 flex flex-col justify-between">
+            <div>
+              <Scale className="h-6 w-6 text-muted-foreground mb-4" />
+              <div className="text-5xl font-bold tracking-tighter">${financialSummary.totalProfit.toLocaleString()}</div>
+            </div>
+            <p className="text-xs text-muted-foreground">
               Last 6 months
-              </p>
+            </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
               <CardTitle>Income</CardTitle>
           </CardHeader>
-          <CardContent>
-              <TrendingUp className="h-4 w-4 text-muted-foreground mb-4" />
-              <div className="text-6xl font-bold">${financialSummary.totalIncome.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
+          <CardContent className="flex-1 flex flex-col justify-between">
+            <div>
+              <TrendingUp className="h-6 w-6 text-muted-foreground mb-4" />
+              <div className="text-5xl font-bold tracking-tighter">${financialSummary.totalIncome.toLocaleString()}</div>
+            </div>
+            <p className="text-xs text-muted-foreground">
               Last 6 months
-              </p>
+            </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
               <CardTitle>Expenses</CardTitle>
           </CardHeader>
-          <CardContent>
-              <TrendingDown className="h-4 w-4 text-muted-foreground mb-4" />
-              <div className="text-6xl font-bold">${financialSummary.totalExpenses.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
+          <CardContent className="flex-1 flex flex-col justify-between">
+            <div>
+              <TrendingDown className="h-6 w-6 text-muted-foreground mb-4" />
+              <div className="text-5xl font-bold tracking-tighter">${financialSummary.totalExpenses.toLocaleString()}</div>
+            </div>
+            <p className="text-xs text-muted-foreground">
               Last 6 months
-              </p>
+            </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
               <CardTitle>Outstanding</CardTitle>
           </CardHeader>
-          <CardContent>
-              <FileStack className="h-4 w-4 text-muted-foreground mb-4" />
-              <div className="text-6xl font-bold">${financialSummary.totalOutstanding.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
+          <CardContent className="flex-1 flex flex-col justify-between">
+            <div>
+              <FileStack className="h-6 w-6 text-muted-foreground mb-4" />
+              <div className="text-5xl font-bold tracking-tighter">${financialSummary.totalOutstanding.toLocaleString()}</div>
+            </div>
+            <p className="text-xs text-muted-foreground">
               Invoices and quotes
-              </p>
+            </p>
           </CardContent>
         </Card>
-         <Card>
+         <Card className="flex flex-col">
           <CardHeader>
               <CardTitle>Unbilled Time</CardTitle>
           </CardHeader>
-          <CardContent>
-              <Clock className="h-4 w-4 text-muted-foreground mb-4" />
-              <div className="text-6xl font-bold">{financialSummary.unbilledHours} hrs</div>
-              <p className="text-xs text-muted-foreground">
+          <CardContent className="flex-1 flex flex-col justify-between">
+            <div>
+              <Clock className="h-6 w-6 text-muted-foreground mb-4" />
+              <div className="text-5xl font-bold tracking-tighter">{financialSummary.unbilledHours} hrs</div>
+            </div>
+            <p className="text-xs text-muted-foreground">
               Across all projects
-              </p>
+            </p>
           </CardContent>
         </Card>
       </div>
