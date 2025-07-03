@@ -191,6 +191,16 @@ export type UnifiedEvent = {
     raw?: Project | Task | Invoice | CustomEvent; // The original object
 };
 
+export type SupportTicket = {
+  id: string;
+  subject: string;
+  department: 'Finance' | 'Sales' | 'Technical Support' | 'General Inquiry';
+  priority: 'Low' | 'Normal' | 'High';
+  status: 'Open' | 'In Progress' | 'Resolved' | 'Closed';
+  description: string;
+  createdAt: Date;
+};
+
 
 export type FinancialData = {
   month: string;
@@ -825,6 +835,36 @@ export const services: Service[] = [
     { id: 'srv-3', name: 'Freight Forwarding', description: 'Arranging and managing the shipment of goods from origin to destination.', defaultRate: 95 },
     { id: 'srv-4', name: 'Warehouse Storage', description: 'Secure storage of goods in our warehouse facilities, billed per pallet per day.', defaultRate: 25 },
     { id: 'srv-5', name: 'Last-Mile Delivery', description: 'Final step of the delivery process from a distribution center to the end user.', defaultRate: 75 },
+];
+
+export const supportTickets: SupportTicket[] = [
+  {
+    id: 'tic-001',
+    subject: 'Issue with invoice INV-003 late fee',
+    department: 'Finance',
+    priority: 'High',
+    status: 'Open',
+    description: 'The late fee on invoice INV-003 seems to be calculated incorrectly. Can you please check?',
+    createdAt: new Date(2024, 5, 28),
+  },
+  {
+    id: 'tic-002',
+    subject: 'Question about upgrading my plan',
+    department: 'Sales',
+    priority: 'Normal',
+    status: 'In Progress',
+    description: 'I\'m interested in adding more users to my account and would like to know more about the enterprise plan.',
+    createdAt: new Date(2024, 5, 27),
+  },
+  {
+    id: 'tic-003',
+    subject: 'Gantt chart not displaying correctly on mobile',
+    department: 'Technical Support',
+    priority: 'Normal',
+    status: 'Resolved',
+    description: 'The Gantt chart on the project details page seems to be broken on my iPhone. The bars are not aligned with the tasks.',
+    createdAt: new Date(2024, 5, 26),
+  },
 ];
 
 

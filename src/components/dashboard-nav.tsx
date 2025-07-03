@@ -23,6 +23,7 @@ import {
   CalendarDays,
   Boxes,
   ConciergeBell,
+  LifeBuoy,
 } from "lucide-react";
 
 // In a real application, this would come from an authentication context/provider.
@@ -43,6 +44,7 @@ const allLinks = [
   { href: "/dashboard/inventory", label: "Inventory", icon: Boxes },
   { href: "/dashboard/services", label: "Services", icon: ConciergeBell },
   { href: "/dashboard/ai-report", label: "Accounting", icon: Landmark },
+  { href: "/dashboard/support", label: "Support", icon: LifeBuoy, roles: ['admin', 'owner'] },
   { href: "/dashboard/settings", label: "Settings", icon: Settings, roles: ['admin', 'owner'] },
 ];
 
