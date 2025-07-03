@@ -25,6 +25,8 @@ export type Project = {
   startDate: Date;
   endDate: Date;
   tasks: Task[];
+  clientId: string;
+  clientName: string;
 };
 
 export type Client = {
@@ -34,6 +36,8 @@ export type Client = {
   email: string;
   phone: string;
   status: "Active" | "Inactive";
+  billingAddress: string;
+  shippingAddress: string;
 };
 
 export type Estimate = {
@@ -95,7 +99,7 @@ export type FinancialData = {
 
 export type Activity = {
   id:string;
-  type: "TASK_ADDED" | "INVOICE_PAID" | "FILE_UPLOADED" | "PROJECT_STATUS";
+  type: "TASK_ADDED" | "INVOICE_PAID" | "FILE_UPLOADED" | "PROJECT_STATUS" | "CLIENT_COMMENT";
   description: string;
   timestamp: string;
   user: string;
@@ -228,6 +232,14 @@ const tasks: Task[] = [
     },
 ];
 
+export const clients: Client[] = [
+  { id: "client-1", name: "Global Corp", company: "Global Corp Inc.", email: "contact@globalcorp.com", phone: "123-456-7890", status: "Active", billingAddress: "123 Global Ave\nNew York, NY 10001\nUSA", shippingAddress: "456 Corporate Blvd\nNew York, NY 10001\nUSA" },
+  { id: "client-2", name: "Innovate LLC", company: "Innovate LLC", email: "hello@innovate.com", phone: "234-567-8901", status: "Active", billingAddress: "789 Innovation Dr\nPalo Alto, CA 94301\nUSA", shippingAddress: "789 Innovation Dr\nPalo Alto, CA 94301\nUSA" },
+  { id: "client-3", name: "Mega Builders", company: "Mega Builders Co.", email: "info@megabuilders.com", phone: "345-678-9012", status: "Inactive", billingAddress: "101 Construction Rd\nHouston, TX 77001\nUSA", shippingAddress: "202 Site-B Rd\nHouston, TX 77001\nUSA" },
+  { id: "client-4", name: "Quantum Solutions", company: "Quantum Solutions", email: "support@quantum.com", phone: "456-789-0123", status: "Active", billingAddress: "303 Quantum Ln\nSeattle, WA 98101\nUSA", shippingAddress: "303 Quantum Ln\nSeattle, WA 98101\nUSA" },
+];
+
+
 export const projects: Project[] = [
   {
     id: "proj-001",
@@ -240,6 +252,8 @@ export const projects: Project[] = [
     startDate: new Date(2023, 0, 15),
     endDate: new Date(2024, 11, 31),
     tasks: tasks.filter(t => t.projectId === "proj-001"),
+    clientId: "client-1",
+    clientName: "Global Corp"
   },
   {
     id: "proj-002",
@@ -252,6 +266,8 @@ export const projects: Project[] = [
     startDate: new Date(2023, 2, 1),
     endDate: new Date(2024, 7, 30),
     tasks: tasks.filter(t => t.projectId === "proj-002"),
+    clientId: "client-2",
+    clientName: "Innovate LLC"
   },
   {
     id: "proj-003",
@@ -264,6 +280,8 @@ export const projects: Project[] = [
     startDate: new Date(2023, 5, 1),
     endDate: new Date(2025, 4, 31),
     tasks: [],
+    clientId: "client-4",
+    clientName: "Quantum Solutions"
   },
     {
     id: "proj-004",
@@ -276,17 +294,12 @@ export const projects: Project[] = [
     startDate: new Date(2022, 8, 1),
     endDate: new Date(2024, 5, 30),
     tasks: tasks.filter(t => t.projectId === "proj-004"),
+    clientId: "client-1",
+    clientName: "Global Corp"
   },
 ];
 
 export const allTasks = tasks;
-
-export const clients: Client[] = [
-  { id: "client-1", name: "Global Corp", company: "Global Corp Inc.", email: "contact@globalcorp.com", phone: "123-456-7890", status: "Active" },
-  { id: "client-2", name: "Innovate LLC", company: "Innovate LLC", email: "hello@innovate.com", phone: "234-567-8901", status: "Active" },
-  { id: "client-3", name: "Mega Builders", company: "Mega Builders Co.", email: "info@megabuilders.com", phone: "345-678-9012", status: "Inactive" },
-  { id: "client-4", name: "Quantum Solutions", company: "Quantum Solutions", email: "support@quantum.com", phone: "456-789-0123", status: "Active" },
-];
 
 export const estimates: Estimate[] = [
     { id: "est-001", clientId: "client-1", clientName: "Global Corp", amount: 125000, issueDate: new Date(2024, 4, 15), expiryDate: new Date(2024, 5, 15), status: "Accepted" },
@@ -331,7 +344,7 @@ export const recentActivity: Activity[] = [
   { id: "act-2", type: "TASK_ADDED", description: "Added task 'Install HVAC' to 'Downtown Tower'", timestamp: "8h ago", user: "Alice Johnson", projectId: "proj-001" },
   { id: "act-3", type: "FILE_UPLOADED", description: "Uploaded 'Final Blueprints' to 'Coastal Highway Bridge'", timestamp: "1d ago", user: "Carol Danvers", projectId: "proj-003" },
   { id: "act-4", type: "PROJECT_STATUS", description: "'Greenfield Park' status changed to At Risk", timestamp: "2d ago", user: "System", projectId: "proj-002" },
-  { id: "act-5", type: "TASK_ADDED", description: "Added task 'Client sign-off' to 'Suburban Complex'", timestamp: "3d ago", user: "Alice Johnson", projectId: "proj-004"},
+  { id: "act-5", type: "CLIENT_COMMENT", description: "Global Corp commented on 'Downtown Tower'", timestamp: "3d ago", user: "System", projectId: "proj-001"},
 ];
 
 export const resourceAllocation: Resource[] = [
@@ -348,5 +361,3 @@ export const weatherForecast: WeatherForecastData[] = [
     { day: "Thu", icon: "Cloud", temp: 70 },
     { day: "Fri", icon: "Sun", temp: 75 },
 ];
-
-    

@@ -27,7 +27,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
-import { projects as initialProjects, allTasks, type Project } from "@/lib/data";
+import { projects as initialProjects, allTasks, clients, type Project, type Client } from "@/lib/data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -130,14 +130,18 @@ export default function ProjectsPage() {
   };
 
   const handleSaveProject = (data: ProjectFormValues, projectId?: string) => {
+    const client = clients.find(c => c.id === data.clientId);
+    if (!client) return;
+    
     if (projectId) {
-      setProjects(projects.map(p => p.id === projectId ? { ...p, ...data } : p));
+      setProjects(projects.map(p => p.id === projectId ? { ...p, ...data, clientName: client.name } : p));
     } else {
       const newProject: Project = {
         id: `proj-${Date.now()}`,
         completion: 0,
         spent: 0,
         tasks: [],
+        clientName: client.name,
         ...data,
       };
       setProjects([newProject, ...projects]);
@@ -263,6 +267,7 @@ export default function ProjectsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[300px]">Project Name</TableHead>
+                <TableHead>Client</TableHead>
                 <TableHead>Manager</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Overdue</TableHead>
@@ -284,6 +289,7 @@ export default function ProjectsPage() {
                         {project.name}
                       </Link>
                     </TableCell>
+                    <TableCell>{project.clientName}</TableCell>
                     <TableCell>{project.manager}</TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(project.status)}>
@@ -350,7 +356,7 @@ export default function ProjectsPage() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={9}
                     className="h-24 text-center text-muted-foreground"
                   >
                     No projects found. Try adjusting your filters.
@@ -366,6 +372,7 @@ export default function ProjectsPage() {
         onOpenChange={setIsAddEditDialogOpen}
         onSave={handleSaveProject}
         project={selectedProject}
+        clients={clients}
       />
       <DeleteProjectDialog
         open={isDeleteDialogOpen}

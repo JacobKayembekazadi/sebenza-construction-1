@@ -29,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import type { Client } from "@/lib/data";
 import { useEffect } from "react";
 
@@ -38,6 +39,8 @@ const clientSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
   phone: z.string().min(10, "Phone number must be at least 10 characters."),
   status: z.enum(["Active", "Inactive"]),
+  billingAddress: z.string().min(5, "Billing address is required."),
+  shippingAddress: z.string().min(5, "Shipping address is required."),
 });
 
 export type ClientFormValues = z.infer<typeof clientSchema>;
@@ -63,6 +66,8 @@ export function AddEditClientDialog({
       email: "",
       phone: "",
       status: "Active",
+      billingAddress: "",
+      shippingAddress: "",
     },
   });
 
@@ -75,6 +80,8 @@ export function AddEditClientDialog({
           email: client.email,
           phone: client.phone,
           status: client.status,
+          billingAddress: client.billingAddress,
+          shippingAddress: client.shippingAddress,
         });
       } else {
         form.reset({
@@ -83,6 +90,8 @@ export function AddEditClientDialog({
           email: "",
           phone: "",
           status: "Active",
+          billingAddress: "",
+          shippingAddress: "",
         });
       }
     }
@@ -104,53 +113,83 @@ export function AddEditClientDialog({
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-            <FormField
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Client Name</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., John Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="company"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Company</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., Acme Inc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                        <Input type="email" placeholder="e.g., john@acme.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+                <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                        <Input placeholder="e.g., (123) 456-7890" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+             <FormField
               control={form.control}
-              name="name"
+              name="billingAddress"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Client Name</FormLabel>
+                  <FormLabel>Billing Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., John Doe" {...field} />
+                    <Textarea placeholder="123 Main St, Anytown, USA 12345" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
+             <FormField
               control={form.control}
-              name="company"
+              name="shippingAddress"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company</FormLabel>
+                  <FormLabel>Shipping Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Acme Inc." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="e.g., john@acme.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., (123) 456-7890" {...field} />
+                    <Textarea placeholder="456 Oak Ave, Someplace, USA 54321" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -177,9 +216,12 @@ export function AddEditClientDialog({
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-              <Button type="submit">Save Client</Button>
+            <DialogFooter className="sm:justify-between">
+              <Button type="button" variant="ghost" disabled>Send Portal Invite</Button>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                <Button type="submit">Save Client</Button>
+              </div>
             </DialogFooter>
           </form>
         </Form>

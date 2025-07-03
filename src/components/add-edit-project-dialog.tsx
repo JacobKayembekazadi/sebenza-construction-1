@@ -34,7 +34,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { Project } from "@/lib/data";
+import type { Project, Client } from "@/lib/data";
 import { useEffect } from "react";
 
 const projectSchema = z.object({
@@ -44,6 +44,7 @@ const projectSchema = z.object({
   budget: z.coerce.number().min(0, "Budget must be a positive number."),
   startDate: z.date(),
   endDate: z.date(),
+  clientId: z.string().min(1, "Please select a client."),
 }).refine(data => data.endDate >= data.startDate, {
   message: "End date cannot be before start date.",
   path: ["endDate"],
@@ -56,6 +57,7 @@ interface AddEditProjectDialogProps {
   onOpenChange: (open: boolean) => void;
   onSave: (data: ProjectFormValues, projectId?: string) => void;
   project?: Project | null;
+  clients: Client[];
 }
 
 export function AddEditProjectDialog({
@@ -63,6 +65,7 @@ export function AddEditProjectDialog({
   onOpenChange,
   onSave,
   project,
+  clients,
 }: AddEditProjectDialogProps) {
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -71,6 +74,7 @@ export function AddEditProjectDialog({
       manager: "",
       status: "On Track",
       budget: 0,
+      clientId: "",
     },
   });
 
@@ -84,6 +88,7 @@ export function AddEditProjectDialog({
           budget: project.budget,
           startDate: new Date(project.startDate),
           endDate: new Date(project.endDate),
+          clientId: project.clientId,
         });
       } else {
         form.reset({
@@ -93,6 +98,7 @@ export function AddEditProjectDialog({
           budget: 0,
           startDate: new Date(),
           endDate: new Date(),
+          clientId: "",
         });
       }
     }
@@ -123,6 +129,26 @@ export function AddEditProjectDialog({
                   <FormControl>
                     <Input placeholder="e.g., Downtown Tower Renovation" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="clientId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Client</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a client" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {clients.map(c => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
