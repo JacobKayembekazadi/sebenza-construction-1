@@ -15,7 +15,7 @@ import {
   DollarSign,
   Receipt,
   ShoppingCart,
-  Bot,
+  Landmark,
   GanttChartSquare,
   LayoutDashboard,
   Settings,
@@ -28,15 +28,15 @@ const userRole = 'admin'; // 'admin', 'owner', 'member'
 
 const allLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/projects", label: "Projects", icon: GanttChartSquare },
+  { href: "/dashboard/projects", label: "Jobs", icon: GanttChartSquare },
   { href: "/dashboard/tasks", label: "Tasks", icon: ListChecks },
-  { href: "/dashboard/ai-report", label: "AI Progress Report", icon: Bot },
   { href: "/dashboard/clients", label: "Clients", icon: Users },
   { href: "/dashboard/employees", label: "Employees", icon: Briefcase, roles: ['admin', 'owner'] },
-  { href: "/dashboard/estimates", label: "Estimates", icon: FileText },
+  { href: "/dashboard/estimates", label: "Quotes", icon: FileText },
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/expenses", label: "Expenses", icon: DollarSign },
   { href: "/dashboard/documents", label: "Purchase Orders", icon: ShoppingCart },
+  { href: "/dashboard/ai-report", label: "Accounting", icon: Landmark },
   { href: "/dashboard/settings", label: "Settings", icon: Settings, roles: ['admin', 'owner'] },
 ];
 
@@ -58,7 +58,7 @@ export function DashboardNav() {
         <SidebarMenuItem key={link.href}>
           <SidebarMenuButton
             asChild
-            isActive={pathname === link.href}
+            isActive={pathname.startsWith(link.href) && (link.href !== '/dashboard' || pathname === '/dashboard')}
             tooltip={link.label}
           >
             <Link href={link.href}>

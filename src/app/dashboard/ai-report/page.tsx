@@ -1,111 +1,136 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
-import { getAiReport } from "./actions";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Bot, Loader2, Sparkles } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MoreHorizontal, PlusCircle, FileBarChart, Scale, Book, Landmark as LandmarkIcon } from "lucide-react";
+import { bankAccounts, type BankAccount } from "@/lib/data";
+import Image from "next/image";
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+const reportPlaceholders = [
+    { title: "Profit & Loss", description: "Analyze your income and expenses.", icon: FileBarChart },
+    { title: "Balance Sheet", description: "A snapshot of your assets and liabilities.", icon: Scale },
+    { title: "General Ledger", description: "View all transactions for all accounts.", icon: Book },
+    { title: "Trial Balance", description: "Summary of all ledger balances.", icon: LandmarkIcon },
+]
+
+export default function AccountingPage() {
   return (
-    <Button type="submit" disabled={pending}>
-      {pending ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...
-        </>
-      ) : (
-        <>
-          <Sparkles className="mr-2 h-4 w-4" /> Generate Report
-        </>
-      )}
-    </Button>
-  );
-}
-
-export default function AiReportPage() {
-  const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(getAiReport, initialState);
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <Card>
-        <CardHeader>
-          <CardTitle>AI Progress Report Generator</CardTitle>
-          <CardDescription>
-            Enter the latest project updates below. Our AI will generate a
-            concise progress summary and a one-sentence status update.
-          </CardDescription>
-        </CardHeader>
-        <form action={dispatch}>
-          <CardContent>
-            <div className="grid w-full gap-2">
-              <Label htmlFor="projectUpdates">Project Updates</Label>
-              <Textarea
-                id="projectUpdates"
-                name="projectUpdates"
-                placeholder="e.g., 'Foundation work completed. Started on exterior cladding, but we are facing a 3-day delay due to weather...'"
-                rows={10}
-                required
-              />
-              {state.errors?.projectUpdates && (
-                <p className="text-sm text-destructive mt-1">
-                  {state.errors.projectUpdates[0]}
-                </p>
-              )}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <SubmitButton />
-          </CardFooter>
-        </form>
-      </Card>
-      <div className="space-y-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bot />
-              Generated Summary
-            </CardTitle>
-            <CardDescription>
-              A detailed summary based on your input.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {state.summary ? (
-              <p className="whitespace-pre-wrap">{state.summary}</p>
-            ) : (
-              <p className="text-muted-foreground">
-                Your report summary will appear here.
-              </p>
-            )}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Progress at a Glance</CardTitle>
-            <CardDescription>A one-sentence status.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {state.progress ? (
-              <p className="font-semibold">{state.progress}</p>
-            ) : (
-              <p className="text-muted-foreground">
-                Your short progress update will appear here.
-              </p>
-            )}
-          </CardContent>
-        </Card>
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Accounting</h1>
+        <p className="text-muted-foreground">
+          Manage your bank connections, reconcile transactions, and view
+          financial reports.
+        </p>
       </div>
+
+      <Tabs defaultValue="reconciliation">
+        <TabsList>
+          <TabsTrigger value="reconciliation">Bank Reconciliation</TabsTrigger>
+          <TabsTrigger value="reports">Reports</TabsTrigger>
+          <TabsTrigger value="chart-of-accounts" disabled>Chart of Accounts</TabsTrigger>
+        </TabsList>
+        <TabsContent value="reconciliation" className="mt-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                    <CardTitle>Connected Bank Accounts</CardTitle>
+                    <CardDescription>
+                        Manage your linked bank accounts and import transactions.
+                    </CardDescription>
+                </div>
+                <Button>
+                    <PlusCircle className="mr-2" />
+                    Connect New Account
+                </Button>
+            </CardHeader>
+            <CardContent>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Bank</TableHead>
+                            <TableHead>Account Number</TableHead>
+                            <TableHead>Current Balance</TableHead>
+                             <TableHead>Last Imported</TableHead>
+                            <TableHead className="w-[50px] text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {bankAccounts.map((account) => (
+                            <TableRow key={account.id}>
+                                <TableCell className="font-medium flex items-center gap-2">
+                                    <Image src={account.logoUrl} alt={account.bankName} width={24} height={24} data-ai-hint="bank logo"/>
+                                    {account.bankName}
+                                </TableCell>
+                                <TableCell>{account.accountNumber}</TableCell>
+                                <TableCell>${account.balance.toLocaleString()}</TableCell>
+                                <TableCell>Today</TableCell>
+                                <TableCell className="text-right">
+                                     <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                            <span className="sr-only">Open menu</span>
+                                            <MoreHorizontal className="h-4 w-4" />
+                                        </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem>Reconnect</DropdownMenuItem>
+                                            <DropdownMenuItem>Import Statement (CSV)</DropdownMenuItem>
+                                            <DropdownMenuItem className="text-destructive focus:bg-destructive/20">Remove</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </CardContent>
+             <CardFooter>
+                <Button disabled>Start Reconciliation</Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        <TabsContent value="reports" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {reportPlaceholders.map(report => (
+                    <Card key={report.title} className="flex flex-col">
+                        <CardHeader>
+                            <div className="flex items-center gap-2 text-primary">
+                                <report.icon className="h-6 w-6" />
+                                <CardTitle>{report.title}</CardTitle>
+                            </div>
+                            <CardDescription>{report.description}</CardDescription>
+                        </CardHeader>
+                        <CardFooter className="mt-auto">
+                            <Button variant="outline" disabled>Generate Report</Button>
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

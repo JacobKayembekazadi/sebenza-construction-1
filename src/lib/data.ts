@@ -61,8 +61,8 @@ export type Estimate = {
   issueDate: Date;
   expiryDate: Date;
   status: "Draft" | "Sent" | "Accepted" | "Declined";
-  notes: string;
-  terms: string;
+  notes?: string;
+  terms?: string;
 };
 
 export type Invoice = {
@@ -85,7 +85,7 @@ export type Employee = {
     name: string;
     email: string;
     phone: string;
-    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer";
+    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer" | "Admin" | "Manager" | "Accountant" | "Contractor";
     avatar: string;
 };
 
@@ -134,7 +134,7 @@ export type PurchaseOrder = {
   issueDate: Date;
   deliveryDate: Date;
   status: "Draft" | "Sent" | "Fulfilled" | "Cancelled";
-  notes: string;
+  notes?: string;
 };
 
 
@@ -165,17 +165,25 @@ export type WeatherForecastData = {
     temp: number;
 };
 
+export type BankAccount = {
+    id: string;
+    bankName: string;
+    accountNumber: string;
+    balance: number;
+    logoUrl: string;
+};
+
 export const employees: Employee[] = [
-    { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-003", name: "Charlie Crane", email: "charlie.crane@example.com", phone: "555-0103", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-004", name: "David Drill", email: "david.drill@example.com", phone: "555-0104", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-005", name: "Eve Electric", email: "eve.electric@example.com", phone: "555-0105", role: "Electrician", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-006", name: "Frank Formwork", email: "frank.formwork@example.com", phone: "555-0106", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-007", name: "Grace Grader", email: "grace.grader@example.com", phone: "555-0107", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-008", name: "Alice Johnson", email: "alice.johnson@example.com", phone: "555-0108", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-009", name: "Bob Vance", email: "bob.vance@example.com", phone: "555-0109", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-010", name: "Carol Danvers", email: "carol.danvers@example.com", phone: "555-0110", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Admin", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-003", name: "Charlie Crane", email: "charlie.crane@example.com", phone: "555-0103", role: "Employee", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-004", name: "David Drill", email: "david.drill@example.com", phone: "555-0104", role: "Employee", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-005", name: "Eve Electric", email: "eve.electric@example.com", phone: "555-0105", role: "Contractor", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-006", name: "Frank Formwork", email: "frank.formwork@example.com", phone: "555-0106", role: "Employee", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-007", name: "Grace Grader", email: "grace.grader@example.com", phone: "555-0107", role: "Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-008", name: "Alice Johnson", email: "alice.johnson@example.com", phone: "555-0108", role: "Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-009", name: "Bob Vance", email: "bob.vance@example.com", phone: "555-0109", role: "Accountant", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-010", name: "Carol Danvers", email: "carol.danvers@example.com", phone: "555-0110", role: "Admin", avatar: "https://placehold.co/32x32.png" },
 ];
 
 
@@ -334,16 +342,15 @@ export const purchaseOrders: PurchaseOrder[] = [
     }
 ];
 
-
 export const projects: Project[] = [
   {
     id: "proj-001",
-    name: "Downtown Tower Renovation",
+    name: "Johannesburg to Cape Town",
     manager: "Alice Johnson",
     status: "On Track",
     completion: 65,
-    budget: 5000000,
-    spent: 3250000,
+    budget: 50000,
+    spent: 32500,
     startDate: new Date(2023, 0, 15),
     endDate: new Date(2024, 11, 31),
     tasks: tasks.filter(t => t.projectId === "proj-001"),
@@ -352,12 +359,12 @@ export const projects: Project[] = [
   },
   {
     id: "proj-002",
-    name: "Greenfield Community Park",
+    name: "Durban Port Clearance",
     manager: "Bob Vance",
     status: "At Risk",
     completion: 40,
-    budget: 1200000,
-    spent: 600000,
+    budget: 12000,
+    spent: 6000,
     startDate: new Date(2023, 2, 1),
     endDate: new Date(2024, 7, 30),
     tasks: tasks.filter(t => t.projectId === "proj-002"),
@@ -366,12 +373,12 @@ export const projects: Project[] = [
   },
   {
     id: "proj-003",
-    name: "Coastal Highway Bridge",
+    name: "Cross-Border to Zimbabwe",
     manager: "Carol Danvers",
     status: "Off Track",
     completion: 20,
-    budget: 15000000,
-    spent: 4500000,
+    budget: 150000,
+    spent: 45000,
     startDate: new Date(2023, 5, 1),
     endDate: new Date(2025, 4, 31),
     tasks: [],
@@ -380,12 +387,12 @@ export const projects: Project[] = [
   },
     {
     id: "proj-004",
-    name: "Suburban Residential Complex",
+    name: "Local Warehouse Distribution",
     manager: "Alice Johnson",
     status: "On Track",
     completion: 85,
-    budget: 8500000,
-    spent: 7225000,
+    budget: 85000,
+    spent: 72250,
     startDate: new Date(2022, 8, 1),
     endDate: new Date(2024, 5, 30),
     tasks: tasks.filter(t => t.projectId === "proj-004"),
@@ -402,8 +409,8 @@ export const estimates: Estimate[] = [
         clientId: "client-1", 
         clientName: "Global Corp", 
         lineItems: [
-            { id: "li-1", description: "Initial Consultation", quantity: 1, unitPrice: 5000, total: 5000 },
-            { id: "li-2", description: "Structural Engineering", quantity: 100, unitPrice: 150, total: 15000 },
+            { id: "li-1", description: "Freight Cost", quantity: 1, unitPrice: 5000, total: 5000 },
+            { id: "li-2", description: "Handling Fees", quantity: 100, unitPrice: 150, total: 15000 },
         ],
         subtotal: 20000,
         tax: 8.25,
@@ -412,7 +419,7 @@ export const estimates: Estimate[] = [
         issueDate: new Date(2024, 4, 15), 
         expiryDate: new Date(2024, 5, 15), 
         status: "Accepted",
-        notes: "This is a preliminary estimate.",
+        notes: "This is a preliminary quote.",
         terms: "Payment due upon acceptance."
     },
     { 
@@ -420,7 +427,7 @@ export const estimates: Estimate[] = [
         clientId: "client-2", 
         clientName: "Innovate LLC", 
         lineItems: [
-            { id: "li-3", description: "Earthworks", quantity: 1, unitPrice: 25000, total: 25000 },
+            { id: "li-3", description: "Customs Clearance", quantity: 1, unitPrice: 25000, total: 25000 },
         ],
         subtotal: 25000,
         tax: 0,
@@ -452,7 +459,7 @@ export const estimates: Estimate[] = [
         clientId: "client-1", 
         clientName: "Global Corp", 
         lineItems: [
-             { id: "li-4", description: "Permit Fees", quantity: 1, unitPrice: 3000, total: 3000 },
+             { id: "li-4", description: "Storage Fees", quantity: 1, unitPrice: 3000, total: 3000 },
         ],
         subtotal: 3000,
         tax: 0,
@@ -467,50 +474,50 @@ export const estimates: Estimate[] = [
 ];
 
 export const invoices: Invoice[] = [
-    { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Downtown Tower Renovation", amount: 50000, issueDate: new Date(2024, 5, 1), dueDate: new Date(2024, 6, 1), status: "Paid" },
-    { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 75000, issueDate: new Date(2024, 5, 5), dueDate: new Date(2024, 6, 5), status: "Sent" },
-    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date(2024, 4, 1), dueDate: new Date(2024, 5, 20), status: "Overdue" },
-    { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 35000, issueDate: new Date(2024, 5, 10), dueDate: new Date(2024, 6, 10), status: "Draft" },
-    { id: "inv-005", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 10000, issueDate: new Date(2024, 5, 15), dueDate: new Date(2024, 6, 15), status: "Partial", isRecurring: true, recurringInterval: 'days', recurringPeriod: 30 },
+    { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Johannesburg to Cape Town", amount: 50000, issueDate: new Date(2024, 5, 1), dueDate: new Date(2024, 6, 1), status: "Paid" },
+    { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Durban Port Clearance", amount: 75000, issueDate: new Date(2024, 5, 5), dueDate: new Date(2024, 6, 5), status: "Sent" },
+    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Local Warehouse Distribution", amount: 120000, issueDate: new Date(2024, 4, 1), dueDate: new Date(2024, 5, 20), status: "Overdue" },
+    { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Durban Port Clearance", amount: 35000, issueDate: new Date(2024, 5, 10), dueDate: new Date(2024, 6, 10), status: "Draft" },
+    { id: "inv-005", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Durban Port Clearance", amount: 10000, issueDate: new Date(2024, 5, 15), dueDate: new Date(2024, 6, 15), status: "Partial", isRecurring: true, recurringInterval: 'days', recurringPeriod: 30 },
 ];
 
 export const expenses: Expense[] = [
-    { id: 'exp-001', description: 'Steel Beams', amount: 25000, category: 'Materials', date: new Date(2024, 5, 15), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
-    { id: 'exp-002', description: 'Plumbing Subcontractor', amount: 15000, category: 'Subcontractor', date: new Date(2024, 5, 18), projectId: 'proj-001', projectName: 'Downtown Tower Renovation' },
-    { id: 'exp-003', description: 'Landscaping Supplies', amount: 5000, category: 'Materials', date: new Date(2024, 5, 20), projectId: 'proj-002', projectName: 'Greenfield Community Park' },
-    { id: 'exp-004', description: 'Building Permit Renewal', amount: 1500, category: 'Permits', date: new Date(2024, 5, 22), projectId: 'proj-003', projectName: 'Coastal Highway Bridge' },
-    { id: 'exp-005', description: 'Overtime Labor', amount: 8000, category: 'Labor', date: new Date(2024, 5, 25), projectId: 'proj-004', projectName: 'Suburban Residential Complex' },
+    { id: 'exp-001', description: 'Fuel for Truck #12', amount: 250, category: 'Materials', date: new Date(2024, 5, 15), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town' },
+    { id: 'exp-002', description: 'Port Handling Fees', amount: 1500, category: 'Subcontractor', date: new Date(2024, 5, 18), projectId: 'proj-002', projectName: 'Durban Port Clearance' },
+    { id: 'exp-003', description: 'Warehouse Supplies', amount: 500, category: 'Materials', date: new Date(2024, 5, 20), projectId: 'proj-004', projectName: 'Local Warehouse Distribution' },
+    { id: 'exp-004', description: 'Border Crossing Toll', amount: 150, category: 'Permits', date: new Date(2024, 5, 22), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe' },
+    { id: 'exp-005', description: 'Driver Overtime', amount: 800, category: 'Labor', date: new Date(2024, 5, 25), projectId: 'proj-004', projectName: 'Local Warehouse Distribution' },
 ];
 
 export const documents: Document[] = [
-    { id: 'doc-001', name: 'Tower Blueprints v3.pdf', type: 'PDF', uploadDate: new Date(2024, 0, 20), projectId: 'proj-001', projectName: 'Downtown Tower Renovation', url: '#' },
-    { id: 'doc-002', name: 'Site Survey.jpg', type: 'Image', uploadDate: new Date(2024, 2, 5), projectId: 'proj-002', projectName: 'Greenfield Community Park', url: '#' },
-    { id: 'doc-003', name: 'Structural Analysis.docx', type: 'Word', uploadDate: new Date(2024, 5, 10), projectId: 'proj-003', projectName: 'Coastal Highway Bridge', url: '#' },
-    { id: 'doc-004', name: 'Material Spec Sheet.xlsx', type: 'Excel', uploadDate: new Date(2024, 4, 15), projectId: 'proj-004', projectName: 'Suburban Residential Complex', url: '#' },
+    { id: 'doc-001', name: 'Bill of Lading #556.pdf', type: 'PDF', uploadDate: new Date(2024, 0, 20), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', url: '#' },
+    { id: 'doc-002', name: 'Customs Declaration.jpg', type: 'Image', uploadDate: new Date(2024, 2, 5), projectId: 'proj-002', projectName: 'Durban Port Clearance', url: '#' },
+    { id: 'doc-003', name: 'Proof of Delivery.docx', type: 'Word', uploadDate: new Date(2024, 5, 10), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe', url: '#' },
+    { id: 'doc-004', name: 'Inventory Sheet.xlsx', type: 'Excel', uploadDate: new Date(2024, 4, 15), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', url: '#' },
 ];
 
 export const financialData: FinancialData[] = [
-  { month: "Jan", revenue: 150000, expenses: 95000 },
-  { month: "Feb", revenue: 175000, expenses: 110000 },
-  { month: "Mar", revenue: 210000, expenses: 120000 },
-  { month: "Apr", revenue: 190000, expenses: 130000 },
-  { month: "May", revenue: 220000, expenses: 145000 },
-  { month: "Jun", revenue: 250000, expenses: 160000 },
+  { month: "Jan", revenue: 15000, expenses: 9500 },
+  { month: "Feb", revenue: 17500, expenses: 11000 },
+  { month: "Mar", revenue: 21000, expenses: 12000 },
+  { month: "Apr", revenue: 19000, expenses: 13000 },
+  { month: "May", revenue: 22000, expenses: 14500 },
+  { month: "Jun", revenue: 25000, expenses: 16000 },
 ];
 
 export const recentActivity: Activity[] = [
   { id: "act-1", type: "INVOICE_PAID", description: "Invoice INV-003 was paid", timestamp: "2h ago", user: "Finance Bot", projectId: "proj-001" },
-  { id: "act-2", type: "TASK_ADDED", description: "Added task 'Install HVAC' to 'Downtown Tower'", timestamp: "8h ago", user: "Alice Johnson", projectId: "proj-001" },
-  { id: "act-3", type: "FILE_UPLOADED", description: "Uploaded 'Final Blueprints' to 'Coastal Highway Bridge'", timestamp: "1d ago", user: "Carol Danvers", projectId: "proj-003" },
-  { id: "act-4", type: "PROJECT_STATUS", description: "'Greenfield Park' status changed to At Risk", timestamp: "2d ago", user: "System", projectId: "proj-002" },
-  { id: "act-5", type: "CLIENT_COMMENT", description: "Global Corp commented on 'Downtown Tower'", timestamp: "3d ago", user: "System", projectId: "proj-001"},
+  { id: "act-2", type: "TASK_ADDED", description: "Added task 'Confirm Delivery' to 'JHB to CPT'", timestamp: "8h ago", user: "Alice Johnson", projectId: "proj-001" },
+  { id: "act-3", type: "FILE_UPLOADED", description: "Uploaded 'Proof of Delivery' to 'Cross-Border to Zimbabwe'", timestamp: "1d ago", user: "Carol Danvers", projectId: "proj-003" },
+  { id: "act-4", type: "PROJECT_STATUS", description: "'Durban Port Clearance' status changed to At Risk", timestamp: "2d ago", user: "System", projectId: "proj-002" },
+  { id: "act-5", type: "CLIENT_COMMENT", description: "Global Corp commented on 'JHB to CPT'", timestamp: "3d ago", user: "System", projectId: "proj-001"},
 ];
 
 export const resourceAllocation: Resource[] = [
-    { name: "Structural Team", utilization: 85, team: "A"},
-    { name: "Finishing Crew", utilization: 110, team: "B"},
-    { name: "Electrical & Plumbing", utilization: 60, team: "C"},
-    { name: "Heavy Equipment", utilization: 75, team: "D"},
+    { name: "Long-Haul Fleet", utilization: 85, team: "A"},
+    { name: "Local Delivery", utilization: 110, team: "B"},
+    { name: "Warehouse Staff", utilization: 60, team: "C"},
+    { name: "Admin Team", utilization: 75, team: "D"},
 ];
 
 export const weatherForecast: WeatherForecastData[] = [
@@ -519,4 +526,10 @@ export const weatherForecast: WeatherForecastData[] = [
     { day: "Wed", icon: "CloudRain", temp: 65 },
     { day: "Thu", icon: "Cloud", temp: 70 },
     { day: "Fri", icon: "Sun", temp: 75 },
+];
+
+export const bankAccounts: BankAccount[] = [
+    { id: 'bank-1', bankName: 'Standard Bank', accountNumber: '**** **** **** 1234', balance: 125430.50, logoUrl: 'https://placehold.co/100x100.png' },
+    { id: 'bank-2', bankName: 'FNB', accountNumber: '**** **** **** 5678', balance: 75890.22, logoUrl: 'https://placehold.co/100x100.png' },
+    { id: 'bank-3', bankName: 'Capitec', accountNumber: '**** **** **** 9012', balance: 42311.90, logoUrl: 'https://placehold.co/100x100.png' },
 ];
