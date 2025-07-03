@@ -1,5 +1,6 @@
 
 
+
 export type Task = {
   id: string;
   name: string;
@@ -239,6 +240,13 @@ export type InventoryItem = {
   costPrice: number;
   sellingPrice: number;
   lowStockThreshold: number;
+};
+
+export type Service = {
+  id: string;
+  name: string;
+  description: string;
+  defaultRate: number; // Per hour
 };
 
 export const employees: Employee[] = [
@@ -811,6 +819,14 @@ export const inventoryItems: InventoryItem[] = [
   { id: 'item-3', sku: 'LMB-24-8', name: '2x4 Lumber (8ft)', description: 'Standard 8-foot dimensional lumber.', supplierId: 'sup-3', supplierName: 'Lumber Liquidators', quantity: 45, costPrice: 6.50, sellingPrice: 8, lowStockThreshold: 100 },
   { id: 'item-4', sku: 'ELEC-12G-W', name: '12-Gauge Electrical Wire', description: '100ft spool of 12-gauge copper wiring.', supplierId: 'sup-1', supplierName: 'Steel & Co.', quantity: 25, costPrice: 80, sellingPrice: 100, lowStockThreshold: 30 },
   { id: 'item-5', sku: 'PLMB-PVC-1', name: '1-inch PVC Pipe (10ft)', description: 'Standard 1-inch diameter, 10-foot length PVC pipe.', supplierId: 'sup-2', supplierName: 'Concrete King', quantity: 200, costPrice: 12, sellingPrice: 15, lowStockThreshold: 50 },
+];
+
+export const services: Service[] = [
+    { id: 'srv-1', name: 'Logistics Consulting', description: 'Expert advice on optimizing your supply chain and logistics operations.', defaultRate: 150 },
+    { id: 'srv-2', name: 'Customs Brokerage', description: 'Handling of all customs documentation and clearance procedures.', defaultRate: 120 },
+    { id: 'srv-3', name: 'Freight Forwarding', description: 'Arranging and managing the shipment of goods from origin to destination.', defaultRate: 95 },
+    { id: 'srv-4', name: 'Warehouse Storage', description: 'Secure storage of goods in our warehouse facilities, billed per pallet per day.', defaultRate: 25 },
+    { id: 'srv-5', name: 'Last-Mile Delivery', description: 'Final step of the delivery process from a distribution center to the end user.', defaultRate: 75 },
 ];
 
 
