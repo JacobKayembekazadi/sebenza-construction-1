@@ -34,7 +34,6 @@ import { cn } from "@/lib/utils";
 import { RecentActivityFeed } from "@/components/dashboard/recent-activity-feed";
 import { ResourceAllocationChart } from "@/components/dashboard/resource-allocation-chart";
 import { WeatherForecast } from "@/components/dashboard/weather-forecast";
-import { QuickAddButton } from "@/components/quick-add-button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from '@/components/ui/button';
 import { format, isSameDay } from "date-fns";
@@ -276,7 +275,6 @@ export default function DashboardPage() {
           <ResourceAllocationChart data={resourceAllocation} />
         </div>
       </div>
-      <QuickAddButton />
     </div>
   );
 }

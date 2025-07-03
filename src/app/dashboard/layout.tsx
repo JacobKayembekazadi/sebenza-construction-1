@@ -1,3 +1,4 @@
+
 import {
   SidebarProvider,
   Sidebar,
@@ -11,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Home } from "lucide-react";
 import Link from "next/link";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { QuickAddButton } from "@/components/quick-add-button";
+import { LiveChatWidget } from "@/components/live-chat-widget";
 
 export default function DashboardLayout({
   children,
@@ -50,6 +53,10 @@ export default function DashboardLayout({
       <SidebarInset>
         <DashboardHeader />
         <main className="p-4 sm:p-6 lg:p-8 flex-1">{children}</main>
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+          <LiveChatWidget />
+          <QuickAddButton />
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
