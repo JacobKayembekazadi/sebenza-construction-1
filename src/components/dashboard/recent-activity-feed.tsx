@@ -3,7 +3,7 @@
 import { type Activity } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { FileCheck2, CreditCard, ListChecks, AlertTriangle } from "lucide-react"
+import { FileCheck2, CreditCard, ListChecks, AlertTriangle, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface RecentActivityFeedProps {
@@ -15,6 +15,7 @@ const activityConfig = {
   INVOICE_PAID: { icon: <CreditCard className="h-4 w-4" />, color: "bg-chart-3" },
   FILE_UPLOADED: { icon: <FileCheck2 className="h-4 w-4" />, color: "bg-secondary" },
   PROJECT_STATUS: { icon: <AlertTriangle className="h-4 w-4" />, color: "bg-accent" },
+  CLIENT_COMMENT: { icon: <MessageSquare className="h-4 w-4" />, color: "bg-chart-5" },
 }
 
 export function RecentActivityFeed({ activities }: RecentActivityFeedProps) {
@@ -28,8 +29,8 @@ export function RecentActivityFeed({ activities }: RecentActivityFeedProps) {
           {activities.map((activity) => (
             <div key={activity.id} className="flex items-start gap-3">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className={cn("text-primary-foreground", activityConfig[activity.type].color)}>
-                  {activityConfig[activity.type].icon}
+                <AvatarFallback className={cn("text-primary-foreground", activityConfig[activity.type]?.color)}>
+                  {activityConfig[activity.type]?.icon}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
