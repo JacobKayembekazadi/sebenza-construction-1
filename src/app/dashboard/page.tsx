@@ -360,7 +360,13 @@ export default function DashboardPage() {
                     </div>
                 </CardContent>
             </Card>
-            <RecentActivityFeed activities={recentActivity} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <RecentActivityFeed activities={recentActivity} />
+              <div className="space-y-8">
+                <NewsAndUpdates updates={newsUpdates} />
+                <ResourceAllocationChart data={resourceAllocation} />
+              </div>
+            </div>
         </div>
 
         {/* Right Column */}
@@ -376,8 +382,6 @@ export default function DashboardPage() {
                   <Button variant="outline" onClick={() => setIsAddExpenseDialogOpen(true)}><DollarSign className="mr-2 h-4 w-4"/>New Expense</Button>
               </CardContent>
           </Card>
-          <NewsAndUpdates updates={newsUpdates} />
-          <WeatherForecast forecasts={weatherForecast} />
            <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
@@ -452,7 +456,7 @@ export default function DashboardPage() {
                 </div>
             </CardContent>
           </Card>
-          <ResourceAllocationChart data={resourceAllocation} />
+          <WeatherForecast forecasts={weatherForecast} />
         </div>
       </div>
     </div>
