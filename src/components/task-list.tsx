@@ -10,15 +10,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { type Task } from "@/lib/data";
 import { format } from "date-fns";
+import { MoreHorizontal } from "lucide-react";
 
 interface TaskListProps {
   tasks: Task[];
+  onEdit?: (task: Task) => void;
+  onDelete?: (task: Task) => void;
 }
 
-export function TaskList({ tasks }: TaskListProps) {
+export function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
     const statusVariant = (status: string) => {
         switch (status) {
             case "Done": return "default";
@@ -44,6 +54,7 @@ export function TaskList({ tasks }: TaskListProps) {
         <TableHead>Assignee</TableHead>
         <TableHead>Due Date</TableHead>
         <TableHead>Status</TableHead>
+        {(onEdit || onDelete) && <TableHead className="w-[50px] text-right">Actions</TableHead>}
         </TableRow>
     </TableHeader>
     <TableBody>
@@ -63,6 +74,22 @@ export function TaskList({ tasks }: TaskListProps) {
             <TableCell>
             <Badge variant={statusVariant(task.status)}>{task.status}</Badge>
             </TableCell>
+            {(onEdit || onDelete) && (
+              <TableCell className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {onEdit && <DropdownMenuItem onClick={() => onEdit(task)}>Edit Task</DropdownMenuItem>}
+                    {onDelete && <DropdownMenuItem onClick={() => onDelete(task)} className="text-destructive focus:bg-destructive/20">Delete Task</DropdownMenuItem>}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            )}
         </TableRow>
         ))}
     </TableBody>

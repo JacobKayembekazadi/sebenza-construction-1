@@ -39,6 +39,7 @@ interface AddEditTaskDialogProps {
   task?: Task | null;
   projects: Project[];
   employees: Employee[];
+  defaultProjectId?: string;
 }
 
 export function AddEditTaskDialog({
@@ -47,7 +48,8 @@ export function AddEditTaskDialog({
   onSave,
   task,
   projects,
-  employees
+  employees,
+  defaultProjectId
 }: AddEditTaskDialogProps) {
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -77,7 +79,7 @@ export function AddEditTaskDialog({
       } else {
         form.reset({
           name: "",
-          projectId: "",
+          projectId: defaultProjectId || "",
           assigneeName: "",
           status: "To Do",
           priority: "Medium",
@@ -86,7 +88,7 @@ export function AddEditTaskDialog({
         });
       }
     }
-  }, [task, open, form]);
+  }, [task, open, form, defaultProjectId]);
 
   const onSubmit = (data: TaskFormValues) => {
     onSave(data, task?.id);
@@ -123,7 +125,7 @@ export function AddEditTaskDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Project</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={!!defaultProjectId}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a project" />
