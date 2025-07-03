@@ -16,6 +16,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription as FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,6 +38,8 @@ import { cn } from "@/lib/utils";
 import type { Invoice, Client, Project } from "@/lib/data";
 import { useEffect } from "react";
 import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
+import { Switch } from "./ui/switch";
 
 const invoiceSchema = z.object({
   clientId: z.string().min(1, "Please select a client."),
@@ -45,9 +48,29 @@ const invoiceSchema = z.object({
   status: z.enum(["Draft", "Sent", "Paid", "Overdue", "Partial"]),
   issueDate: z.date(),
   dueDate: z.date(),
+  isRecurring: z.boolean().default(false),
+  recurringInterval: z.enum(["days", "weeks", "months"]).optional(),
+  recurringPeriod: z.coerce.number().min(1).optional(),
 }).refine(data => data.dueDate >= data.issueDate, {
   message: "Due date cannot be before issue date.",
   path: ["dueDate"],
+}).superRefine((data, ctx) => {
+  if (data.isRecurring) {
+    if (!data.recurringInterval) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["recurringInterval"],
+        message: "Interval is required for recurring invoices.",
+      });
+    }
+    if (!data.recurringPeriod) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["recurringPeriod"],
+        message: "Period is required for recurring invoices.",
+      });
+    }
+  }
 });
 
 export type InvoiceFormValues = z.infer<typeof invoiceSchema>;
@@ -76,6 +99,9 @@ export function AddEditInvoiceDialog({
       projectId: "",
       amount: 0,
       status: "Draft",
+      isRecurring: false,
+      recurringInterval: "days",
+      recurringPeriod: 30,
     },
   });
 
@@ -89,6 +115,9 @@ export function AddEditInvoiceDialog({
           status: invoice.status,
           issueDate: new Date(invoice.issueDate),
           dueDate: new Date(invoice.dueDate),
+          isRecurring: invoice.isRecurring ?? false,
+          recurringInterval: invoice.recurringInterval ?? 'days',
+          recurringPeriod: invoice.recurringPeriod,
         });
       } else {
         form.reset({
@@ -98,6 +127,9 @@ export function AddEditInvoiceDialog({
           status: "Draft",
           issueDate: new Date(),
           dueDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+          isRecurring: false,
+          recurringInterval: 'days',
+          recurringPeriod: 30,
         });
       }
     }
@@ -110,7 +142,7 @@ export function AddEditInvoiceDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{invoice ? "Edit Invoice" : "Add New Invoice"}</DialogTitle>
           <DialogDescription>
@@ -278,16 +310,71 @@ export function AddEditInvoiceDialog({
                 )}
                 />
             </div>
+            
+            <Separator />
+            
+            <FormField
+              control={form.control}
+              name="isRecurring"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Make Recurring</FormLabel>
+                    <FormDescription>
+                      Automatically create and send this invoice on a schedule.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            {form.watch("isRecurring") && (
+              <div className="grid grid-cols-2 gap-4 rounded-lg border p-4">
+                <FormField
+                  control={form.control}
+                  name="recurringPeriod"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Repeat Every</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="e.g., 30" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="recurringInterval"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Interval</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select interval" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="days">Days</SelectItem>
+                          <SelectItem value="weeks">Weeks</SelectItem>
+                          <SelectItem value="months">Months</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
 
-             <div className="space-y-2">
-                <Label>Attachments</Label>
-                <div className="flex items-center justify-center w-full p-4 border-2 border-dashed rounded-md">
-                    <p className="text-sm text-muted-foreground">File attachment feature coming soon.</p>
-                </div>
-            </div>
 
-            <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
-                <Button type="button" variant="ghost" disabled>Set Payment Schedule</Button>
+            <DialogFooter className="pt-4">
                 <div className="flex gap-2">
                     <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
                     <Button type="submit">Save Invoice</Button>

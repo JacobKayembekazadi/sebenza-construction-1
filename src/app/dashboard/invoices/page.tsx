@@ -44,6 +44,7 @@ import {
   Send,
   CreditCard,
   History,
+  Repeat,
 } from "lucide-react";
 import { invoices as initialInvoices, clients, projects, type Invoice } from "@/lib/data";
 import { AddEditInvoiceDialog, type InvoiceFormValues } from "@/components/add-edit-invoice-dialog";
@@ -283,7 +284,12 @@ export default function InvoicesPage() {
               {filteredInvoices.length > 0 ? (
                 filteredInvoices.map((invoice) => (
                   <TableRow key={invoice.id}>
-                    <TableCell className="font-medium">{invoice.id.toUpperCase()}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {invoice.isRecurring && <Repeat className="h-4 w-4 text-muted-foreground" title="Recurring Invoice" />}
+                        <span>{invoice.id.toUpperCase()}</span>
+                      </div>
+                    </TableCell>
                     <TableCell>{invoice.clientName}</TableCell>
                     <TableCell>
                       <Link href={`/dashboard/projects/${invoice.projectId}`} className="hover:underline">
