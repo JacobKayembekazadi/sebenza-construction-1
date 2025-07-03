@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { clients as initialClients, projects as allProjects, invoices as allInvoices, estimates as allEstimates, type Client, type Project, type Invoice, type Estimate } from "@/lib/data";
+import { clients as initialClients, projects as allProjects, invoices as allInvoices, estimates as allEstimates, timeEntries as allTimeEntries, type Client, type Project, type Invoice, type Estimate, type TimeEntry } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -67,6 +67,10 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
   const clientProjects = useMemo(() => allProjects.filter(p => p.clientId === client.id), [client.id]);
   const clientInvoices = useMemo(() => allInvoices.filter(i => i.clientId === client.id), [client.id]);
   const clientEstimates = useMemo(() => allEstimates.filter(e => e.clientId === client.id), [client.id]);
+  const clientTimeEntries = useMemo(() => {
+    const projectIds = new Set(clientProjects.map(p => p.id));
+    return allTimeEntries.filter(t => projectIds.has(t.projectId));
+  }, [clientProjects]);
 
   return (
     <Card>
@@ -86,7 +90,7 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
                     Email
                 </a>
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" disabled>
                 <FileDown className="mr-2 h-4 w-4" />
                 Statement
             </Button>
@@ -94,7 +98,7 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="overview">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="mb-6 h-auto flex-wrap justify-start">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="invoices">Invoices</TabsTrigger>
@@ -160,10 +164,34 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
                 </div>
            </TabsContent>
            <TabsContent value="time-tracking">
-                <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg">
-                    <Clock className="w-12 h-12 text-muted-foreground" />
-                    <p className="mt-4 text-muted-foreground">No time tracking entries for this client yet.</p>
+               <div className="flex justify-end mb-4 gap-2">
+                    <Button variant="outline" disabled>Invoice Unbilled Time</Button>
+                    <Button disabled>
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Log Time
+                    </Button>
                 </div>
+                <MiniTable 
+                    icon={<Clock />} 
+                    items={clientTimeEntries} 
+                    columns={['Date', 'Employee', 'Project', 'Hours', 'Status']} 
+                    renderRow={(item: TimeEntry) => (
+                    <>
+                        <TableCell>{format(item.date, "PPP")}</TableCell>
+                        <TableCell className="font-medium">{item.employeeName}</TableCell>
+                        <TableCell>
+                            <Link href={`/dashboard/projects/${item.projectId}`} className="text-muted-foreground hover:underline">
+                                {item.projectName}
+                            </Link>
+                        </TableCell>
+                        <TableCell>{item.hours} hrs</TableCell>
+                        <TableCell>
+                            <Badge variant={item.isBilled ? 'default' : 'outline'}>
+                                {item.isBilled ? 'Billed' : 'Unbilled'}
+                            </Badge>
+                        </TableCell>
+                    </>
+                )} />
            </TabsContent>
            <TabsContent value="communication">
                 <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg">

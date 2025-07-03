@@ -160,6 +160,18 @@ export type PurchaseOrder = {
   notes?: string;
 };
 
+export type TimeEntry = {
+    id: string;
+    projectId: string;
+    projectName: string;
+    employeeId: string;
+    employeeName: string;
+    employeeAvatar: string;
+    date: Date;
+    hours: number;
+    description: string;
+    isBilled: boolean;
+};
 
 export type FinancialData = {
   month: string;
@@ -613,6 +625,69 @@ export const documents: Document[] = [
     { id: 'doc-002', name: 'Customs Declaration.jpg', type: 'Image', uploadDate: new Date(2024, 2, 5), projectId: 'proj-002', projectName: 'Durban Port Clearance', url: '#' },
     { id: 'doc-003', name: 'Proof of Delivery.docx', type: 'Word', uploadDate: new Date(2024, 5, 10), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe', url: '#' },
     { id: 'doc-004', name: 'Inventory Sheet.xlsx', type: 'Excel', uploadDate: new Date(2024, 4, 15), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', url: '#' },
+];
+
+export const timeEntries: TimeEntry[] = [
+    {
+        id: 'time-1',
+        projectId: 'proj-001',
+        projectName: 'Johannesburg to Cape Town',
+        employeeId: 'emp-002',
+        employeeName: 'Bob Builder',
+        employeeAvatar: 'https://placehold.co/32x32.png',
+        date: new Date(2024, 5, 10),
+        hours: 8,
+        description: 'On-site consultation and planning for Phase 2.',
+        isBilled: true,
+    },
+    {
+        id: 'time-2',
+        projectId: 'proj-001',
+        projectName: 'Johannesburg to Cape Town',
+        employeeId: 'emp-003',
+        employeeName: 'Charlie Crane',
+        employeeAvatar: 'https://placehold.co/32x32.png',
+        date: new Date(2024, 5, 11),
+        hours: 6.5,
+        description: 'Initial work on exterior cladding.',
+        isBilled: false,
+    },
+    {
+        id: 'time-3',
+        projectId: 'proj-002',
+        projectName: 'Durban Port Clearance',
+        employeeId: 'emp-007',
+        employeeName: 'Grace Grader',
+        employeeAvatar: 'https://placehold.co/32x32.png',
+        date: new Date(2024, 5, 12),
+        hours: 4,
+        description: 'Liaising with port authorities.',
+        isBilled: false,
+    },
+     {
+        id: 'time-4',
+        projectId: 'proj-002',
+        projectName: 'Durban Port Clearance',
+        employeeId: 'emp-007',
+        employeeName: 'Grace Grader',
+        employeeAvatar: 'https://placehold.co/32x32.png',
+        date: new Date(2024, 5, 13),
+        hours: 5,
+        description: 'Document preparation for customs.',
+        isBilled: true,
+    },
+    {
+        id: 'time-5',
+        projectId: 'proj-004',
+        projectName: 'Local Warehouse Distribution',
+        employeeId: 'emp-002',
+        employeeName: 'Bob Builder',
+        employeeAvatar: 'https://placehold.co/32x32.png',
+        date: new Date(2024, 5, 9),
+        hours: 7,
+        description: 'Route planning and optimization.',
+        isBilled: false,
+    }
 ];
 
 export const financialData: FinancialData[] = [
