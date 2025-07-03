@@ -1,6 +1,4 @@
 
-
-
 export type Task = {
   id: string;
   name: string;
@@ -104,7 +102,7 @@ export type Employee = {
     name: string;
     email: string;
     phone: string;
-    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer" | "Admin" | "Manager" | "Accountant" | "Contractor" | "Employee";
+    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer";
     avatar: string;
 };
 
@@ -250,16 +248,16 @@ export type Service = {
 };
 
 export const employees: Employee[] = [
-    { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Admin", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Manager", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-003", name: "Charlie Crane", email: "charlie.crane@example.com", phone: "555-0103", role: "Employee", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-004", name: "David Drill", email: "david.drill@example.com", phone: "555-0104", role: "Employee", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-005", name: "Eve Electric", email: "eve.electric@example.com", phone: "555-0105", role: "Contractor", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-006", name: "Frank Formwork", email: "frank.formwork@example.com", phone: "555-0106", role: "Employee", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-007", name: "Grace Grader", email: "grace.grader@example.com", phone: "555-0107", role: "Manager", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-008", name: "Alice Johnson", email: "alice.johnson@example.com", phone: "555-0108", role: "Manager", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-009", name: "Bob Vance", email: "bob.vance@example.com", phone: "555-0109", role: "Accountant", avatar: "https://placehold.co/32x32.png" },
-    { id: "emp-010", name: "Carol Danvers", email: "carol.danvers@example.com", phone: "555-0110", role: "Admin", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-003", name: "Charlie Crane", email: "charlie.crane@example.com", phone: "555-0103", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-004", name: "David Drill", email: "david.drill@example.com", phone: "555-0104", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-005", name: "Eve Electric", email: "eve.electric@example.com", phone: "555-0105", role: "Electrician", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-006", name: "Frank Formwork", email: "frank.formwork@example.com", phone: "555-0106", role: "Laborer", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-007", name: "Grace Grader", email: "grace.grader@example.com", phone: "555-0107", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-008", name: "Alice Johnson", email: "alice.johnson@example.com", phone: "555-0108", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-009", name: "Bob Vance", email: "bob.vance@example.com", phone: "555-0109", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
+    { id: "emp-010", name: "Carol Danvers", email: "carol.danvers@example.com", phone: "555-0110", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
 ];
 
 
