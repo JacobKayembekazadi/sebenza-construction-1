@@ -14,6 +14,7 @@ import Link from "next/link";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { QuickAddButton } from "@/components/quick-add-button";
 import { LiveChatWidget } from "@/components/live-chat-widget";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
 
 export default function DashboardLayout({
   children,
@@ -54,6 +55,7 @@ export default function DashboardLayout({
         <DashboardHeader />
         <main className="p-4 sm:p-6 lg:p-8 flex-1">{children}</main>
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
+          <WhatsAppWidget />
           <LiveChatWidget />
           <QuickAddButton />
         </div>
