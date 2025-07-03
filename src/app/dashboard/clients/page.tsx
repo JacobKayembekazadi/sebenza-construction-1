@@ -55,13 +55,14 @@ import {
   FileText,
   Receipt,
   DollarSign,
-  FolderArchive
+  FolderArchive,
+  Edit,
 } from "lucide-react";
 import { type ClientFormValues, AddEditClientDialog } from "@/components/add-edit-client-dialog";
 import { DeleteClientDialog } from "@/components/delete-client-dialog";
 import { format } from "date-fns";
 
-function ClientDetailView({ client }: { client: Client }) {
+function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client: Client) => void }) {
   const clientProjects = useMemo(() => allProjects.filter(p => p.clientId === client.id), [client.id]);
   const clientInvoices = useMemo(() => allInvoices.filter(i => i.clientId === client.id), [client.id]);
   const clientEstimates = useMemo(() => allEstimates.filter(e => e.clientId === client.id), [client.id]);
@@ -78,10 +79,14 @@ function ClientDetailView({ client }: { client: Client }) {
           <CardDescription>{client.company}</CardDescription>
         </div>
         <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => onEdit(client)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+            </Button>
             <Button variant="outline" size="sm" asChild>
                 <a href={`mailto:${client.email}`}>
                     <Mail className="mr-2 h-4 w-4" />
-                    Send Email
+                    Email
                 </a>
             </Button>
             <Button variant="outline" size="sm">
@@ -208,6 +213,7 @@ export default function ClientsPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   
   const [selectedClientId, setSelectedClientId] = useState<string | null>(initialClients[0]?.id || null);
+  const [clientToEdit, setClientToEdit] = useState<Client | null>(null);
   const [clientToDelete, setClientToDelete] = useState<Client | null>(null);
 
   const statuses = ["All", "Active", "Inactive"];
@@ -236,12 +242,13 @@ export default function ClientsPage() {
   }, [clients]);
   
   const handleOpenAddDialog = () => {
+    setClientToEdit(null);
     setIsAddEditDialogOpen(true);
   };
   
   const handleOpenEditDialog = (client: Client) => {
-    // For now, we just select the client. The detail view has no edit button yet.
-    setSelectedClientId(client.id);
+    setClientToEdit(client);
+    setIsAddEditDialogOpen(true);
   };
 
   const handleOpenDeleteDialog = (client: Client) => {
@@ -398,7 +405,7 @@ export default function ClientsPage() {
             </div>
             <div className="lg:col-span-2">
                 {selectedClient ? (
-                    <ClientDetailView client={selectedClient} />
+                    <ClientDetailView client={selectedClient} onEdit={handleOpenEditDialog} />
                 ) : (
                     <Card className="flex flex-col items-center justify-center h-[500px] border-2 border-dashed">
                         <Users className="w-16 h-16 text-muted-foreground" />
@@ -412,8 +419,7 @@ export default function ClientsPage() {
         open={isAddEditDialogOpen}
         onOpenChange={setIsAddEditDialogOpen}
         onSave={handleSaveClient}
-        // This dialog is now only for adding, as editing is implicit in the detail view
-        client={null} 
+        client={clientToEdit}
       />
       
       <DeleteClientDialog
