@@ -145,6 +145,10 @@ export default function InvoicesPage() {
     
     if (invoiceId) {
       setInvoices(invoices.map(i => i.id === invoiceId ? { ...i, ...data, clientName: client.name, projectName: project.name } : i));
+      toast({
+        title: "Invoice Updated",
+        description: `Invoice ${invoiceId.toUpperCase()} has been successfully updated.`,
+      });
     } else {
       const newInvoice: Invoice = {
         id: `inv-${Date.now()}`,
@@ -153,12 +157,21 @@ export default function InvoicesPage() {
         ...data,
       };
       setInvoices([newInvoice, ...invoices]);
+      toast({
+        title: "Invoice Created",
+        description: `A new invoice ${newInvoice.id.toUpperCase()} has been successfully created.`,
+      });
     }
   };
 
   const handleDeleteInvoice = () => {
     if (selectedInvoice) {
       setInvoices(invoices.filter(i => i.id !== selectedInvoice.id));
+      toast({
+        title: "Invoice Deleted",
+        description: `Invoice ${selectedInvoice.id.toUpperCase()} has been deleted.`,
+        variant: "destructive",
+      });
       setIsDeleteDialogOpen(false);
       setSelectedInvoice(null);
     }
