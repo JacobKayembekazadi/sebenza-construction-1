@@ -14,7 +14,7 @@ import {
   FileText,
   DollarSign,
   Receipt,
-  FileBox,
+  ShoppingCart,
   Bot,
   GanttChartSquare,
   LayoutDashboard,
@@ -24,7 +24,7 @@ import {
 
 // In a real application, this would come from an authentication context/provider.
 // You can change this to 'member' to test the role-based visibility.
-const userRole = 'admin'; // 'admin', 'owner', or 'member'
+const userRole = 'admin'; // 'admin', 'owner', 'member'
 
 const allLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -36,7 +36,7 @@ const allLinks = [
   { href: "/dashboard/estimates", label: "Estimates", icon: FileText },
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/expenses", label: "Expenses", icon: DollarSign },
-  { href: "/dashboard/documents", label: "Documents", icon: FileBox },
+  { href: "/dashboard/documents", label: "Purchase Orders", icon: ShoppingCart },
   { href: "/dashboard/settings", label: "Settings", icon: Settings, roles: ['admin', 'owner'] },
 ];
 

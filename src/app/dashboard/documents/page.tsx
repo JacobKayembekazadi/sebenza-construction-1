@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { format } from "date-fns";
 import {
   Card,
   CardContent,
@@ -25,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,104 +32,172 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   PlusCircle,
   Search,
-  FileBox,
+  ClipboardList,
+  Clock,
+  CheckCircle,
   MoreHorizontal,
-  FileText,
-  ImageIcon,
-  FileSpreadsheet,
-  FileDigit,
-  Download,
+  Send,
+  Printer,
+  FileCheck2
 } from "lucide-react";
-import { documents as initialDocuments, projects, type Document } from "@/lib/data";
-import { AddEditDocumentDialog, type DocumentFormValues } from "@/components/add-edit-document-dialog";
-import { DeleteDocumentDialog } from "@/components/delete-document-dialog";
-import Link from "next/link";
+import { purchaseOrders as initialPOs, suppliers, type PurchaseOrder } from "@/lib/data";
+import { AddEditPODialog, type POFormValues } from "@/components/add-edit-document-dialog";
+import { DeletePODialog } from "@/components/delete-document-dialog";
+import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
-const typeIcons = {
-    PDF: <FileText className="h-5 w-5 text-destructive" />,
-    Image: <ImageIcon className="h-5 w-5 text-blue-500" />,
-    Word: <FileDigit className="h-5 w-5 text-blue-700" />,
-    Excel: <FileSpreadsheet className="h-5 w-5 text-green-700" />,
-};
-
-export default function DocumentsPage() {
-  const [documents, setDocuments] = useState<Document[]>(initialDocuments);
+export default function PurchaseOrdersPage() {
+  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>(initialPOs);
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("All");
-
+  const [statusFilter, setStatusFilter] = useState("All");
+  
   const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [selectedPO, setSelectedPO] = useState<PurchaseOrder | null>(null);
+  const { toast } = useToast();
 
-  const types = ["All", ...Array.from(new Set(initialDocuments.map(d => d.type)))];
+  const statuses = ["All", "Draft", "Sent", "Fulfilled", "Cancelled"];
 
-  const filteredDocuments = useMemo(() => {
-    return documents.filter((document) => {
+  const filteredPOs = useMemo(() => {
+    return purchaseOrders.filter((po) => {
       const matchesSearch =
-        document.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        document.projectName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType =
-        typeFilter === "All" || document.type === typeFilter;
-      return matchesSearch && matchesType;
+        po.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        po.supplierName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "All" || po.status === statusFilter;
+      return matchesSearch && matchesStatus;
     });
-  }, [documents, searchTerm, typeFilter]);
-  
+  }, [purchaseOrders, searchTerm, statusFilter]);
+
+  const statusVariant = (status: PurchaseOrder['status']) => {
+    switch (status) {
+      case "Fulfilled": return "default";
+      case "Sent": return "secondary";
+      case "Draft": return "outline";
+      case "Cancelled": return "destructive";
+      default: return "outline";
+    }
+  };
+
+  const summary = useMemo(() => {
+    const totalValue = purchaseOrders.reduce((sum, e) => sum + e.total, 0);
+    const openPOs = purchaseOrders.filter((e) => e.status === "Sent" || e.status === "Draft").length;
+    return {
+      totalPOs: purchaseOrders.length,
+      totalValue,
+      openPOs,
+    };
+  }, [purchaseOrders]);
+
   const handleOpenAddDialog = () => {
-    setSelectedDocument(null);
+    setSelectedPO(null);
+    setIsAddEditDialogOpen(true);
+  };
+  
+  const handleOpenEditDialog = (po: PurchaseOrder) => {
+    setSelectedPO(po);
     setIsAddEditDialogOpen(true);
   };
 
-  const handleOpenDeleteDialog = (document: Document) => {
-    setSelectedDocument(document);
+  const handleOpenDeleteDialog = (po: PurchaseOrder) => {
+    setSelectedPO(po);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleSaveDocument = (data: DocumentFormValues, documentId?: string) => {
-    const project = projects.find(p => p.id === data.projectId);
-    if (!project) return;
-    
-    // In a real app, this would involve a file upload and returning the URL.
-    // For now, we just simulate it.
-    if (documentId) {
-      setDocuments(documents.map(d => d.id === documentId ? { ...d, ...data, projectName: project.name } : d));
-    } else {
-      const newDocument: Document = {
-        id: `doc-${Date.now()}`,
-        projectName: project.name,
-        url: "#", // Dummy URL
+  const handleSavePO = (data: POFormValues, poId?: string) => {
+    const supplier = suppliers.find(c => c.id === data.supplierId);
+    if (!supplier) return;
+
+    const total = data.lineItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+
+    const finalData = {
         ...data,
+        supplierName: supplier.name,
+        total,
+        lineItems: data.lineItems.map((li, index) => ({
+            ...li,
+            id: li.id || `li-${Date.now()}-${index}`,
+            total: li.quantity * li.unitPrice,
+        }))
+    };
+    
+    if (poId) {
+      setPurchaseOrders(purchaseOrders.map(e => e.id === poId ? { ...e, ...finalData } : e));
+      toast({ title: "Purchase Order Updated", description: `PO ${poId.toUpperCase()} has been saved.`});
+    } else {
+      const newPO: PurchaseOrder = {
+        id: `po-${Date.now()}`,
+        ...finalData,
       };
-      setDocuments([newDocument, ...documents]);
+      setPurchaseOrders([newPO, ...purchaseOrders]);
+      toast({ title: "Purchase Order Created", description: `New PO ${newPO.id.toUpperCase()} has been created.`});
     }
   };
 
-  const handleDeleteDocument = () => {
-    if (selectedDocument) {
-      setDocuments(documents.filter(d => d.id !== selectedDocument.id));
-      setIsDeleteDialogOpen(false);
-      setSelectedDocument(null);
+  const handleDeletePO = () => {
+    if (selectedPO) {
+        setPurchaseOrders(purchaseOrders.filter(e => e.id !== selectedPO.id));
+        toast({
+            title: "Purchase Order Deleted",
+            description: `PO ${selectedPO.id.toUpperCase()} has been deleted.`,
+            variant: "destructive"
+        });
+        setIsDeleteDialogOpen(false);
+        setSelectedPO(null);
     }
   };
+
+  const handleAction = (message: string) => {
+    toast({ title: "Action Triggered", description: message });
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Documents</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Purchase Orders</h1>
         <p className="text-muted-foreground">
-          Central repository for all project-related files.
+          Create and manage purchase orders for your suppliers.
         </p>
+      </div>
+
+       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total PO Value</CardTitle>
+            <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">${summary.totalValue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">
+              Total value of all purchase orders
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Open POs</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{summary.openPOs}</div>
+            <p className="text-xs text-muted-foreground">
+              'Draft' or 'Sent' status
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
         <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <CardTitle>Document Library</CardTitle>
+            <CardTitle>Purchase Order List</CardTitle>
             <CardDescription>
-              Manage all your project documents and files.
+              Manage all your supplier purchase orders.
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
@@ -137,27 +205,27 @@ export default function DocumentsPage() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search by name or project..."
+                placeholder="Search by ID or supplier..."
                 className="pl-8 w-full sm:w-[250px]"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by type" />
+                <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                {types.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
+                {statuses.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              New Document
+              New PO
             </Button>
           </div>
         </CardHeader>
@@ -165,30 +233,29 @@ export default function DocumentsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Upload Date</TableHead>
+                <TableHead>PO ID</TableHead>
+                <TableHead>Supplier</TableHead>
+                <TableHead>Issue Date</TableHead>
+                <TableHead>Expected Delivery</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredDocuments.length > 0 ? (
-                filteredDocuments.map((doc) => (
-                  <TableRow key={doc.id}>
-                    <TableCell className="font-medium">{doc.name}</TableCell>
-                     <TableCell>
-                        <Link href={`/dashboard/projects/${doc.projectId}`} className="hover:underline">
-                            {doc.projectName}
-                        </Link>
-                    </TableCell>
+              {filteredPOs.length > 0 ? (
+                filteredPOs.map((po) => (
+                  <TableRow key={po.id}>
+                    <TableCell className="font-medium">{po.id.toUpperCase()}</TableCell>
+                    <TableCell>{po.supplierName}</TableCell>
+                    <TableCell>{format(po.issueDate, "PPP")}</TableCell>
+                    <TableCell>{format(po.deliveryDate, "PPP")}</TableCell>
+                    <TableCell>${po.total.toLocaleString()}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
-                        {typeIcons[doc.type]}
-                        <span>{doc.type}</span>
-                      </div>
+                      <Badge variant={statusVariant(po.status)}>
+                        {po.status}
+                      </Badge>
                     </TableCell>
-                    <TableCell>{format(doc.uploadDate, "PPP")}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -198,12 +265,25 @@ export default function DocumentsPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                           <DropdownMenuItem onClick={() => window.open(doc.url, '_blank')}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Download
+                          <DropdownMenuItem onClick={() => handleOpenEditDialog(po)}>
+                            Edit PO
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOpenDeleteDialog(doc)} className="text-destructive focus:bg-destructive/20">
-                            Delete Document
+                          <DropdownMenuItem onClick={() => handleAction('This would email the PO to the supplier.')}>
+                            <Send />
+                            Send to Supplier
+                          </DropdownMenuItem>
+                           <DropdownMenuItem onClick={() => handleAction('This would open a print dialog.')}>
+                            <Printer />
+                            Print/Download
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                           <DropdownMenuItem onClick={() => handleAction('This would convert the PO to a bill/expense.')}>
+                            <FileCheck2 />
+                            Convert to Bill
+                          </DropdownMenuItem>
+                           <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleOpenDeleteDialog(po)} className="text-destructive focus:bg-destructive/20">
+                            Delete PO
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -213,10 +293,10 @@ export default function DocumentsPage() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={5}
+                    colSpan={7}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    No documents found.
+                    No purchase orders found.
                   </TableCell>
                 </TableRow>
               )}
@@ -225,19 +305,19 @@ export default function DocumentsPage() {
         </CardContent>
       </Card>
       
-      <AddEditDocumentDialog
+      <AddEditPODialog
         open={isAddEditDialogOpen}
         onOpenChange={setIsAddEditDialogOpen}
-        onSave={handleSaveDocument}
-        document={selectedDocument}
-        projects={projects}
+        onSave={handleSavePO}
+        purchaseOrder={selectedPO}
+        suppliers={suppliers}
       />
       
-      <DeleteDocumentDialog
+      <DeletePODialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
-        onConfirm={handleDeleteDocument}
-        document={selectedDocument}
+        onConfirm={handleDeletePO}
+        purchaseOrder={selectedPO}
       />
     </div>
   );

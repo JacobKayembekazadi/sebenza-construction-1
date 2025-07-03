@@ -11,22 +11,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Document } from "@/lib/data";
+import type { PurchaseOrder } from "@/lib/data";
 
-interface DeleteDocumentDialogProps {
+interface DeletePODialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
-  document: Document | null;
+  purchaseOrder: PurchaseOrder | null;
 }
 
-export function DeleteDocumentDialog({
+export function DeletePODialog({
   open,
   onOpenChange,
   onConfirm,
-  document,
-}: DeleteDocumentDialogProps) {
-  if (!document) return null;
+  purchaseOrder,
+}: DeletePODialogProps) {
+  if (!purchaseOrder) return null;
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -34,7 +34,7 @@ export function DeleteDocumentDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete the document "{document.name}".
+            This action cannot be undone. This will permanently delete the purchase order "{purchaseOrder.id.toUpperCase()}".
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

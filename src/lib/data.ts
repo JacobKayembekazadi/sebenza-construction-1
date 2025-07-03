@@ -1,4 +1,5 @@
 
+
 export type Task = {
   id: string;
   name: string;
@@ -107,6 +108,35 @@ export type Document = {
     projectName: string;
     url: string; // a dummy url
 };
+
+export type Supplier = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+};
+
+export type PurchaseOrderLineItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+};
+
+export type PurchaseOrder = {
+  id: string;
+  supplierId: string;
+  supplierName: string;
+  lineItems: PurchaseOrderLineItem[];
+  total: number;
+  issueDate: Date;
+  deliveryDate: Date;
+  status: "Draft" | "Sent" | "Fulfilled" | "Cancelled";
+  notes: string;
+};
+
 
 export type FinancialData = {
   month: string;
@@ -254,6 +284,54 @@ export const clients: Client[] = [
   { id: "client-2", name: "Innovate LLC", company: "Innovate LLC", email: "hello@innovate.com", phone: "234-567-8901", status: "Active", billingAddress: "789 Innovation Dr\nPalo Alto, CA 94301\nUSA", shippingAddress: "789 Innovation Dr\nPalo Alto, CA 94301\nUSA" },
   { id: "client-3", name: "Mega Builders", company: "Mega Builders Co.", email: "info@megabuilders.com", phone: "345-678-9012", status: "Inactive", billingAddress: "101 Construction Rd\nHouston, TX 77001\nUSA", shippingAddress: "202 Site-B Rd\nHouston, TX 77001\nUSA" },
   { id: "client-4", name: "Quantum Solutions", company: "Quantum Solutions", email: "support@quantum.com", phone: "456-789-0123", status: "Active", billingAddress: "303 Quantum Ln\nSeattle, WA 98101\nUSA", shippingAddress: "303 Quantum Ln\nSeattle, WA 98101\nUSA" },
+];
+
+export const suppliers: Supplier[] = [
+    { id: "sup-1", name: "Steel & Co.", email: "sales@steelandco.com", phone: "555-0201", address: "1 Steel Plaza, Pittsburgh, PA" },
+    { id: "sup-2", name: "Concrete King", email: "orders@concreteking.com", phone: "555-0202", address: "2 Cement Rd, Boulder, CO" },
+    { id: "sup-3", name: "Lumber Liquidators", email: "contact@lumberliquidators.com", phone: "555-0203", address: "3 Wood St, Portland, OR" },
+];
+
+export const purchaseOrders: PurchaseOrder[] = [
+    {
+        id: "po-001",
+        supplierId: "sup-1",
+        supplierName: "Steel & Co.",
+        lineItems: [
+            { id: "li-po-1", description: "I-Beams (20ft)", quantity: 50, unitPrice: 350, total: 17500 }
+        ],
+        total: 17500,
+        issueDate: new Date(2024, 5, 1),
+        deliveryDate: new Date(2024, 5, 30),
+        status: "Sent",
+        notes: "Deliver to Site A."
+    },
+    {
+        id: "po-002",
+        supplierId: "sup-2",
+        supplierName: "Concrete King",
+        lineItems: [
+            { id: "li-po-2", description: "5000 PSI Concrete (cubic yards)", quantity: 100, unitPrice: 150, total: 15000 }
+        ],
+        total: 15000,
+        issueDate: new Date(2024, 4, 20),
+        deliveryDate: new Date(2024, 5, 10),
+        status: "Fulfilled",
+        notes: ""
+    },
+    {
+        id: "po-003",
+        supplierId: "sup-3",
+        supplierName: "Lumber Liquidators",
+        lineItems: [
+            { id: "li-po-3", description: "2x4 Lumber (8ft)", quantity: 500, unitPrice: 8, total: 4000 }
+        ],
+        total: 4000,
+        issueDate: new Date(2024, 5, 5),
+        deliveryDate: new Date(2024, 5, 15),
+        status: "Draft",
+        notes: "Call Bob on arrival."
+    }
 ];
 
 
