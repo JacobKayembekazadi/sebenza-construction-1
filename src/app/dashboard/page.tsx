@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, invoices, estimates, Task } from "@/lib/data";
+import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, invoices, estimates, Task, allEvents, UnifiedEvent } from "@/lib/data";
 import Link from "next/link";
 import {
   Activity,
@@ -22,8 +22,12 @@ import {
   Scale,
   FileStack,
   Clock,
-  Calendar,
+  Calendar as CalendarIcon,
   Plus,
+  Briefcase,
+  ListChecks,
+  Receipt,
+  Users
 } from "lucide-react";
 import { FinancialSnapshotChart } from "@/components/dashboard/financial-snapshot-chart";
 import { cn } from "@/lib/utils";
@@ -33,6 +37,14 @@ import { WeatherForecast } from "@/components/dashboard/weather-forecast";
 import { QuickAddButton } from "@/components/quick-add-button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from '@/components/ui/button';
+import { format, isSameDay } from "date-fns";
+
+const eventTypeConfig = {
+  project: { icon: Briefcase, color: "border-chart-3", label: "Job Deadline" },
+  task: { icon: ListChecks, color: "border-chart-1", label: "Task Due" },
+  invoice: { icon: Receipt, color: "border-chart-2", label: "Invoice Due" },
+  custom: { icon: Users, color: "border-chart-4", label: "Meeting" },
+};
 
 export default function DashboardPage() {
   const financialSummary = useMemo(() => {
@@ -74,41 +86,23 @@ export default function DashboardPage() {
     }
   };
   
-    const calendarEvents = useMemo(() => {
-        const taskEvents = allTasks.map(task => ({
-            id: `task-${task.id}`,
-            date: task.dueDate,
-            title: `Task Due: ${task.name}`,
-            type: 'task',
-            link: `/dashboard/tasks`
-        }));
-        const invoiceEvents = invoices.map(invoice => ({
-            id: `invoice-${invoice.id}`,
-            date: invoice.dueDate,
-            title: `Invoice Due: ${invoice.id.toUpperCase()}`,
-            type: 'invoice',
-            link: `/dashboard/invoices`
-        }));
-        const projectEvents = projects.map(project => ({
-            id: `project-${project.id}`,
-            date: project.endDate,
-            title: `Job Deadline: ${project.name}`,
-            type: 'project',
-            link: `/dashboard/projects/${project.id}`
-        }));
-        return [...taskEvents, ...invoiceEvents, ...projectEvents];
-    }, []);
-
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
     const selectedDayEvents = useMemo(() => {
         if (!selectedDate) return [];
-        return calendarEvents.filter(event => 
-            event.date.getDate() === selectedDate.getDate() &&
-            event.date.getMonth() === selectedDate.getMonth() &&
-            event.date.getFullYear() === selectedDate.getFullYear()
+        return allEvents.filter(event => 
+            isSameDay(event.date, selectedDate)
         ).sort((a,b) => a.date.getTime() - b.date.getTime());
-    }, [selectedDate, calendarEvents]);
+    }, [selectedDate]);
+
+    const calendarModifiers = useMemo(() => {
+        return {
+            project: allEvents.filter(e => e.type === 'project').map(e => e.date),
+            task: allEvents.filter(e => e.type === 'task').map(e => e.date),
+            invoice: allEvents.filter(e => e.type === 'invoice').map(e => e.date),
+            custom: allEvents.filter(e => e.type === 'custom').map(e => e.date),
+        };
+    }, []);
 
   return (
     <div className="flex flex-col gap-8">
@@ -228,12 +222,13 @@ export default function DashboardPage() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Unified Calendar</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Unified Calendar</CardTitle>
                             <CardDescription>Upcoming deadlines for jobs, tasks, and invoices.</CardDescription>
                         </div>
-                        <Button variant="outline" size="sm" disabled>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Create Event
+                        <Button variant="outline" size="sm" asChild>
+                           <Link href="/dashboard/calendar">
+                             View Full Calendar
+                           </Link>
                         </Button>
                     </div>
                 </CardHeader>
@@ -243,30 +238,35 @@ export default function DashboardPage() {
                     selected={selectedDate}
                     onSelect={setSelectedDate}
                     className="rounded-md border p-0"
-                    modifiers={{
-                        events: calendarEvents.map(e => e.date)
-                    }}
+                    modifiers={calendarModifiers}
                     modifiersClassNames={{
-                        events: "bg-primary/20 text-primary rounded-full"
+                        project: "bg-chart-3/20 text-chart-3 rounded-full",
+                        task: "bg-chart-1/20 text-chart-1 rounded-full",
+                        invoice: "bg-chart-2/20 text-chart-2 rounded-full",
+                        custom: "bg-chart-4/20 text-chart-4 rounded-full",
                     }}
                 />
                 <div className="flex-1">
                     <h3 className="text-lg font-semibold mb-2">
-                        Events for {selectedDate ? selectedDate.toLocaleDateString() : '...'}
+                        Events for {selectedDate ? format(selectedDate, 'PPP') : '...'}
                     </h3>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {selectedDayEvents.length > 0 ? selectedDayEvents.map(event => (
-                        <Link href={event.link} key={event.id}>
+                    {selectedDayEvents.length > 0 ? selectedDayEvents.map(event => {
+                       const config = eventTypeConfig[event.type];
+                       const Icon = config.icon;
+                       return (
+                        <Link href={event.link || '#'} key={event.id}>
                             <div className={cn(
                                 "p-2 rounded-md text-sm cursor-pointer hover:bg-muted border-l-4",
-                                event.type === 'task' && 'border-chart-1',
-                                event.type === 'invoice' && 'border-chart-2',
-                                event.type === 'project' && 'border-chart-3',
+                                config.color,
                             )}>
-                                {event.title}
+                                <div className="flex items-center gap-2">
+                                    <Icon className="h-4 w-4" />
+                                    <span>{event.title}</span>
+                                </div>
                             </div>
                         </Link>
-                    )) : (
+                    )}) : (
                         <p className="text-sm text-muted-foreground">No events for this day.</p>
                     )}
                     </div>

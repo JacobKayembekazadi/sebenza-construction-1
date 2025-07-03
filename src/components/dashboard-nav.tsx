@@ -20,6 +20,7 @@ import {
   LayoutDashboard,
   Settings,
   ListChecks,
+  CalendarDays,
 } from "lucide-react";
 
 // In a real application, this would come from an authentication context/provider.
@@ -30,6 +31,7 @@ const allLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/projects", label: "Jobs", icon: GanttChartSquare },
   { href: "/dashboard/tasks", label: "Tasks", icon: ListChecks },
+  { href: "/dashboard/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/dashboard/clients", label: "Clients", icon: Users },
   { href: "/dashboard/employees", label: "Employees", icon: Briefcase, roles: ['admin', 'owner'] },
   { href: "/dashboard/estimates", label: "Quotes", icon: FileText },

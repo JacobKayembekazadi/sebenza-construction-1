@@ -103,7 +103,7 @@ export type Employee = {
     name: string;
     email: string;
     phone: string;
-    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer" | "Admin" | "Manager" | "Accountant" | "Contractor";
+    role: "Project Manager" | "Site Supervisor" | "Electrician" | "Plumber" | "Laborer" | "Admin" | "Manager" | "Accountant" | "Contractor" | "Employee";
     avatar: string;
 };
 
@@ -172,6 +172,26 @@ export type TimeEntry = {
     description: string;
     isBilled: boolean;
 };
+
+export type CustomEvent = {
+  id: string;
+  title: string;
+  description?: string;
+  startDate: Date;
+  endDate: Date;
+  type: 'custom';
+}
+
+export type UnifiedEvent = {
+    id: string;
+    title: string;
+    date: Date; // The primary date for sorting/display (due date, end date, etc.)
+    type: 'project' | 'task' | 'invoice' | 'custom';
+    link?: string; // Link to the detail page
+    isCustom: boolean;
+    raw?: Project | Task | Invoice | CustomEvent; // The original object
+};
+
 
 export type FinancialData = {
   month: string;
@@ -726,4 +746,56 @@ export const bankAccounts: BankAccount[] = [
     { id: 'bank-1', bankName: 'Standard Bank', accountNumber: '**** **** **** 1234', balance: 125430.50, logoUrl: 'https://placehold.co/100x100.png' },
     { id: 'bank-2', bankName: 'FNB', accountNumber: '**** **** **** 5678', balance: 75890.22, logoUrl: 'https://placehold.co/100x100.png' },
     { id: 'bank-3', bankName: 'Capitec', accountNumber: '**** **** **** 9012', balance: 42311.90, logoUrl: 'https://placehold.co/100x100.png' },
+];
+
+export const customEvents: CustomEvent[] = [
+  { id: 'custom-1', title: 'Project Kick-off: JHB to CPT', description: 'Initial meeting with the client and team.', startDate: new Date(2024, 6, 25), endDate: new Date(2024, 6, 25), type: 'custom' },
+  { id: 'custom-2', title: 'Quarterly Review', description: 'Review Q2 performance and plan for Q3.', startDate: new Date(2024, 6, 30), endDate: new Date(2024, 6, 30), type: 'custom' },
+];
+
+const projectEvents: UnifiedEvent[] = projects.map(p => ({
+    id: `project-${p.id}`,
+    title: p.name,
+    date: p.endDate,
+    type: 'project',
+    link: `/dashboard/projects/${p.id}`,
+    isCustom: false,
+    raw: p,
+}));
+
+const taskEvents: UnifiedEvent[] = tasks.map(t => ({
+    id: `task-${t.id}`,
+    title: t.name,
+    date: t.dueDate,
+    type: 'task',
+    link: `/dashboard/tasks`,
+    isCustom: false,
+    raw: t,
+}));
+
+const invoiceEvents: UnifiedEvent[] = invoices.map(i => ({
+    id: `invoice-${i.id}`,
+    title: `Invoice ${i.id.toUpperCase()}`,
+    date: i.dueDate,
+    type: 'invoice',
+    link: `/dashboard/invoices`,
+    isCustom: false,
+    raw: i,
+}));
+
+const customUnifiedEvents: UnifiedEvent[] = customEvents.map(e => ({
+    id: e.id,
+    title: e.title,
+    date: e.startDate,
+    type: 'custom',
+    isCustom: true,
+    raw: e
+}));
+
+
+export const allEvents: UnifiedEvent[] = [
+    ...projectEvents,
+    ...taskEvents,
+    ...invoiceEvents,
+    ...customUnifiedEvents,
 ];
