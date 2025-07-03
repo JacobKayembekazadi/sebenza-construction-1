@@ -228,6 +228,19 @@ export type BankAccount = {
     logoUrl: string;
 };
 
+export type InventoryItem = {
+  id: string;
+  sku: string;
+  name: string;
+  description: string;
+  supplierId: string;
+  supplierName: string;
+  quantity: number;
+  costPrice: number;
+  sellingPrice: number;
+  lowStockThreshold: number;
+};
+
 export const employees: Employee[] = [
     { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Admin", avatar: "https://placehold.co/32x32.png" },
     { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Manager", avatar: "https://placehold.co/32x32.png" },
@@ -791,6 +804,14 @@ const customUnifiedEvents: UnifiedEvent[] = customEvents.map(e => ({
     isCustom: true,
     raw: e
 }));
+
+export const inventoryItems: InventoryItem[] = [
+  { id: 'item-1', sku: 'STL-IB-20', name: 'I-Beams (20ft)', description: 'Standard 20-foot steel I-beams for structural support.', supplierId: 'sup-1', supplierName: 'Steel & Co.', quantity: 150, costPrice: 280, sellingPrice: 350, lowStockThreshold: 50 },
+  { id: 'item-2', sku: 'CON-5K-CY', name: '5000 PSI Concrete', description: 'High-strength concrete mix, sold per cubic yard.', supplierId: 'sup-2', supplierName: 'Concrete King', quantity: 80, costPrice: 120, sellingPrice: 150, lowStockThreshold: 20 },
+  { id: 'item-3', sku: 'LMB-24-8', name: '2x4 Lumber (8ft)', description: 'Standard 8-foot dimensional lumber.', supplierId: 'sup-3', supplierName: 'Lumber Liquidators', quantity: 45, costPrice: 6.50, sellingPrice: 8, lowStockThreshold: 100 },
+  { id: 'item-4', sku: 'ELEC-12G-W', name: '12-Gauge Electrical Wire', description: '100ft spool of 12-gauge copper wiring.', supplierId: 'sup-1', supplierName: 'Steel & Co.', quantity: 25, costPrice: 80, sellingPrice: 100, lowStockThreshold: 30 },
+  { id: 'item-5', sku: 'PLMB-PVC-1', name: '1-inch PVC Pipe (10ft)', description: 'Standard 1-inch diameter, 10-foot length PVC pipe.', supplierId: 'sup-2', supplierName: 'Concrete King', quantity: 200, costPrice: 12, sellingPrice: 15, lowStockThreshold: 50 },
+];
 
 
 export const allEvents: UnifiedEvent[] = [
