@@ -159,9 +159,9 @@ export default function ProjectsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Jobs</h1>
         <p className="text-muted-foreground">
-          Your central hub for monitoring and managing all projects.
+          Your central hub for monitoring and managing all jobs.
         </p>
       </div>
 
@@ -169,7 +169,7 @@ export default function ProjectsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Projects
+              Total Jobs
             </CardTitle>
             <GanttChartSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -200,7 +200,7 @@ export default function ProjectsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Projects At Risk
+              Jobs At Risk
             </CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -216,9 +216,9 @@ export default function ProjectsPage() {
       <Card>
         <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <CardTitle>Project Directory</CardTitle>
+            <CardTitle>Job Directory</CardTitle>
             <CardDescription>
-              Search, filter, and manage all ongoing construction projects.
+              Search, filter, and manage all ongoing construction jobs.
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
@@ -226,7 +226,7 @@ export default function ProjectsPage() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search projects..."
+                placeholder="Search jobs..."
                 className="pl-8 w-full sm:w-[200px] lg:w-[250px]"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -258,7 +258,7 @@ export default function ProjectsPage() {
             </Select>
             <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              New Project
+              New Job
             </Button>
           </div>
         </CardHeader>
@@ -266,7 +266,7 @@ export default function ProjectsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[300px]">Project Name</TableHead>
+                <TableHead className="w-[300px]">Job Name</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Manager</TableHead>
                 <TableHead>Status</TableHead>
@@ -343,10 +343,10 @@ export default function ProjectsPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(project)}>
-                            Edit Project
+                            Edit Job
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleOpenDeleteDialog(project)} className="text-destructive focus:bg-destructive/20">
-                            Delete Project
+                            Delete Job
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -359,7 +359,7 @@ export default function ProjectsPage() {
                     colSpan={9}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    No projects found. Try adjusting your filters.
+                    No jobs found. Try adjusting your filters.
                   </TableCell>
                 </TableRow>
               )}

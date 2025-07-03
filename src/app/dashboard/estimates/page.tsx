@@ -133,14 +133,14 @@ export default function EstimatesPage() {
     
     if (estimateId) {
       setEstimates(estimates.map(e => e.id === estimateId ? { ...e, ...finalData } : e));
-      toast({ title: "Estimate Updated", description: `Estimate ${estimateId.toUpperCase()} has been saved.`});
+      toast({ title: "Quote Updated", description: `Quote ${estimateId.toUpperCase()} has been saved.`});
     } else {
       const newEstimate: Estimate = {
         id: `est-${Date.now()}`,
         ...finalData,
       };
       setEstimates([newEstimate, ...estimates]);
-      toast({ title: "Estimate Created", description: `New estimate ${newEstimate.id.toUpperCase()} has been created.`});
+      toast({ title: "Quote Created", description: `New quote ${newEstimate.id.toUpperCase()} has been created.`});
     }
   };
 
@@ -161,7 +161,7 @@ export default function EstimatesPage() {
         expiryDate: new Date(new Date().setDate(new Date().getDate() + 30)),
     };
     setEstimates([newEstimate, ...estimates]);
-    toast({ title: "Estimate Duplicated", description: `New draft created from ${estimateToDuplicate.id.toUpperCase()}.`});
+    toast({ title: "Quote Duplicated", description: `New draft created from ${estimateToDuplicate.id.toUpperCase()}.`});
   };
 
   const handleAction = (message: string) => {
@@ -171,16 +171,16 @@ export default function EstimatesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Estimates</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Quotes</h1>
         <p className="text-muted-foreground">
-          Create, send, and track project estimates for clients.
+          Create, send, and track project quotes for clients.
         </p>
       </div>
 
        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Estimates</CardTitle>
+            <CardTitle className="text-sm font-medium">Pending Quotes</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -198,7 +198,7 @@ export default function EstimatesPage() {
           <CardContent>
             <div className="text-2xl font-bold">${summary.acceptedValue.toLocaleString()}</div>
              <p className="text-xs text-muted-foreground">
-              Total value of all accepted estimates
+              Total value of all accepted quotes
             </p>
           </CardContent>
         </Card>
@@ -207,9 +207,9 @@ export default function EstimatesPage() {
       <Card>
         <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <CardTitle>Estimate List</CardTitle>
+            <CardTitle>Quote List</CardTitle>
             <CardDescription>
-              Manage all your project cost estimates.
+              Manage all your project cost quotes.
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
@@ -237,7 +237,7 @@ export default function EstimatesPage() {
             </Select>
             <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              New Estimate
+              New Quote
             </Button>
           </div>
         </CardHeader>
@@ -245,7 +245,7 @@ export default function EstimatesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Estimate ID</TableHead>
+                <TableHead>Quote ID</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Issue Date</TableHead>
                 <TableHead>Expiry Date</TableHead>
@@ -278,7 +278,7 @@ export default function EstimatesPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(estimate)}>
-                            Edit Estimate
+                            Edit Quote
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleDuplicate(estimate)}>
                             <Copy />
@@ -293,13 +293,13 @@ export default function EstimatesPage() {
                             <Send />
                             Send to Client
                           </DropdownMenuItem>
-                           <DropdownMenuItem onClick={() => handleAction('This would convert the estimate to an invoice.')}>
+                           <DropdownMenuItem onClick={() => handleAction('This would convert the quote to an invoice.')}>
                             <FilePlus2 />
                             Convert to Invoice
                           </DropdownMenuItem>
                            <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleOpenDeleteDialog(estimate)} className="text-destructive focus:bg-destructive/20">
-                            Delete Estimate
+                            Delete Quote
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -312,7 +312,7 @@ export default function EstimatesPage() {
                     colSpan={7}
                     className="h-24 text-center text-muted-foreground"
                   >
-                    No estimates found. Try adjusting your filters.
+                    No quotes found. Try adjusting your filters.
                   </TableCell>
                 </TableRow>
               )}
