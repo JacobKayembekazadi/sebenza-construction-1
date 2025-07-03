@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -144,7 +145,7 @@ function ClientDetailView({ client }: { client: Client }) {
                 <>
                     <TableCell className="font-medium">{item.id.toUpperCase()}</TableCell>
                     <TableCell><Badge>{item.status}</Badge></TableCell>
-                    <TableCell>${item.amount.toLocaleString()}</TableCell>
+                    <TableCell>${item.total.toLocaleString()}</TableCell>
                     <TableCell>{format(item.expiryDate, "PPP")}</TableCell>
                 </>
             )} />
@@ -175,7 +176,7 @@ function MiniTable({ icon, items, columns, renderRow }: { icon: React.ReactNode,
     if (items.length === 0) {
         return (
              <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg">
-                {React.cloneElement(icon, { className: "w-12 h-12 text-muted-foreground" })}
+                {React.cloneElement(icon as React.ReactElement, { className: "w-12 h-12 text-muted-foreground" })}
                 <p className="mt-4 text-muted-foreground">No {columns[0].toLowerCase()} found for this client.</p>
             </div>
         )

@@ -32,6 +32,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   PlusCircle,
@@ -40,11 +41,16 @@ import {
   Clock,
   CheckCircle,
   MoreHorizontal,
+  Copy,
+  FileDown,
+  FilePlus2,
+  Send,
 } from "lucide-react";
-import { estimates as initialEstimates, clients, type Estimate } from "@/lib/data";
+import { estimates as initialEstimates, clients, type Estimate, type EstimateLineItem } from "@/lib/data";
 import { AddEditEstimateDialog, type EstimateFormValues } from "@/components/add-edit-estimate-dialog";
 import { DeleteEstimateDialog } from "@/components/delete-estimate-dialog";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 export default function EstimatesPage() {
   const [estimates, setEstimates] = useState<Estimate[]>(initialEstimates);
@@ -54,6 +60,7 @@ export default function EstimatesPage() {
   const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedEstimate, setSelectedEstimate] = useState<Estimate | null>(null);
+  const { toast } = useToast();
 
   const statuses = ["All", "Draft", "Sent", "Accepted", "Declined"];
 
@@ -79,9 +86,9 @@ export default function EstimatesPage() {
   };
 
   const summary = useMemo(() => {
-    const totalValue = estimates.reduce((sum, e) => sum + e.amount, 0);
+    const totalValue = estimates.reduce((sum, e) => sum + e.total, 0);
     const pendingEstimates = estimates.filter((e) => e.status === "Sent" || e.status === "Draft").length;
-    const acceptedValue = estimates.filter(e => e.status === 'Accepted').reduce((sum, e) => sum + e.amount, 0);
+    const acceptedValue = estimates.filter(e => e.status === 'Accepted').reduce((sum, e) => sum + e.total, 0);
     return {
       totalEstimates: estimates.length,
       totalValue,
@@ -108,16 +115,32 @@ export default function EstimatesPage() {
   const handleSaveEstimate = (data: EstimateFormValues, estimateId?: string) => {
     const client = clients.find(c => c.id === data.clientId);
     if (!client) return;
+
+    const subtotal = data.lineItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+    const total = subtotal * (1 + data.tax / 100) - data.discount;
+
+    const finalData = {
+        ...data,
+        clientName: client.name,
+        subtotal,
+        total,
+        lineItems: data.lineItems.map((li, index) => ({
+            ...li,
+            id: li.id || `li-${Date.now()}-${index}`,
+            total: li.quantity * li.unitPrice,
+        }))
+    };
     
     if (estimateId) {
-      setEstimates(estimates.map(e => e.id === estimateId ? { ...e, ...data, clientName: client.name } : e));
+      setEstimates(estimates.map(e => e.id === estimateId ? { ...e, ...finalData } : e));
+      toast({ title: "Estimate Updated", description: `Estimate ${estimateId.toUpperCase()} has been saved.`});
     } else {
       const newEstimate: Estimate = {
         id: `est-${Date.now()}`,
-        clientName: client.name,
-        ...data,
+        ...finalData,
       };
       setEstimates([newEstimate, ...estimates]);
+      toast({ title: "Estimate Created", description: `New estimate ${newEstimate.id.toUpperCase()} has been created.`});
     }
   };
 
@@ -128,6 +151,22 @@ export default function EstimatesPage() {
       setSelectedEstimate(null);
     }
   };
+
+  const handleDuplicate = (estimateToDuplicate: Estimate) => {
+    const newEstimate: Estimate = {
+        ...estimateToDuplicate,
+        id: `est-${Date.now()}`,
+        status: 'Draft',
+        issueDate: new Date(),
+        expiryDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+    };
+    setEstimates([newEstimate, ...estimates]);
+    toast({ title: "Estimate Duplicated", description: `New draft created from ${estimateToDuplicate.id.toUpperCase()}.`});
+  };
+
+  const handleAction = (message: string) => {
+    toast({ title: "Action Triggered", description: message });
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -210,7 +249,7 @@ export default function EstimatesPage() {
                 <TableHead>Client</TableHead>
                 <TableHead>Issue Date</TableHead>
                 <TableHead>Expiry Date</TableHead>
-                <TableHead>Amount</TableHead>
+                <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
@@ -223,7 +262,7 @@ export default function EstimatesPage() {
                     <TableCell>{estimate.clientName}</TableCell>
                     <TableCell>{format(estimate.issueDate, "PPP")}</TableCell>
                     <TableCell>{format(estimate.expiryDate, "PPP")}</TableCell>
-                    <TableCell>${estimate.amount.toLocaleString()}</TableCell>
+                    <TableCell>${estimate.total.toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(estimate.status)}>
                         {estimate.status}
@@ -241,6 +280,24 @@ export default function EstimatesPage() {
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(estimate)}>
                             Edit Estimate
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDuplicate(estimate)}>
+                            <Copy />
+                            Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleAction('This would open a print dialog.')}>
+                            <FileDown />
+                            Print/Download PDF
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                           <DropdownMenuItem onClick={() => handleAction('This would email the client.')}>
+                            <Send />
+                            Send to Client
+                          </DropdownMenuItem>
+                           <DropdownMenuItem onClick={() => handleAction('This would convert the estimate to an invoice.')}>
+                            <FilePlus2 />
+                            Convert to Invoice
+                          </DropdownMenuItem>
+                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleOpenDeleteDialog(estimate)} className="text-destructive focus:bg-destructive/20">
                             Delete Estimate
                           </DropdownMenuItem>

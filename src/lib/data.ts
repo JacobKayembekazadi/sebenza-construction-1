@@ -40,14 +40,28 @@ export type Client = {
   shippingAddress: string;
 };
 
+export type EstimateLineItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+};
+
 export type Estimate = {
   id: string;
   clientId: string;
-  clientName: string; 
-  amount: number;
+  clientName: string;
+  lineItems: EstimateLineItem[];
+  subtotal: number;
+  tax: number; // Percentage
+  discount: number; // Fixed amount
+  total: number;
   issueDate: Date;
   expiryDate: Date;
   status: "Draft" | "Sent" | "Accepted" | "Declined";
+  notes: string;
+  terms: string;
 };
 
 export type Invoice = {
@@ -302,10 +316,73 @@ export const projects: Project[] = [
 export const allTasks = tasks;
 
 export const estimates: Estimate[] = [
-    { id: "est-001", clientId: "client-1", clientName: "Global Corp", amount: 125000, issueDate: new Date(2024, 4, 15), expiryDate: new Date(2024, 5, 15), status: "Accepted" },
-    { id: "est-002", clientId: "client-2", clientName: "Innovate LLC", amount: 250000, issueDate: new Date(2024, 5, 1), expiryDate: new Date(2024, 6, 1), status: "Sent" },
-    { id: "est-003", clientId: "client-3", clientName: "Mega Builders", amount: 75000, issueDate: new Date(2024, 5, 5), expiryDate: new Date(2024, 6, 5), status: "Draft" },
-    { id: "est-004", clientId: "client-1", clientName: "Global Corp", amount: 30000, issueDate: new Date(2024, 3, 10), expiryDate: new Date(2024, 4, 10), status: "Declined" },
+    { 
+        id: "est-001", 
+        clientId: "client-1", 
+        clientName: "Global Corp", 
+        lineItems: [
+            { id: "li-1", description: "Initial Consultation", quantity: 1, unitPrice: 5000, total: 5000 },
+            { id: "li-2", description: "Structural Engineering", quantity: 100, unitPrice: 150, total: 15000 },
+        ],
+        subtotal: 20000,
+        tax: 8.25,
+        discount: 1000,
+        total: 20000 * (1 + 8.25/100) - 1000,
+        issueDate: new Date(2024, 4, 15), 
+        expiryDate: new Date(2024, 5, 15), 
+        status: "Accepted",
+        notes: "This is a preliminary estimate.",
+        terms: "Payment due upon acceptance."
+    },
+    { 
+        id: "est-002", 
+        clientId: "client-2", 
+        clientName: "Innovate LLC", 
+        lineItems: [
+            { id: "li-3", description: "Earthworks", quantity: 1, unitPrice: 25000, total: 25000 },
+        ],
+        subtotal: 25000,
+        tax: 0,
+        discount: 0,
+        total: 25000,
+        issueDate: new Date(2024, 5, 1), 
+        expiryDate: new Date(2024, 6, 1), 
+        status: "Sent",
+        notes: "",
+        terms: ""
+    },
+    { 
+        id: "est-003", 
+        clientId: "client-3", 
+        clientName: "Mega Builders", 
+        lineItems: [],
+        subtotal: 0,
+        tax: 10,
+        discount: 0,
+        total: 0,
+        issueDate: new Date(2024, 5, 5), 
+        expiryDate: new Date(2024, 6, 5), 
+        status: "Draft",
+        notes: "",
+        terms: ""
+    },
+    { 
+        id: "est-004", 
+        clientId: "client-1", 
+        clientName: "Global Corp", 
+        lineItems: [
+             { id: "li-4", description: "Permit Fees", quantity: 1, unitPrice: 3000, total: 3000 },
+        ],
+        subtotal: 3000,
+        tax: 0,
+        discount: 0,
+        total: 3000,
+        issueDate: new Date(2024, 3, 10), 
+        expiryDate: new Date(2024, 4, 10), 
+        status: "Declined",
+        notes: "",
+        terms: ""
+    },
 ];
 
 export const invoices: Invoice[] = [
