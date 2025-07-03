@@ -22,22 +22,35 @@ import {
   ListChecks,
 } from "lucide-react";
 
-const links = [
+// In a real application, this would come from an authentication context/provider.
+// You can change this to 'member' to test the role-based visibility.
+const userRole = 'admin'; // 'admin', 'owner', or 'member'
+
+const allLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/projects", label: "Projects", icon: GanttChartSquare },
   { href: "/dashboard/tasks", label: "Tasks", icon: ListChecks },
   { href: "/dashboard/ai-report", label: "AI Progress Report", icon: Bot },
   { href: "/dashboard/clients", label: "Clients", icon: Users },
-  { href: "/dashboard/employees", label: "Employees", icon: Briefcase },
+  { href: "/dashboard/employees", label: "Employees", icon: Briefcase, roles: ['admin', 'owner'] },
   { href: "/dashboard/estimates", label: "Estimates", icon: FileText },
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/expenses", label: "Expenses", icon: DollarSign },
   { href: "/dashboard/documents", label: "Documents", icon: FileBox },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings, roles: ['admin', 'owner'] },
 ];
 
 export function DashboardNav() {
   const pathname = usePathname();
+
+  const links = allLinks.filter(link => {
+    // If a link has no roles defined, it's visible to everyone.
+    if (!link.roles) {
+      return true;
+    }
+    // Otherwise, check if the user's role is included in the link's roles array.
+    return link.roles.includes(userRole);
+  });
 
   return (
     <SidebarMenu>
