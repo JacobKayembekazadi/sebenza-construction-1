@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -13,6 +16,25 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function SettingsPage() {
+  // Profile state
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  // Notifications state
+  const [taskUpdates, setTaskUpdates] = useState(false);
+  const [clientMessages, setClientMessages] = useState(false);
+  const [projectMilestones, setProjectMilestones] = useState(false);
+
+  // Use useEffect to set initial values on the client-side only
+  // This avoids hydration mismatches
+  useEffect(() => {
+    setName("Jane Doe");
+    setEmail("jane.doe@example.com");
+    setTaskUpdates(true);
+    setClientMessages(true);
+    setProjectMilestones(false);
+  }, []);
+
   return (
     <div className="space-y-6">
       <div>
@@ -38,11 +60,22 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" defaultValue="Jane Doe" />
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Loading..."
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue="jane.doe@example.com" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Loading..."
+                />
               </div>
             </CardContent>
             <CardFooter>
@@ -90,15 +123,27 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-2">
-                <Checkbox id="task-updates" defaultChecked />
+                <Checkbox 
+                  id="task-updates" 
+                  checked={taskUpdates} 
+                  onCheckedChange={(checked) => setTaskUpdates(Boolean(checked))}
+                />
                 <Label htmlFor="task-updates">Task Updates</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Checkbox id="client-messages" defaultChecked />
+                <Checkbox
+                  id="client-messages"
+                  checked={clientMessages}
+                  onCheckedChange={(checked) => setClientMessages(Boolean(checked))}
+                />
                 <Label htmlFor="client-messages">New Client Messages</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Checkbox id="project-milestones" />
+                <Checkbox
+                  id="project-milestones"
+                  checked={projectMilestones}
+                  onCheckedChange={(checked) => setProjectMilestones(Boolean(checked))}
+                />
                 <Label htmlFor="project-milestones">Project Milestones</Label>
               </div>
             </CardContent>
