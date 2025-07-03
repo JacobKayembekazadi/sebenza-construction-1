@@ -26,6 +26,8 @@ export type Project = {
   startDate: Date;
   endDate: Date;
   tasks: Task[];
+  team: Employee[];
+  documents: Document[];
   clientId: string;
   clientName: string;
 };
@@ -381,6 +383,8 @@ const tasks: Task[] = [
     },
 ];
 
+export const allTasks = tasks;
+
 export const clients: Client[] = [
   { id: "client-1", name: "Global Corp", company: "Global Corp Inc.", email: "contact@globalcorp.com", phone: "123-456-7890", status: "Active", billingAddress: "123 Global Ave\nNew York, NY 10001\nUSA", shippingAddress: "456 Corporate Blvd\nNew York, NY 10001\nUSA" },
   { id: "client-2", name: "Innovate LLC", company: "Innovate LLC", email: "hello@innovate.com", phone: "234-567-8901", status: "Active", billingAddress: "789 Innovation Dr\nPalo Alto, CA 94301\nUSA", shippingAddress: "789 Innovation Dr\nPalo Alto, CA 94301\nUSA" },
@@ -393,6 +397,14 @@ export const suppliers: Supplier[] = [
     { id: "sup-2", name: "Concrete King", email: "orders@concreteking.com", phone: "555-0202", address: "2 Cement Rd, Boulder, CO" },
     { id: "sup-3", name: "Lumber Liquidators", email: "contact@lumberliquidators.com", phone: "555-0203", address: "3 Wood St, Portland, OR" },
 ];
+
+export const documents: Document[] = [
+    { id: 'doc-001', name: 'Bill of Lading #556.pdf', type: 'PDF', uploadDate: new Date(2024, 0, 20), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', url: '#' },
+    { id: 'doc-002', name: 'Customs Declaration.jpg', type: 'Image', uploadDate: new Date(2024, 2, 5), projectId: 'proj-002', projectName: 'Durban Port Clearance', url: '#' },
+    { id: 'doc-003', name: 'Proof of Delivery.docx', type: 'Word', uploadDate: new Date(2024, 5, 10), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', url: '#' },
+    { id: 'doc-004', name: 'Inventory Sheet.xlsx', type: 'Excel', uploadDate: new Date(2024, 4, 15), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', url: '#' },
+];
+
 
 export const projects: Project[] = [
   {
@@ -407,6 +419,8 @@ export const projects: Project[] = [
     startDate: new Date(2023, 0, 15),
     endDate: new Date(2024, 11, 31),
     tasks: tasks.filter(t => t.projectId === "proj-001"),
+    team: employees.filter(e => ["emp-008", "emp-002", "emp-003"].includes(e.id)),
+    documents: documents.filter(d => d.projectId === "proj-001"),
     clientId: "client-1",
     clientName: "Global Corp"
   },
@@ -422,6 +436,8 @@ export const projects: Project[] = [
     startDate: new Date(2023, 2, 1),
     endDate: new Date(2024, 7, 30),
     tasks: tasks.filter(t => t.projectId === "proj-002"),
+    team: employees.filter(e => ["emp-009", "emp-007"].includes(e.id)),
+    documents: documents.filter(d => d.projectId === "proj-002"),
     clientId: "client-2",
     clientName: "Innovate LLC"
   },
@@ -437,6 +453,8 @@ export const projects: Project[] = [
     startDate: new Date(2023, 5, 1),
     endDate: new Date(2025, 4, 31),
     tasks: [],
+    team: employees.filter(e => ["emp-010"].includes(e.id)),
+    documents: [],
     clientId: "client-4",
     clientName: "Quantum Solutions"
   },
@@ -452,6 +470,8 @@ export const projects: Project[] = [
     startDate: new Date(2022, 8, 1),
     endDate: new Date(2024, 5, 30),
     tasks: tasks.filter(t => t.projectId === "proj-004"),
+    team: employees.filter(e => ["emp-008", "emp-006"].includes(e.id)),
+    documents: documents.filter(d => d.projectId === "proj-004"),
     clientId: "client-1",
     clientName: "Global Corp"
   },
@@ -504,8 +524,6 @@ export const purchaseOrders: PurchaseOrder[] = [
         notes: "Call Bob on arrival."
     }
 ];
-
-export const allTasks = tasks;
 
 export const estimates: Estimate[] = [
     { 
@@ -677,13 +695,6 @@ export const expenses: Expense[] = [
     { id: 'exp-004', description: 'Border Crossing Toll', amount: 150, category: 'Permits', date: new Date(2024, 5, 22), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe', isBillable: true, isRecurring: false },
     { id: 'exp-005', description: 'Driver Overtime', amount: 800, category: 'Labor', date: new Date(2024, 5, 25), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', isBillable: true, isRecurring: false },
     { id: 'exp-006', description: 'Monthly Software Subscription', amount: 150, category: 'Other', date: new Date(2024, 5, 1), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', isBillable: false, isRecurring: true },
-];
-
-export const documents: Document[] = [
-    { id: 'doc-001', name: 'Bill of Lading #556.pdf', type: 'PDF', uploadDate: new Date(2024, 0, 20), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', url: '#' },
-    { id: 'doc-002', name: 'Customs Declaration.jpg', type: 'Image', uploadDate: new Date(2024, 2, 5), projectId: 'proj-002', projectName: 'Durban Port Clearance', url: '#' },
-    { id: 'doc-003', name: 'Proof of Delivery.docx', type: 'Word', uploadDate: new Date(2024, 5, 10), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe', url: '#' },
-    { id: 'doc-004', name: 'Inventory Sheet.xlsx', type: 'Excel', uploadDate: new Date(2024, 4, 15), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', url: '#' },
 ];
 
 export const timeEntries: TimeEntry[] = [
