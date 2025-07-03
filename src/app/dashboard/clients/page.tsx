@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { clients as initialClients, projects as allProjects, invoices as allInvoices, estimates as allEstimates, expenses as allExpenses, type Client, type Project, type Invoice, type Estimate, type Expense } from "@/lib/data";
+import { clients as initialClients, projects as allProjects, invoices as allInvoices, estimates as allEstimates, type Client, type Project, type Invoice, type Estimate } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -54,9 +54,10 @@ import {
   Briefcase,
   FileText,
   Receipt,
-  DollarSign,
   FolderArchive,
   Edit,
+  Clock,
+  MessagesSquare,
 } from "lucide-react";
 import { type ClientFormValues, AddEditClientDialog } from "@/components/add-edit-client-dialog";
 import { DeleteClientDialog } from "@/components/delete-client-dialog";
@@ -66,10 +67,6 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
   const clientProjects = useMemo(() => allProjects.filter(p => p.clientId === client.id), [client.id]);
   const clientInvoices = useMemo(() => allInvoices.filter(i => i.clientId === client.id), [client.id]);
   const clientEstimates = useMemo(() => allEstimates.filter(e => e.clientId === client.id), [client.id]);
-  const clientExpenses = useMemo(() => {
-    const projectIds = clientProjects.map(p => p.id);
-    return allExpenses.filter(e => projectIds.includes(e.projectId));
-  }, [clientProjects]);
 
   return (
     <Card>
@@ -97,13 +94,14 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="overview">
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="invoices">Invoices</TabsTrigger>
             <TabsTrigger value="quotes">Quotes</TabsTrigger>
-            <TabsTrigger value="expenses">Expenses</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
+            <TabsTrigger value="time-tracking">Time Tracking</TabsTrigger>
+            <TabsTrigger value="communication">Communication</TabsTrigger>
           </TabsList>
           
           <TabsContent value="overview">
@@ -155,20 +153,22 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
                 </>
             )} />
           </TabsContent>
-          <TabsContent value="expenses">
-            <MiniTable icon={<DollarSign />} items={clientExpenses} columns={['Description', 'Project', 'Amount', 'Date']} renderRow={(item: Expense) => (
-                <>
-                    <TableCell className="font-medium">{item.description}</TableCell>
-                    <TableCell><Link href={`/dashboard/projects/${item.projectId}`} className="text-muted-foreground hover:underline">{item.projectName}</Link></TableCell>
-                    <TableCell>${item.amount.toLocaleString()}</TableCell>
-                    <TableCell>{format(item.date, "PPP")}</TableCell>
-                </>
-            )} />
-          </TabsContent>
            <TabsContent value="documents">
                 <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg">
                     <FolderArchive className="w-12 h-12 text-muted-foreground" />
                     <p className="mt-4 text-muted-foreground">No documents for this client yet.</p>
+                </div>
+           </TabsContent>
+           <TabsContent value="time-tracking">
+                <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg">
+                    <Clock className="w-12 h-12 text-muted-foreground" />
+                    <p className="mt-4 text-muted-foreground">No time tracking entries for this client yet.</p>
+                </div>
+           </TabsContent>
+           <TabsContent value="communication">
+                <div className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg">
+                    <MessagesSquare className="w-12 h-12 text-muted-foreground" />
+                    <p className="mt-4 text-muted-foreground">No communication history for this client yet.</p>
                 </div>
            </TabsContent>
         </Tabs>
