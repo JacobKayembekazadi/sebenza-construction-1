@@ -36,9 +36,11 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Project, Client } from "@/lib/data";
 import { useEffect } from "react";
+import { Textarea } from "./ui/textarea";
 
 const projectSchema = z.object({
   name: z.string().min(3, "Project name must be at least 3 characters."),
+  description: z.string().min(10, "Description must be at least 10 characters."),
   manager: z.string().min(3, "Manager name must be at least 3 characters."),
   status: z.enum(["On Track", "At Risk", "Off Track"]),
   budget: z.coerce.number().min(0, "Budget must be a positive number."),
@@ -71,6 +73,7 @@ export function AddEditProjectDialog({
     resolver: zodResolver(projectSchema),
     defaultValues: {
       name: "",
+      description: "",
       manager: "",
       status: "On Track",
       budget: 0,
@@ -83,6 +86,7 @@ export function AddEditProjectDialog({
       if (project) {
         form.reset({
           name: project.name,
+          description: project.description,
           manager: project.manager,
           status: project.status,
           budget: project.budget,
@@ -93,6 +97,7 @@ export function AddEditProjectDialog({
       } else {
         form.reset({
           name: "",
+          description: "",
           manager: "",
           status: "On Track",
           budget: 0,
@@ -113,9 +118,9 @@ export function AddEditProjectDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{project ? "Edit Project" : "Add New Project"}</DialogTitle>
+          <DialogTitle>{project ? "Edit Job" : "Add New Job"}</DialogTitle>
           <DialogDescription>
-            {project ? "Make changes to your project here." : "Fill in the details for the new project."}
+            {project ? "Make changes to your job here." : "Fill in the details for the new job."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -125,9 +130,22 @@ export function AddEditProjectDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name</FormLabel>
+                  <FormLabel>Job Name</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Downtown Tower Renovation" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Describe the job's goals and scope..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -279,7 +297,7 @@ export function AddEditProjectDialog({
             />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-              <Button type="submit">Save Project</Button>
+              <Button type="submit">Save Job</Button>
             </DialogFooter>
           </form>
         </Form>

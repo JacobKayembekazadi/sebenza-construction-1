@@ -42,6 +42,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
             <p className="text-muted-foreground">Managed by {project.manager}</p>
             <Badge variant={statusVariant(project.status)} className="text-sm">{project.status}</Badge>
           </div>
+           <p className="mt-4 text-muted-foreground max-w-3xl">{project.description}</p>
         </div>
       </header>
 

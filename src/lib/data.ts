@@ -18,6 +18,7 @@ export type Task = {
 export type Project = {
   id: string;
   name: string;
+  description: string;
   manager: string;
   status: "On Track" | "At Risk" | "Off Track";
   completion: number;
@@ -326,6 +327,7 @@ export const projects: Project[] = [
   {
     id: "proj-001",
     name: "Johannesburg to Cape Town",
+    description: "Full-scale logistics operation for a major client, involving cross-country freight movement and coordination.",
     manager: "Alice Johnson",
     status: "On Track",
     completion: 65,
@@ -340,6 +342,7 @@ export const projects: Project[] = [
   {
     id: "proj-002",
     name: "Durban Port Clearance",
+    description: "Expedited customs clearance and port handling for time-sensitive cargo at Durban Harbor.",
     manager: "Bob Vance",
     status: "At Risk",
     completion: 40,
@@ -354,6 +357,7 @@ export const projects: Project[] = [
   {
     id: "proj-003",
     name: "Cross-Border to Zimbabwe",
+    description: "Complex cross-border freight project requiring extensive documentation and liaison with multiple authorities.",
     manager: "Carol Danvers",
     status: "Off Track",
     completion: 20,
@@ -368,6 +372,7 @@ export const projects: Project[] = [
     {
     id: "proj-004",
     name: "Local Warehouse Distribution",
+    description: "Management and optimization of last-mile delivery services from our central warehouse to local businesses.",
     manager: "Alice Johnson",
     status: "On Track",
     completion: 85,
