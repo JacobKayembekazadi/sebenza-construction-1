@@ -348,3 +348,5 @@ export const weatherForecast: WeatherForecastData[] = [
     { day: "Thu", icon: "Cloud", temp: 70 },
     { day: "Fri", icon: "Sun", temp: 75 },
 ];
+
+    

@@ -8,9 +8,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, Task } from "@/lib/data";
+import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, invoices, estimates, Task } from "@/lib/data";
 import Link from "next/link";
 import {
   Activity,
@@ -18,6 +19,15 @@ import {
   ArrowRight,
   CircleDollarSign,
   ListChecks,
+  TrendingUp,
+  TrendingDown,
+  Scale,
+  FileStack,
+  Clock,
+  UserPlus,
+  Receipt,
+  FileSignature,
+  Landmark,
 } from "lucide-react";
 import { ProjectStatusChart } from "@/components/dashboard/project-status-chart";
 import { cn } from "@/lib/utils";
@@ -26,6 +36,7 @@ import { RecentActivityFeed } from "@/components/dashboard/recent-activity-feed"
 import { ResourceAllocationChart } from "@/components/dashboard/resource-allocation-chart";
 import { WeatherForecast } from "@/components/dashboard/weather-forecast";
 import { QuickAddButton } from "@/components/quick-add-button";
+import { Button } from "@/components/ui/button";
 
 const MyTaskDueDate = ({ dueDate }: { dueDate: Date }) => {
     const [text, setText] = useState<string | null>(null);
@@ -68,23 +79,27 @@ const MyTaskDueDate = ({ dueDate }: { dueDate: Date }) => {
 };
 
 export default function DashboardPage() {
-  const [overdueTasksCount, setOverdueTasksCount] = useState(0);
+  const financialSummary = useMemo(() => {
+    const totalIncome = financialData.reduce((acc, item) => acc + item.revenue, 0);
+    const totalExpenses = financialData.reduce((acc, item) => acc + item.expenses, 0);
+    const totalProfit = totalIncome - totalExpenses;
+    
+    const outstandingInvoices = invoices
+      .filter(i => i.status === 'Sent' || i.status === 'Overdue')
+      .reduce((acc, i) => acc + i.amount, 0);
+      
+    const outstandingEstimates = estimates
+      .filter(e => e.status === 'Sent')
+      .reduce((acc, e) => acc + e.amount, 0);
 
-  useEffect(() => {
-    const now = new Date();
-    const count = allTasks.filter(
-      (task) => task.dueDate < now && task.status !== "Done"
-    ).length;
-    setOverdueTasksCount(count);
+    return {
+      totalIncome,
+      totalExpenses,
+      totalProfit,
+      totalOutstanding: outstandingInvoices + outstandingEstimates,
+      unbilledHours: 42, // Mock data
+    }
   }, []);
-
-  const totalBudget = projects.reduce((sum, p) => sum + p.budget, 0);
-  const totalSpent = projects.reduce((sum, p) => sum + p.spent, 0);
-  const budgetUtilization = totalBudget > 0 ? (totalSpent / totalBudget) * 100 : 0;
-
-  const projectsAtRisk = projects.filter(
-    (p) => p.status === "At Risk" || p.status === "Off Track"
-  ).length;
 
   const myTasks = useMemo(() => {
     return allTasks
@@ -122,65 +137,118 @@ export default function DashboardPage() {
         </div>
       </div>
       
-      {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Link href="/dashboard/projects">
-            <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-                <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">{projects.length}</div>
-                <p className="text-xs text-muted-foreground">
-                Total projects currently in progress
-                </p>
-            </CardContent>
-            </Card>
-        </Link>
-        <Link href="/dashboard/expenses">
-            <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Budget Utilization</CardTitle>
-                <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">{budgetUtilization.toFixed(0)}%</div>
-                <p className="text-xs text-muted-foreground">
-                ${totalSpent.toLocaleString()} / ${totalBudget.toLocaleString()}
-                </p>
-            </CardContent>
-            </Card>
-        </Link>
-        <Link href="/dashboard/projects">
-            <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Projects At Risk</CardTitle>
-                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">{projectsAtRisk}</div>
-                <p className="text-xs text-muted-foreground">
-                'At Risk' or 'Off Track'
-                </p>
-            </CardContent>
-            </Card>
-        </Link>
-        <Link href="/dashboard/tasks">
-            <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Overdue Tasks</CardTitle>
-                <ListChecks className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold">+{overdueTasksCount}</div>
-                <p className="text-xs text-muted-foreground">
-                Across all active projects
-                </p>
-            </CardContent>
-            </Card>
-        </Link>
+      {/* Financial KPI Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
+              <Scale className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+              <div className="text-2xl font-bold">${financialSummary.totalProfit.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">
+              Last 6 months
+              </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Income</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+              <div className="text-2xl font-bold">${financialSummary.totalIncome.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">
+              Last 6 months
+              </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Expenses</CardTitle>
+              <TrendingDown className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+              <div className="text-2xl font-bold">${financialSummary.totalExpenses.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">
+              Last 6 months
+              </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
+              <FileStack className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+              <div className="text-2xl font-bold">${financialSummary.totalOutstanding.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">
+              Invoices and estimates
+              </p>
+          </CardContent>
+        </Card>
+         <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Unbilled Time</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+              <div className="text-2xl font-bold">{financialSummary.unbilledHours} hrs</div>
+              <p className="text-xs text-muted-foreground">
+              Across all projects
+              </p>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><UserPlus /> Add a Client</CardTitle>
+            <CardDescription>Start a new relationship by adding a client profile.</CardDescription>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+            <Button asChild className="w-full">
+              <Link href="/dashboard/clients">New Client</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+         <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Receipt /> Get Paid</CardTitle>
+            <CardDescription>Create a professional invoice and get paid faster.</CardDescription>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+            <Button asChild className="w-full">
+              <Link href="/dashboard/invoices">Create Invoice</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><FileSignature /> Secure a New Deal</CardTitle>
+            <CardDescription>Send a detailed estimate or quote to win your next project.</CardDescription>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+            <Button asChild className="w-full">
+              <Link href="/dashboard/estimates">Create Estimate</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        <Card className="flex flex-col">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Landmark /> Track Spending</CardTitle>
+            <CardDescription>Log expenses to keep your project budgets on track.</CardDescription>
+          </CardHeader>
+          <CardFooter className="mt-auto">
+             <Button asChild className="w-full">
+                <Link href="/dashboard/expenses">Add Expense</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -258,3 +326,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
