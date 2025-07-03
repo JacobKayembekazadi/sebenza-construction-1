@@ -97,7 +97,7 @@ export function GenerateReportDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Generate {reportType} Report</DialogTitle>
           <DialogDescription>
