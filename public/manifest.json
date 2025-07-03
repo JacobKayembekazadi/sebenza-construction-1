@@ -1,0 +1,21 @@
+{
+  "name": "Sebenza Construction PM",
+  "short_name": "Sebenza",
+  "description": "Construction Project Management",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#E5F1FC",
+  "theme_color": "#0077CC",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
