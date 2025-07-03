@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -14,26 +15,47 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function SettingsPage() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // Profile state
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState("Jane Doe");
+  const [email, setEmail] = useState("jane.doe@example.com");
 
   // Notifications state
-  const [taskUpdates, setTaskUpdates] = useState(false);
-  const [clientMessages, setClientMessages] = useState(false);
+  const [taskUpdates, setTaskUpdates] = useState(true);
+  const [clientMessages, setClientMessages] = useState(true);
   const [projectMilestones, setProjectMilestones] = useState(false);
-
-  // Use useEffect to set initial values on the client-side only
-  // This avoids hydration mismatches
-  useEffect(() => {
-    setName("Jane Doe");
-    setEmail("jane.doe@example.com");
-    setTaskUpdates(true);
-    setClientMessages(true);
-    setProjectMilestones(false);
-  }, []);
+  
+  if (!isClient) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <Skeleton className="h-9 w-48" />
+          <Skeleton className="h-4 w-96 mt-2" />
+        </div>
+        <Skeleton className="h-10 w-96" />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-64 mt-2" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-32 w-full" />
+          </CardContent>
+          <CardFooter>
+            <Skeleton className="h-10 w-28" />
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -64,7 +86,6 @@ export default function SettingsPage() {
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Loading..."
                 />
               </div>
               <div className="space-y-2">
@@ -74,7 +95,6 @@ export default function SettingsPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Loading..."
                 />
               </div>
             </CardContent>
