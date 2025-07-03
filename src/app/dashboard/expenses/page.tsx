@@ -39,13 +39,16 @@ import {
   Search,
   DollarSign,
   MoreHorizontal,
-  TrendingUp,
   Tag,
+  Repeat,
+  FileDown
 } from "lucide-react";
 import { expenses as initialExpenses, projects, type Expense } from "@/lib/data";
 import { AddEditExpenseDialog, type ExpenseFormValues } from "@/components/add-edit-expense-dialog";
 import { DeleteExpenseDialog } from "@/components/delete-expense-dialog";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
@@ -55,6 +58,7 @@ export default function ExpensesPage() {
   const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const { toast } = useToast();
 
   const categories = ["All", ...Array.from(new Set(initialExpenses.map(e => e.category)))];
 
@@ -110,6 +114,7 @@ export default function ExpensesPage() {
       const newExpense: Expense = {
         id: `exp-${Date.now()}`,
         projectName: project.name,
+        receiptUrl: '',
         ...data,
       };
       setExpenses([newExpense, ...expenses]);
@@ -122,6 +127,20 @@ export default function ExpensesPage() {
       setIsDeleteDialogOpen(false);
       setSelectedExpense(null);
     }
+  };
+
+  const handleExport = (format: 'CSV' | 'PDF' | 'Excel') => {
+      toast({
+          title: "Export Started",
+          description: `Your expense data is being prepared for export as a ${format} file.`
+      })
+  };
+
+  const handleImport = () => {
+      toast({
+          title: "Import from CSV",
+          description: "This would open a file dialog to import expenses."
+      })
   };
 
   return (
@@ -188,6 +207,22 @@ export default function ExpensesPage() {
                 ))}
               </SelectContent>
             </Select>
+            <div className="flex w-full sm:w-auto items-center gap-2">
+                <Button variant="outline" className="w-full" onClick={handleImport} disabled>Import</Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="w-full">
+                            <FileDown className="mr-2 h-4 w-4" />
+                            Export
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleExport('CSV')}>Export as CSV</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExport('Excel')}>Export as Excel</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleExport('PDF')}>Export as PDF</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
             <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
               New Expense
@@ -203,6 +238,7 @@ export default function ExpensesPage() {
                 <TableHead>Category</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Amount</TableHead>
+                <TableHead>Billable</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -210,7 +246,12 @@ export default function ExpensesPage() {
               {filteredExpenses.length > 0 ? (
                 filteredExpenses.map((expense) => (
                   <TableRow key={expense.id}>
-                    <TableCell className="font-medium">{expense.description}</TableCell>
+                    <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                           {expense.isRecurring && <Repeat className="h-4 w-4 text-muted-foreground" title="Recurring Expense" />}
+                           <span>{expense.description}</span>
+                        </div>
+                    </TableCell>
                     <TableCell>
                         <Link href={`/dashboard/projects/${expense.projectId}`} className="hover:underline">
                             {expense.projectName}
@@ -221,6 +262,11 @@ export default function ExpensesPage() {
                     </TableCell>
                     <TableCell>{format(expense.date, "PPP")}</TableCell>
                     <TableCell>${expense.amount.toLocaleString()}</TableCell>
+                    <TableCell>
+                      <Badge variant={expense.isBillable ? 'secondary' : 'outline'}>
+                        {expense.isBillable ? 'Yes' : 'No'}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -244,7 +290,7 @@ export default function ExpensesPage() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={6}
+                    colSpan={7}
                     className="h-24 text-center text-muted-foreground"
                   >
                     No expenses found. Try adjusting your filters.

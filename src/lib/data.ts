@@ -114,6 +114,9 @@ export type Expense = {
     date: Date;
     projectId: string;
     projectName: string;
+    isBillable: boolean;
+    isRecurring: boolean;
+    receiptUrl?: string; // a dummy url
 };
 
 export type Document = {
@@ -584,11 +587,12 @@ export const invoices: Invoice[] = [
 
 
 export const expenses: Expense[] = [
-    { id: 'exp-001', description: 'Fuel for Truck #12', amount: 250, category: 'Materials', date: new Date(2024, 5, 15), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town' },
-    { id: 'exp-002', description: 'Port Handling Fees', amount: 1500, category: 'Subcontractor', date: new Date(2024, 5, 18), projectId: 'proj-002', projectName: 'Durban Port Clearance' },
-    { id: 'exp-003', description: 'Warehouse Supplies', amount: 500, category: 'Materials', date: new Date(2024, 5, 20), projectId: 'proj-004', projectName: 'Local Warehouse Distribution' },
-    { id: 'exp-004', description: 'Border Crossing Toll', amount: 150, category: 'Permits', date: new Date(2024, 5, 22), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe' },
-    { id: 'exp-005', description: 'Driver Overtime', amount: 800, category: 'Labor', date: new Date(2024, 5, 25), projectId: 'proj-004', projectName: 'Local Warehouse Distribution' },
+    { id: 'exp-001', description: 'Fuel for Truck #12', amount: 250, category: 'Materials', date: new Date(2024, 5, 15), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', isBillable: true, isRecurring: false, receiptUrl: '#' },
+    { id: 'exp-002', description: 'Port Handling Fees', amount: 1500, category: 'Subcontractor', date: new Date(2024, 5, 18), projectId: 'proj-002', projectName: 'Durban Port Clearance', isBillable: true, isRecurring: false },
+    { id: 'exp-003', description: 'Warehouse Supplies', amount: 500, category: 'Materials', date: new Date(2024, 5, 20), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', isBillable: false, isRecurring: false, receiptUrl: '#' },
+    { id: 'exp-004', description: 'Border Crossing Toll', amount: 150, category: 'Permits', date: new Date(2024, 5, 22), projectId: 'proj-003', projectName: 'Cross-Border to Zimbabwe', isBillable: true, isRecurring: false },
+    { id: 'exp-005', description: 'Driver Overtime', amount: 800, category: 'Labor', date: new Date(2024, 5, 25), projectId: 'proj-004', projectName: 'Local Warehouse Distribution', isBillable: true, isRecurring: false },
+    { id: 'exp-006', description: 'Monthly Software Subscription', amount: 150, category: 'Other', date: new Date(2024, 5, 1), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town', isBillable: false, isRecurring: true },
 ];
 
 export const documents: Document[] = [

@@ -16,6 +16,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,12 +32,14 @@ import {
 } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Paperclip } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Expense, Project } from "@/lib/data";
 import { useEffect } from "react";
 import { Textarea } from "./ui/textarea";
+import { Separator } from "./ui/separator";
+import { Switch } from "./ui/switch";
 
 const expenseSchema = z.object({
   description: z.string().min(3, "Description must be at least 3 characters."),
@@ -44,6 +47,8 @@ const expenseSchema = z.object({
   category: z.enum(["Materials", "Labor", "Permits", "Subcontractor", "Other"]),
   date: z.date(),
   projectId: z.string().min(1, "Please select a project."),
+  isBillable: z.boolean().default(false),
+  isRecurring: z.boolean().default(false),
 });
 
 export type ExpenseFormValues = z.infer<typeof expenseSchema>;
@@ -71,6 +76,8 @@ export function AddEditExpenseDialog({
       category: "Other",
       date: new Date(),
       projectId: "",
+      isBillable: false,
+      isRecurring: false,
     },
   });
 
@@ -83,6 +90,8 @@ export function AddEditExpenseDialog({
           category: expense.category,
           date: new Date(expense.date),
           projectId: expense.projectId,
+          isBillable: expense.isBillable,
+          isRecurring: expense.isRecurring,
         });
       } else {
         form.reset({
@@ -91,6 +100,8 @@ export function AddEditExpenseDialog({
           category: "Other",
           date: new Date(),
           projectId: "",
+          isBillable: false,
+          isRecurring: false,
         });
       }
     }
@@ -103,7 +114,7 @@ export function AddEditExpenseDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{expense ? "Edit Expense" : "Add New Expense"}</DialogTitle>
           <DialogDescription>
@@ -224,10 +235,60 @@ export function AddEditExpenseDialog({
                 </FormItem>
             )}
             />
+            
+            <Separator />
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-              <Button type="submit">Save Expense</Button>
+             <FormField
+              control={form.control}
+              name="isBillable"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Billable Expense</FormLabel>
+                    <FormDescription>
+                      This can be billed to the client.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="isRecurring"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Recurring Expense</FormLabel>
+                    <FormDescription>
+                      This expense recurs monthly.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="pt-4 sm:justify-between">
+              <Button type="button" variant="outline" className="w-full sm:w-auto" disabled>
+                <Paperclip className="mr-2 h-4 w-4" />
+                Attach Receipt
+              </Button>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                <Button type="submit">Save Expense</Button>
+              </div>
             </DialogFooter>
           </form>
         </Form>
