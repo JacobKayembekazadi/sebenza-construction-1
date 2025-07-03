@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -56,6 +57,40 @@ export default function AccountingPage() {
           description: `Your data is being prepared for export as a ${format} file. This might take a moment.`
       })
   }
+  
+  const handleConnectAccount = () => {
+    toast({
+      title: "Simulating Bank Connection",
+      description: "This would open a secure window (like Plaid) to connect your bank account.",
+    });
+  };
+
+  const handleStartReconciliation = () => {
+    toast({
+      title: "Reconciliation Started",
+      description: "The system is now matching your bank transactions with your invoices and expenses.",
+    });
+  };
+
+  const handleAccountAction = (action: 'Reconnect' | 'Import' | 'Remove', account: BankAccount) => {
+    let description = "";
+    switch (action) {
+        case 'Reconnect':
+            description = `Attempting to reconnect your ${account.bankName} account.`;
+            break;
+        case 'Import':
+            description = `This would open a file dialog to import a statement for your ${account.bankName} account.`;
+            break;
+        case 'Remove':
+            description = `The account from ${account.bankName} would be unlinked and its data removed.`;
+            break;
+    }
+    toast({
+      title: `${action} Action Triggered`,
+      description,
+      variant: action === 'Remove' ? 'destructive' : 'default',
+    });
+  };
 
   return (
     <>
@@ -97,7 +132,7 @@ export default function AccountingPage() {
                           Manage your linked bank accounts and import transactions.
                       </CardDescription>
                   </div>
-                  <Button disabled>
+                  <Button onClick={handleConnectAccount}>
                       <PlusCircle className="mr-2" />
                       Connect New Account
                   </Button>
@@ -132,9 +167,9 @@ export default function AccountingPage() {
                                           </Button>
                                           </DropdownMenuTrigger>
                                           <DropdownMenuContent align="end">
-                                              <DropdownMenuItem disabled>Reconnect</DropdownMenuItem>
-                                              <DropdownMenuItem disabled>Import Statement (CSV)</DropdownMenuItem>
-                                              <DropdownMenuItem className="text-destructive focus:bg-destructive/20" disabled>Remove</DropdownMenuItem>
+                                              <DropdownMenuItem onClick={() => handleAccountAction('Reconnect', account)}>Reconnect</DropdownMenuItem>
+                                              <DropdownMenuItem onClick={() => handleAccountAction('Import', account)}>Import Statement (CSV)</DropdownMenuItem>
+                                              <DropdownMenuItem className="text-destructive focus:bg-destructive/20" onClick={() => handleAccountAction('Remove', account)}>Remove</DropdownMenuItem>
                                           </DropdownMenuContent>
                                       </DropdownMenu>
                                   </TableCell>
@@ -144,7 +179,7 @@ export default function AccountingPage() {
                   </Table>
               </CardContent>
               <CardFooter>
-                  <Button disabled>Start Reconciliation</Button>
+                  <Button onClick={handleStartReconciliation}>Start Reconciliation</Button>
               </CardFooter>
             </Card>
           </TabsContent>
