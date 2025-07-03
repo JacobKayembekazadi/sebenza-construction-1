@@ -46,7 +46,7 @@ import {
   History,
   Repeat,
 } from "lucide-react";
-import { invoices as initialInvoices, clients, projects, type Invoice, type InvoiceLineItem } from "@/lib/data";
+import { invoices as initialInvoices, clients, projects, type Invoice, type InvoiceLineItem, services } from "@/lib/data";
 import { AddEditInvoiceDialog, type InvoiceFormValues } from "@/components/add-edit-invoice-dialog";
 import { DeleteInvoiceDialog } from "@/components/delete-invoice-dialog";
 import Link from "next/link";
@@ -371,6 +371,7 @@ export default function InvoicesPage() {
         invoice={selectedInvoice}
         clients={clients}
         projects={projects}
+        services={services}
       />
       
       <DeleteInvoiceDialog

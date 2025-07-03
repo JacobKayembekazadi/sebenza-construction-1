@@ -34,8 +34,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { Estimate, Client } from "@/lib/data";
-import { useEffect, useMemo } from "react";
+import type { Estimate, Client, Service } from "@/lib/data";
+import { useEffect, useMemo, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { Separator } from "./ui/separator";
 
@@ -69,6 +69,7 @@ interface AddEditEstimateDialogProps {
   onSave: (data: EstimateFormValues, estimateId?: string) => void;
   estimate?: Estimate | null;
   clients: Client[];
+  services: Service[];
 }
 
 export function AddEditEstimateDialog({
@@ -77,7 +78,10 @@ export function AddEditEstimateDialog({
   onSave,
   estimate,
   clients,
+  services,
 }: AddEditEstimateDialogProps) {
+  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
+
   const form = useForm<EstimateFormValues>({
     resolver: zodResolver(estimateSchema),
     defaultValues: {
@@ -135,6 +139,7 @@ export function AddEditEstimateDialog({
           terms: ""
         });
       }
+      setSelectedServiceId("");
     }
   }, [estimate, open, form]);
 
@@ -208,9 +213,41 @@ export function AddEditEstimateDialog({
                                 </div>
                              ))}
                         </div>
-                         <Button type="button" variant="outline" size="sm" onClick={() => append({ description: "", quantity: 1, unitPrice: 0 })}>
-                            <PlusCircle className="mr-2 h-4 w-4" /> Add Line Item
-                        </Button>
+                         <div className="flex items-center gap-2 pt-2">
+                            <Button type="button" variant="outline" size="sm" onClick={() => append({ description: "", quantity: 1, unitPrice: 0 })}>
+                                <PlusCircle className="mr-2 h-4 w-4" /> Add Custom Item
+                            </Button>
+                            <div className="flex-1"></div> {/* Spacer */}
+                            <Select onValueChange={setSelectedServiceId}>
+                                <SelectTrigger className="w-[250px]">
+                                    <SelectValue placeholder="Select a service to add" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {services.map(service => (
+                                        <SelectItem key={service.id} value={service.id}>
+                                            {service.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                type="button"
+                                size="sm"
+                                disabled={!selectedServiceId}
+                                onClick={() => {
+                                    const service = services.find(s => s.id === selectedServiceId);
+                                    if (service) {
+                                        append({
+                                            description: service.name,
+                                            quantity: 1,
+                                            unitPrice: service.defaultRate,
+                                        });
+                                    }
+                                }}
+                            >
+                                Add Service
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

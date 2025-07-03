@@ -35,8 +35,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Paperclip, PlusCircle, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { Invoice, Client, Project } from "@/lib/data";
-import { useEffect, useMemo } from "react";
+import type { Invoice, Client, Project, Service } from "@/lib/data";
+import { useEffect, useMemo, useState } from "react";
 import { Label } from "./ui/label";
 import { Separator } from "./ui/separator";
 import { Switch } from "./ui/switch";
@@ -105,6 +105,7 @@ interface AddEditInvoiceDialogProps {
   invoice?: Invoice | null;
   clients: Client[];
   projects: Project[];
+  services: Service[];
 }
 
 export function AddEditInvoiceDialog({
@@ -114,7 +115,10 @@ export function AddEditInvoiceDialog({
   invoice,
   clients,
   projects,
+  services,
 }: AddEditInvoiceDialogProps) {
+  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
+
   const form = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
@@ -193,6 +197,7 @@ export function AddEditInvoiceDialog({
           automatedReminders: false,
         });
       }
+      setSelectedServiceId("");
     }
   }, [invoice, open, form]);
 
@@ -239,9 +244,41 @@ export function AddEditInvoiceDialog({
                                 </div>
                              ))}
                         </div>
-                         <Button type="button" variant="outline" size="sm" onClick={() => append({ description: "", quantity: 1, unitPrice: 0 })}>
-                            <PlusCircle className="mr-2 h-4 w-4" /> Add Line Item
-                        </Button>
+                         <div className="flex items-center gap-2 pt-2">
+                            <Button type="button" variant="outline" size="sm" onClick={() => append({ description: "", quantity: 1, unitPrice: 0 })}>
+                                <PlusCircle className="mr-2 h-4 w-4" /> Add Custom Item
+                            </Button>
+                            <div className="flex-1"></div> {/* Spacer */}
+                            <Select onValueChange={setSelectedServiceId}>
+                                <SelectTrigger className="w-[250px]">
+                                    <SelectValue placeholder="Select a service to add" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {services.map(service => (
+                                        <SelectItem key={service.id} value={service.id}>
+                                            {service.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                type="button"
+                                size="sm"
+                                disabled={!selectedServiceId}
+                                onClick={() => {
+                                    const service = services.find(s => s.id === selectedServiceId);
+                                    if (service) {
+                                        append({
+                                            description: service.name,
+                                            quantity: 1,
+                                            unitPrice: service.defaultRate,
+                                        });
+                                    }
+                                }}
+                            >
+                                Add Service
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

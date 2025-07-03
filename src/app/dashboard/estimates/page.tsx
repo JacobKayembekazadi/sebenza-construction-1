@@ -46,7 +46,7 @@ import {
   FilePlus2,
   Send,
 } from "lucide-react";
-import { estimates as initialEstimates, clients, type Estimate, type EstimateLineItem } from "@/lib/data";
+import { estimates as initialEstimates, clients, type Estimate, type EstimateLineItem, services } from "@/lib/data";
 import { AddEditEstimateDialog, type EstimateFormValues } from "@/components/add-edit-estimate-dialog";
 import { DeleteEstimateDialog } from "@/components/delete-estimate-dialog";
 import { format } from "date-fns";
@@ -327,6 +327,7 @@ export default function EstimatesPage() {
         onSave={handleSaveEstimate}
         estimate={selectedEstimate}
         clients={clients}
+        services={services}
       />
       
       <DeleteEstimateDialog
