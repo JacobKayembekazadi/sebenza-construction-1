@@ -73,7 +73,7 @@ export type Invoice = {
   amount: number;
   issueDate: Date;
   dueDate: Date;
-  status: "Draft" | "Sent" | "Paid" | "Overdue";
+  status: "Draft" | "Sent" | "Paid" | "Overdue" | "Partial";
 };
 
 export type Employee = {
@@ -388,8 +388,9 @@ export const estimates: Estimate[] = [
 export const invoices: Invoice[] = [
     { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Downtown Tower Renovation", amount: 50000, issueDate: new Date(2024, 5, 1), dueDate: new Date(2024, 6, 1), status: "Paid" },
     { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 75000, issueDate: new Date(2024, 5, 5), dueDate: new Date(2024, 6, 5), status: "Sent" },
-    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date(2024, 4, 20), dueDate: new Date(2024, 5, 20), status: "Overdue" },
+    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Suburban Residential Complex", amount: 120000, issueDate: new Date(2024, 4, 1), dueDate: new Date(2024, 5, 20), status: "Overdue" },
     { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 35000, issueDate: new Date(2024, 5, 10), dueDate: new Date(2024, 6, 10), status: "Draft" },
+    { id: "inv-005", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Greenfield Community Park", amount: 10000, issueDate: new Date(2024, 5, 15), dueDate: new Date(2024, 6, 15), status: "Partial" },
 ];
 
 export const expenses: Expense[] = [

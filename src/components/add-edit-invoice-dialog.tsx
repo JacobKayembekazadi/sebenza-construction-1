@@ -36,12 +36,13 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Invoice, Client, Project } from "@/lib/data";
 import { useEffect } from "react";
+import { Label } from "./ui/label";
 
 const invoiceSchema = z.object({
   clientId: z.string().min(1, "Please select a client."),
   projectId: z.string().min(1, "Please select a project."),
   amount: z.coerce.number().min(0, "Amount must be a positive number."),
-  status: z.enum(["Draft", "Sent", "Paid", "Overdue"]),
+  status: z.enum(["Draft", "Sent", "Paid", "Overdue", "Partial"]),
   issueDate: z.date(),
   dueDate: z.date(),
 }).refine(data => data.dueDate >= data.issueDate, {
@@ -190,6 +191,7 @@ export function AddEditInvoiceDialog({
                       <SelectItem value="Draft">Draft</SelectItem>
                       <SelectItem value="Sent">Sent</SelectItem>
                       <SelectItem value="Paid">Paid</SelectItem>
+                      <SelectItem value="Partial">Partial</SelectItem>
                       <SelectItem value="Overdue">Overdue</SelectItem>
                     </SelectContent>
                   </Select>
@@ -277,9 +279,19 @@ export function AddEditInvoiceDialog({
                 />
             </div>
 
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-              <Button type="submit">Save Invoice</Button>
+             <div className="space-y-2">
+                <Label>Attachments</Label>
+                <div className="flex items-center justify-center w-full p-4 border-2 border-dashed rounded-md">
+                    <p className="text-sm text-muted-foreground">File attachment feature coming soon.</p>
+                </div>
+            </div>
+
+            <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
+                <Button type="button" variant="ghost" disabled>Set Payment Schedule</Button>
+                <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                    <Button type="submit">Save Invoice</Button>
+                </div>
             </DialogFooter>
           </form>
         </Form>

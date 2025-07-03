@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -32,6 +32,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   PlusCircle,
@@ -40,12 +41,37 @@ import {
   AlertTriangle,
   CheckCircle,
   MoreHorizontal,
+  Send,
+  CreditCard,
+  History,
 } from "lucide-react";
 import { invoices as initialInvoices, clients, projects, type Invoice } from "@/lib/data";
 import { AddEditInvoiceDialog, type InvoiceFormValues } from "@/components/add-edit-invoice-dialog";
 import { DeleteInvoiceDialog } from "@/components/delete-invoice-dialog";
 import Link from "next/link";
-import { format } from "date-fns";
+import { format, differenceInCalendarDays } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+
+
+const DueDateCell = ({ invoice }: { invoice: Invoice }) => {
+    const [display, setDisplay] = useState(format(invoice.dueDate, "PPP"));
+
+    useEffect(() => {
+        if (invoice.status === 'Overdue') {
+            const daysOverdue = differenceInCalendarDays(new Date(), invoice.dueDate);
+            setDisplay(`${format(invoice.dueDate, "PPP")} (${daysOverdue} days overdue)`);
+        } else {
+            setDisplay(format(invoice.dueDate, "PPP"));
+        }
+    }, [invoice]);
+    
+    return (
+        <span className={cn(invoice.status === 'Overdue' && "text-destructive font-semibold")}>
+            {display}
+        </span>
+    );
+}
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
@@ -55,8 +81,9 @@ export default function InvoicesPage() {
   const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const { toast } = useToast();
 
-  const statuses = ["All", "Draft", "Sent", "Paid", "Overdue"];
+  const statuses = ["All", "Draft", "Sent", "Paid", "Partial", "Overdue"];
 
   const filteredInvoices = useMemo(() => {
     return invoices.filter((invoice) => {
@@ -74,6 +101,7 @@ export default function InvoicesPage() {
     switch (status) {
       case "Paid": return "default";
       case "Sent": return "secondary";
+      case "Partial": return "secondary";
       case "Draft": return "outline";
       case "Overdue": return "destructive";
       default: return "outline";
@@ -82,7 +110,7 @@ export default function InvoicesPage() {
 
   const summary = useMemo(() => {
     const outstanding = invoices
-      .filter(e => e.status === 'Sent' || e.status === 'Overdue')
+      .filter(e => e.status === 'Sent' || e.status === 'Overdue' || e.status === 'Partial')
       .reduce((sum, e) => sum + e.amount, 0);
     const overdueCount = invoices.filter((e) => e.status === "Overdue").length;
     const totalPaid = invoices
@@ -136,6 +164,10 @@ export default function InvoicesPage() {
     }
   };
 
+  const handleAction = (message: string) => {
+    toast({ title: "Action Triggered", description: message });
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -154,7 +186,7 @@ export default function InvoicesPage() {
           <CardContent>
             <div className="text-2xl font-bold">${summary.outstanding.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              Total amount for 'Sent' and 'Overdue' invoices
+              Total amount for 'Sent', 'Partial', and 'Overdue' invoices
             </p>
           </CardContent>
         </Card>
@@ -246,7 +278,9 @@ export default function InvoicesPage() {
                       </Link>
                     </TableCell>
                     <TableCell>${invoice.amount.toLocaleString()}</TableCell>
-                    <TableCell>{format(invoice.dueDate, "PPP")}</TableCell>
+                    <TableCell>
+                       <DueDateCell invoice={invoice} />
+                    </TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(invoice.status)}>
                         {invoice.status}
@@ -264,6 +298,16 @@ export default function InvoicesPage() {
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(invoice)}>
                             Edit Invoice
                           </DropdownMenuItem>
+                           <DropdownMenuItem onClick={() => handleAction('This would open a form to record a manual payment.')}>
+                             <CreditCard /> Record Payment
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleAction('A payment reminder email would be sent to the client.')}>
+                            <Send /> Send Reminder
+                          </DropdownMenuItem>
+                          <DropdownMenuItem disabled>
+                            <History /> View History
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleOpenDeleteDialog(invoice)} className="text-destructive focus:bg-destructive/20">
                             Delete Invoice
                           </DropdownMenuItem>
