@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -40,15 +41,21 @@ import {
   Users,
   MoreHorizontal,
   Briefcase,
+  AlertCircle,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddEditEmployeeDialog, type EmployeeFormValues } from "@/components/add-edit-employee-dialog";
 import { DeleteEmployeeDialog } from "@/components/delete-employee-dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function EmployeesPage() {
   const [employees, setEmployees] = useState<Employee[]>(initialEmployees);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("All");
+  
+  // In a real app, this would come from the user's subscription data.
+  const [userLimit, setUserLimit] = useState(10); 
+  const limitReached = useMemo(() => employees.length >= userLimit, [employees.length, userLimit]);
 
   const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -75,6 +82,7 @@ export default function EmployeesPage() {
   }, [employees]);
   
   const handleOpenAddDialog = () => {
+    if (limitReached) return;
     setSelectedEmployee(null);
     setIsAddEditDialogOpen(true);
   };
@@ -93,6 +101,11 @@ export default function EmployeesPage() {
     if (employeeId) {
       setEmployees(employees.map(e => e.id === employeeId ? { ...e, ...data, avatar: "https://placehold.co/32x32.png" } : e));
     } else {
+       if (limitReached) {
+        // This is a safeguard, the button should be disabled anyway.
+        console.error("User limit reached. Cannot add more employees.");
+        return;
+      }
       const newEmployee: Employee = {
         id: `emp-${Date.now()}`,
         avatar: "https://placehold.co/32x32.png",
@@ -126,7 +139,7 @@ export default function EmployeesPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{summary.totalEmployees}</div>
+            <div className="text-2xl font-bold">{summary.totalEmployees} / {userLimit}</div>
           </CardContent>
         </Card>
         <Card>
@@ -139,6 +152,19 @@ export default function EmployeesPage() {
           </CardContent>
         </Card>
       </div>
+      
+       {limitReached && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>User Limit Reached</AlertTitle>
+          <AlertDescription>
+            You have reached your limit of {userLimit} users. To add more employees, please{" "}
+            <Link href="/dashboard/settings" className="font-semibold underline">
+              upgrade your plan.
+            </Link>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -171,7 +197,7 @@ export default function EmployeesPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog}>
+            <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog} disabled={limitReached}>
               <PlusCircle className="mr-2 h-4 w-4" />
               New Employee
             </Button>
@@ -219,6 +245,9 @@ export default function EmployeesPage() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(employee)}>
                             Edit Employee
+                          </DropdownMenuItem>
+                           <DropdownMenuItem disabled>
+                            HR & Payroll
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleOpenDeleteDialog(employee)} className="text-destructive focus:bg-destructive/20">
                             Delete Employee
