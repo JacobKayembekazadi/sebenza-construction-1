@@ -1,5 +1,7 @@
+
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -16,6 +18,12 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
+    const [isClient, setIsClient] = useState(false)
+
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
+
     const router = useRouter()
     const { toast } = useToast()
 
@@ -26,6 +34,10 @@ export default function LoginPage() {
             description: "Redirecting you to the dashboard.",
         })
         router.push("/dashboard")
+    }
+
+    if (!isClient) {
+        return null
     }
 
   return (

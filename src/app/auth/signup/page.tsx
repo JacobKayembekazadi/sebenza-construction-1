@@ -1,6 +1,7 @@
+
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -41,6 +42,12 @@ const steps = [
 ]
 
 export default function SignupPage() {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({})
   const [userCount, setUserCount] = useState(5)
@@ -77,6 +84,10 @@ export default function SignupPage() {
     hidden: { opacity: 0, x: 50 },
     visible: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -50 },
+  }
+
+  if (!isClient) {
+    return null;
   }
 
   return (
