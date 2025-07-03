@@ -28,6 +28,7 @@ import {
   Receipt,
   FileSignature,
   Landmark,
+  Calendar,
 } from "lucide-react";
 import { ProjectStatusChart } from "@/components/dashboard/project-status-chart";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ import { ResourceAllocationChart } from "@/components/dashboard/resource-allocat
 import { WeatherForecast } from "@/components/dashboard/weather-forecast";
 import { QuickAddButton } from "@/components/quick-add-button";
 import { Button } from "@/components/ui/button";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 const MyTaskDueDate = ({ dueDate }: { dueDate: Date }) => {
     const [text, setText] = useState<string | null>(null);
@@ -86,11 +88,11 @@ export default function DashboardPage() {
     
     const outstandingInvoices = invoices
       .filter(i => i.status === 'Sent' || i.status === 'Overdue')
-      .reduce((acc, i) => acc + i.amount, 0);
+      .reduce((acc, i) => acc + i.total, 0);
       
     const outstandingEstimates = estimates
       .filter(e => e.status === 'Sent')
-      .reduce((acc, e) => acc + e.amount, 0);
+      .reduce((acc, e) => acc + e.total, 0);
 
     return {
       totalIncome,
@@ -127,6 +129,35 @@ export default function DashboardPage() {
         return "outline";
     }
   };
+  
+    const calendarEvents = useMemo(() => {
+        const taskEvents = allTasks.map(task => ({
+            id: `task-${task.id}`,
+            date: task.dueDate,
+            title: `Task Due: ${task.name}`,
+            type: 'task',
+            link: `/dashboard/tasks`
+        }));
+        const invoiceEvents = invoices.map(invoice => ({
+            id: `invoice-${invoice.id}`,
+            date: invoice.dueDate,
+            title: `Invoice Due: ${invoice.id.toUpperCase()}`,
+            type: 'invoice',
+            link: `/dashboard/invoices`
+        }));
+        return [...taskEvents, ...invoiceEvents];
+    }, []);
+
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+
+    const selectedDayEvents = useMemo(() => {
+        if (!selectedDate) return [];
+        return calendarEvents.filter(event => 
+            event.date.getDate() === selectedDate.getDate() &&
+            event.date.getMonth() === selectedDate.getMonth() &&
+            event.date.getFullYear() === selectedDate.getFullYear()
+        );
+    }, [selectedDate, calendarEvents]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -293,7 +324,47 @@ export default function DashboardPage() {
         {/* Right Column */}
         <div className="space-y-8">
           <WeatherForecast forecasts={weatherForecast} />
-          <ProjectStatusChart projects={projects} />
+           <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Unified Calendar</CardTitle>
+                <CardDescription>Upcoming deadlines for tasks and invoices.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col md:flex-row gap-4">
+                <div className="flex-shrink-0">
+                    <CalendarComponent
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        className="rounded-md border p-0"
+                        modifiers={{
+                            events: calendarEvents.map(e => e.date)
+                        }}
+                        modifiersClassNames={{
+                            events: "bg-primary/20 text-primary rounded-full"
+                        }}
+                    />
+                </div>
+                <div className="flex-1">
+                    <h3 className="text-lg font-semibold mb-2">
+                        Events for {selectedDate ? selectedDate.toLocaleDateString() : '...'}
+                    </h3>
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {selectedDayEvents.length > 0 ? selectedDayEvents.map(event => (
+                        <Link href={event.link} key={event.id}>
+                            <div className={cn(
+                                "p-2 rounded-md text-sm cursor-pointer hover:bg-muted/50",
+                                event.type === 'task' ? 'border-l-4 border-accent' : 'border-l-4 border-chart-3'
+                            )}>
+                                {event.title}
+                            </div>
+                        </Link>
+                    )) : (
+                        <p className="text-sm text-muted-foreground">No events for this day.</p>
+                    )}
+                    </div>
+                </div>
+            </CardContent>
+          </Card>
           <ResourceAllocationChart data={resourceAllocation} />
           <Card>
             <CardHeader>
@@ -326,5 +397,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    

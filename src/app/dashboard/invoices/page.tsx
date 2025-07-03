@@ -46,7 +46,7 @@ import {
   History,
   Repeat,
 } from "lucide-react";
-import { invoices as initialInvoices, clients, projects, type Invoice } from "@/lib/data";
+import { invoices as initialInvoices, clients, projects, type Invoice, type InvoiceLineItem } from "@/lib/data";
 import { AddEditInvoiceDialog, type InvoiceFormValues } from "@/components/add-edit-invoice-dialog";
 import { DeleteInvoiceDialog } from "@/components/delete-invoice-dialog";
 import Link from "next/link";
@@ -112,11 +112,11 @@ export default function InvoicesPage() {
   const summary = useMemo(() => {
     const outstanding = invoices
       .filter(e => e.status === 'Sent' || e.status === 'Overdue' || e.status === 'Partial')
-      .reduce((sum, e) => sum + e.amount, 0);
+      .reduce((sum, e) => sum + e.total, 0);
     const overdueCount = invoices.filter((e) => e.status === "Overdue").length;
     const totalPaid = invoices
         .filter(e => e.status === 'Paid')
-        .reduce((sum, e) => sum + e.amount, 0);
+        .reduce((sum, e) => sum + e.total, 0);
     return {
       outstanding,
       overdueCount,
@@ -144,8 +144,24 @@ export default function InvoicesPage() {
     const project = projects.find(p => p.id === data.projectId);
     if (!client || !project) return;
     
+    const subtotal = data.lineItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
+    const total = subtotal * (1 + data.tax / 100) - data.discount;
+
+    const finalData = {
+      ...data,
+      clientName: client.name,
+      projectName: project.name,
+      subtotal,
+      total,
+      lineItems: data.lineItems.map((li, index) => ({
+        ...li,
+        id: li.id || `li-inv-${Date.now()}-${index}`,
+        total: li.quantity * li.unitPrice,
+      }))
+    };
+    
     if (invoiceId) {
-      setInvoices(invoices.map(i => i.id === invoiceId ? { ...i, ...data, clientName: client.name, projectName: project.name } : i));
+      setInvoices(invoices.map(i => i.id === invoiceId ? { ...i, ...finalData } : i));
       toast({
         title: "Invoice Updated",
         description: `Invoice ${invoiceId.toUpperCase()} has been successfully updated.`,
@@ -153,9 +169,7 @@ export default function InvoicesPage() {
     } else {
       const newInvoice: Invoice = {
         id: `inv-${Date.now()}`,
-        clientName: client.name,
-        projectName: project.name,
-        ...data,
+        ...finalData,
       };
       setInvoices([newInvoice, ...invoices]);
       toast({
@@ -296,7 +310,7 @@ export default function InvoicesPage() {
                         {invoice.projectName}
                       </Link>
                     </TableCell>
-                    <TableCell>${invoice.amount.toLocaleString()}</TableCell>
+                    <TableCell>${invoice.total.toLocaleString()}</TableCell>
                     <TableCell>
                        <DueDateCell invoice={invoice} />
                     </TableCell>

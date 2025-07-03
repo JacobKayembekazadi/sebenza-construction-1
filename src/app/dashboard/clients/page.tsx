@@ -135,7 +135,7 @@ function ClientDetailView({ client }: { client: Client }) {
                 <>
                     <TableCell className="font-medium">{item.id.toUpperCase()}</TableCell>
                     <TableCell><Badge>{item.status}</Badge></TableCell>
-                    <TableCell>${item.amount.toLocaleString()}</TableCell>
+                    <TableCell>${item.total.toLocaleString()}</TableCell>
                     <TableCell>{format(item.dueDate, "PPP")}</TableCell>
                 </>
             )} />

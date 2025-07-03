@@ -65,16 +65,30 @@ export type Estimate = {
   terms?: string;
 };
 
+export type InvoiceLineItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+};
+
 export type Invoice = {
   id: string;
   clientId: string;
   clientName: string;
   projectId: string;
-  projectName: string;
-  amount: number;
+  projectName:string;
+  lineItems: InvoiceLineItem[];
+  subtotal: number;
+  tax: number; // Percentage
+  discount: number; // Fixed amount
+  total: number;
   issueDate: Date;
   dueDate: Date;
   status: "Draft" | "Sent" | "Paid" | "Overdue" | "Partial";
+  notes?: string;
+  terms?: string;
   isRecurring?: boolean;
   recurringInterval?: 'days' | 'weeks' | 'months';
   recurringPeriod?: number;
@@ -474,12 +488,88 @@ export const estimates: Estimate[] = [
 ];
 
 export const invoices: Invoice[] = [
-    { id: "inv-001", clientId: "client-1", clientName: "Global Corp", projectId: "proj-001", projectName: "Johannesburg to Cape Town", amount: 50000, issueDate: new Date(2024, 5, 1), dueDate: new Date(2024, 6, 1), status: "Paid" },
-    { id: "inv-002", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Durban Port Clearance", amount: 75000, issueDate: new Date(2024, 5, 5), dueDate: new Date(2024, 6, 5), status: "Sent" },
-    { id: "inv-003", clientId: "client-1", clientName: "Global Corp", projectId: "proj-004", projectName: "Local Warehouse Distribution", amount: 120000, issueDate: new Date(2024, 4, 1), dueDate: new Date(2024, 5, 20), status: "Overdue" },
-    { id: "inv-004", clientId: "client-4", clientName: "Quantum Solutions", projectId: "proj-002", projectName: "Durban Port Clearance", amount: 35000, issueDate: new Date(2024, 5, 10), dueDate: new Date(2024, 6, 10), status: "Draft" },
-    { id: "inv-005", clientId: "client-2", clientName: "Innovate LLC", projectId: "proj-002", projectName: "Durban Port Clearance", amount: 10000, issueDate: new Date(2024, 5, 15), dueDate: new Date(2024, 6, 15), status: "Partial", isRecurring: true, recurringInterval: 'days', recurringPeriod: 30 },
+    { 
+        id: "inv-001", 
+        clientId: "client-1", 
+        clientName: "Global Corp", 
+        projectId: "proj-001", 
+        projectName: "Johannesburg to Cape Town", 
+        lineItems: [{id: 'li-inv-1', description: 'Phase 1 Payment', quantity: 1, unitPrice: 50000, total: 50000}],
+        subtotal: 50000,
+        tax: 0,
+        discount: 0,
+        total: 50000,
+        issueDate: new Date(2024, 5, 1), 
+        dueDate: new Date(2024, 6, 1), 
+        status: "Paid",
+        notes: "Thank you for your business.",
+        terms: "Payment due upon receipt."
+    },
+    { 
+        id: "inv-002", 
+        clientId: "client-2", 
+        clientName: "Innovate LLC", 
+        projectId: "proj-002", 
+        projectName: "Durban Port Clearance", 
+        lineItems: [{id: 'li-inv-2', description: 'Consulting Services', quantity: 1, unitPrice: 75000, total: 75000}],
+        subtotal: 75000,
+        tax: 10,
+        discount: 5000,
+        total: (75000 * 1.10) - 5000,
+        issueDate: new Date(2024, 5, 5), 
+        dueDate: new Date(2024, 6, 5), 
+        status: "Sent"
+    },
+    { 
+        id: "inv-003", 
+        clientId: "client-1", 
+        clientName: "Global Corp", 
+        projectId: "proj-004", 
+        projectName: "Local Warehouse Distribution", 
+        lineItems: [{id: 'li-inv-3', description: 'Full Project Billing', quantity: 1, unitPrice: 120000, total: 120000}],
+        subtotal: 120000,
+        tax: 0,
+        discount: 0,
+        total: 120000,
+        issueDate: new Date(2024, 4, 1), 
+        dueDate: new Date(2024, 5, 20), 
+        status: "Overdue"
+    },
+    { 
+        id: "inv-004", 
+        clientId: "client-4", 
+        clientName: "Quantum Solutions", 
+        projectId: "proj-002", 
+        projectName: "Durban Port Clearance", 
+        lineItems: [{id: 'li-inv-4', description: 'Initial Mobilization', quantity: 1, unitPrice: 35000, total: 35000}],
+        subtotal: 35000,
+        tax: 0,
+        discount: 0,
+        total: 35000,
+        issueDate: new Date(2024, 5, 10), 
+        dueDate: new Date(2024, 6, 10), 
+        status: "Draft" 
+    },
+    { 
+        id: "inv-005", 
+        clientId: "client-2", 
+        clientName: "Innovate LLC", 
+        projectId: "proj-002", 
+        projectName: "Durban Port Clearance", 
+        lineItems: [{id: 'li-inv-5', description: 'Retainer - June', quantity: 1, unitPrice: 10000, total: 10000}],
+        subtotal: 10000,
+        tax: 0,
+        discount: 0,
+        total: 10000,
+        issueDate: new Date(2024, 5, 15), 
+        dueDate: new Date(2024, 6, 15), 
+        status: "Partial", 
+        isRecurring: true, 
+        recurringInterval: 'days', 
+        recurringPeriod: 30 
+    },
 ];
+
 
 export const expenses: Expense[] = [
     { id: 'exp-001', description: 'Fuel for Truck #12', amount: 250, category: 'Materials', date: new Date(2024, 5, 15), projectId: 'proj-001', projectName: 'Johannesburg to Cape Town' },
