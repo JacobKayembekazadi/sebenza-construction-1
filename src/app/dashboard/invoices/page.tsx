@@ -286,10 +286,10 @@ export default function InvoicesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Invoice ID</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Due Date</TableHead>
+                <TableHead className="hidden md:table-cell">Client</TableHead>
+                <TableHead className="hidden lg:table-cell">Project</TableHead>
+                <TableHead className="hidden sm:table-cell">Amount</TableHead>
+                <TableHead className="hidden md:table-cell">Due Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
@@ -304,14 +304,14 @@ export default function InvoicesPage() {
                         <span>{invoice.id.toUpperCase()}</span>
                       </div>
                     </TableCell>
-                    <TableCell>{invoice.clientName}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">{invoice.clientName}</TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       <Link href={`/dashboard/projects/${invoice.projectId}`} className="hover:underline">
                         {invoice.projectName}
                       </Link>
                     </TableCell>
-                    <TableCell>${invoice.total.toLocaleString()}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">${invoice.total.toLocaleString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">
                        <DueDateCell invoice={invoice} />
                     </TableCell>
                     <TableCell>

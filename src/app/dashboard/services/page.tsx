@@ -149,7 +149,7 @@ export default function ServicesPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Service Name</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead className="hidden md:table-cell">Description</TableHead>
                   <TableHead>Default Rate ($/hr)</TableHead>
                   <TableHead className="w-[50px] text-right">Actions</TableHead>
                 </TableRow>
@@ -159,7 +159,7 @@ export default function ServicesPage() {
                   filteredServices.map((service) => (
                     <TableRow key={service.id}>
                       <TableCell className="font-medium">{service.name}</TableCell>
-                      <TableCell className="text-muted-foreground">{service.description}</TableCell>
+                      <TableCell className="text-muted-foreground hidden md:table-cell">{service.description}</TableCell>
                       <TableCell>${service.defaultRate.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>

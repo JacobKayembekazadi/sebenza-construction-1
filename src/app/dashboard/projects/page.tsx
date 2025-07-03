@@ -267,13 +267,13 @@ export default function ProjectsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[300px]">Job Name</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Manager</TableHead>
+                <TableHead className="hidden md:table-cell">Client</TableHead>
+                <TableHead className="hidden lg:table-cell">Manager</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Overdue</TableHead>
+                <TableHead className="hidden md:table-cell">Overdue</TableHead>
                 <TableHead>Completion</TableHead>
-                <TableHead>Budget Usage</TableHead>
-                <TableHead>End Date</TableHead>
+                <TableHead className="hidden lg:table-cell">Budget Usage</TableHead>
+                <TableHead className="hidden lg:table-cell">End Date</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -289,14 +289,14 @@ export default function ProjectsPage() {
                         {project.name}
                       </Link>
                     </TableCell>
-                    <TableCell>{project.clientName}</TableCell>
-                    <TableCell>{project.manager}</TableCell>
+                    <TableCell className="hidden md:table-cell">{project.clientName}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{project.manager}</TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(project.status)}>
                         {project.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <span
                         className={
                           project.overdueTasks > 0
@@ -318,7 +318,7 @@ export default function ProjectsPage() {
                         />
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       <div className="flex items-center gap-2">
                         <span className="text-sm w-8 text-right">
                           {((project.spent / project.budget) * 100).toFixed(0)}
@@ -330,7 +330,7 @@ export default function ProjectsPage() {
                         />
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       {format(project.endDate, "PPP")}
                     </TableCell>
                     <TableCell className="text-right">

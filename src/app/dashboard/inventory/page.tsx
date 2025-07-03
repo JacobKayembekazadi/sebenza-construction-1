@@ -196,10 +196,10 @@ export default function InventoryPage() {
               <TableRow>
                 <TableHead>SKU</TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Supplier</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Cost Price</TableHead>
-                <TableHead>Selling Price</TableHead>
+                <TableHead className="hidden md:table-cell">Supplier</TableHead>
+                <TableHead className="hidden lg:table-cell">Quantity</TableHead>
+                <TableHead className="hidden lg:table-cell">Cost Price</TableHead>
+                <TableHead className="hidden sm:table-cell">Selling Price</TableHead>
                 <TableHead>Stock Status</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
@@ -212,10 +212,10 @@ export default function InventoryPage() {
                   <TableRow key={item.id}>
                     <TableCell className="font-mono text-xs">{item.sku}</TableCell>
                     <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.supplierName}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>${item.costPrice.toFixed(2)}</TableCell>
-                    <TableCell>${item.sellingPrice.toFixed(2)}</TableCell>
+                    <TableCell className="hidden md:table-cell">{item.supplierName}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{item.quantity}</TableCell>
+                    <TableCell className="hidden lg:table-cell">${item.costPrice.toFixed(2)}</TableCell>
+                    <TableCell className="hidden sm:table-cell">${item.sellingPrice.toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge variant={status.variant}>
                         <div className="flex items-center gap-2">

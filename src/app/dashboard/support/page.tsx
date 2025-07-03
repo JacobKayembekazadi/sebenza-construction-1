@@ -183,10 +183,10 @@ export default function SupportPage() {
               <TableRow>
                 <TableHead>Ticket ID</TableHead>
                 <TableHead>Subject</TableHead>
-                <TableHead>Department</TableHead>
+                <TableHead className="hidden md:table-cell">Department</TableHead>
                 <TableHead>Priority</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead className="hidden md:table-cell">Created</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -196,7 +196,7 @@ export default function SupportPage() {
                   <TableRow key={ticket.id}>
                     <TableCell className="font-mono text-xs">{ticket.id.toUpperCase()}</TableCell>
                     <TableCell className="font-medium max-w-xs truncate">{ticket.subject}</TableCell>
-                    <TableCell>{ticket.department}</TableCell>
+                    <TableCell className="hidden md:table-cell">{ticket.department}</TableCell>
                     <TableCell>
                       <Badge variant={ticket.priority === 'High' ? 'destructive' : 'secondary'}>
                         {ticket.priority}
@@ -207,7 +207,7 @@ export default function SupportPage() {
                         {ticket.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{format(ticket.createdAt, "PPP")}</TableCell>
+                    <TableCell className="hidden md:table-cell">{format(ticket.createdAt, "PPP")}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

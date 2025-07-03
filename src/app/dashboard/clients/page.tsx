@@ -131,9 +131,9 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
           <TabsContent value="projects">
             <MiniTable icon={<Briefcase />} items={clientProjects} columns={['Name', 'Status', 'End Date']} renderRow={(item: Project) => (
                 <>
-                    <TableCell><Link href={`/dashboard/projects/${item.id}`} className="font-medium hover:underline">{item.name}</Link></TableCell>
+                    <TableCell className="font-medium"><Link href={`/dashboard/projects/${item.id}`} className="hover:underline">{item.name}</Link></TableCell>
                     <TableCell><Badge>{item.status}</Badge></TableCell>
-                    <TableCell>{format(item.endDate, "PPP")}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{format(item.endDate, "PPP")}</TableCell>
                 </>
             )} />
           </TabsContent>
@@ -142,8 +142,8 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
                 <>
                     <TableCell className="font-medium">{item.id.toUpperCase()}</TableCell>
                     <TableCell><Badge>{item.status}</Badge></TableCell>
-                    <TableCell>${item.total.toLocaleString()}</TableCell>
-                    <TableCell>{format(item.dueDate, "PPP")}</TableCell>
+                    <TableCell className="hidden sm:table-cell">${item.total.toLocaleString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{format(item.dueDate, "PPP")}</TableCell>
                 </>
             )} />
           </TabsContent>
@@ -152,8 +152,8 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
                 <>
                     <TableCell className="font-medium">{item.id.toUpperCase()}</TableCell>
                     <TableCell><Badge>{item.status}</Badge></TableCell>
-                    <TableCell>${item.total.toLocaleString()}</TableCell>
-                    <TableCell>{format(item.expiryDate, "PPP")}</TableCell>
+                    <TableCell className="hidden sm:table-cell">${item.total.toLocaleString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{format(item.expiryDate, "PPP")}</TableCell>
                 </>
             )} />
           </TabsContent>
@@ -177,14 +177,14 @@ function ClientDetailView({ client, onEdit }: { client: Client; onEdit: (client:
                     columns={['Date', 'Employee', 'Project', 'Hours', 'Status']} 
                     renderRow={(item: TimeEntry) => (
                     <>
-                        <TableCell>{format(item.date, "PPP")}</TableCell>
+                        <TableCell className="hidden md:table-cell">{format(item.date, "PPP")}</TableCell>
                         <TableCell className="font-medium">{item.employeeName}</TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                             <Link href={`/dashboard/projects/${item.projectId}`} className="text-muted-foreground hover:underline">
                                 {item.projectName}
                             </Link>
                         </TableCell>
-                        <TableCell>{item.hours} hrs</TableCell>
+                        <TableCell className="hidden md:table-cell">{item.hours} hrs</TableCell>
                         <TableCell>
                             <Badge variant={item.isBilled ? 'default' : 'outline'}>
                                 {item.isBilled ? 'Billed' : 'Unbilled'}

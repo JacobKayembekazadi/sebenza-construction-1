@@ -241,11 +241,11 @@ export default function PurchaseOrdersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>PO ID</TableHead>
-                <TableHead>Supplier</TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Issue Date</TableHead>
-                <TableHead>Expected Delivery</TableHead>
-                <TableHead>Total</TableHead>
+                <TableHead className="hidden md:table-cell">Supplier</TableHead>
+                <TableHead className="hidden lg:table-cell">Project</TableHead>
+                <TableHead className="hidden md:table-cell">Issue Date</TableHead>
+                <TableHead className="hidden lg:table-cell">Expected Delivery</TableHead>
+                <TableHead className="hidden sm:table-cell">Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
@@ -255,15 +255,15 @@ export default function PurchaseOrdersPage() {
                 filteredPOs.map((po) => (
                   <TableRow key={po.id}>
                     <TableCell className="font-medium">{po.id.toUpperCase()}</TableCell>
-                    <TableCell>{po.supplierName}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">{po.supplierName}</TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       <Link href={`/dashboard/projects/${po.projectId}`} className="hover:underline text-muted-foreground">
                         {po.projectName}
                       </Link>
                     </TableCell>
-                    <TableCell>{format(po.issueDate, "PPP")}</TableCell>
-                    <TableCell>{format(po.deliveryDate, "PPP")}</TableCell>
-                    <TableCell>${po.total.toLocaleString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{format(po.issueDate, "PPP")}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{format(po.deliveryDate, "PPP")}</TableCell>
+                    <TableCell className="hidden sm:table-cell">${po.total.toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge variant={statusVariant(po.status)}>
                         {po.status}

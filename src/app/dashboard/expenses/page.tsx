@@ -234,10 +234,10 @@ export default function ExpensesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Description</TableHead>
-                <TableHead>Project</TableHead>
+                <TableHead className="hidden lg:table-cell">Project</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Amount</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
+                <TableHead className="hidden sm:table-cell">Amount</TableHead>
                 <TableHead>Billable</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
@@ -252,7 +252,7 @@ export default function ExpensesPage() {
                            <span>{expense.description}</span>
                         </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                         <Link href={`/dashboard/projects/${expense.projectId}`} className="hover:underline">
                             {expense.projectName}
                         </Link>
@@ -260,8 +260,8 @@ export default function ExpensesPage() {
                     <TableCell>
                       <Badge variant="outline">{expense.category}</Badge>
                     </TableCell>
-                    <TableCell>{format(expense.date, "PPP")}</TableCell>
-                    <TableCell>${expense.amount.toLocaleString()}</TableCell>
+                    <TableCell className="hidden md:table-cell">{format(expense.date, "PPP")}</TableCell>
+                    <TableCell className="hidden sm:table-cell">${expense.amount.toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge variant={expense.isBillable ? 'secondary' : 'outline'}>
                         {expense.isBillable ? 'Yes' : 'No'}

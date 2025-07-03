@@ -295,25 +295,25 @@ export default function TasksPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[300px]">
+                <TableHead className="w-full">
                    <Button variant="ghost" onClick={() => requestSort('name')} className="px-0">
                     Task
                     {getSortIcon('name')}
                   </Button>
                 </TableHead>
-                <TableHead>
+                <TableHead className="hidden lg:table-cell">
                    <Button variant="ghost" onClick={() => requestSort('projectName')} className="px-0">
                     Project
                     {getSortIcon('projectName')}
                   </Button>
                 </TableHead>
-                <TableHead>
+                <TableHead className="hidden md:table-cell">
                   <Button variant="ghost" onClick={() => requestSort('assignee')} className="px-0">
                     Assignee
                     {getSortIcon('assignee')}
                   </Button>
                 </TableHead>
-                <TableHead>
+                <TableHead className="hidden md:table-cell">
                   <Button variant="ghost" onClick={() => requestSort('dueDate')} className="px-0">
                     Due Date
                     {getSortIcon('dueDate')}
@@ -334,7 +334,7 @@ export default function TasksPage() {
                 sortedAndFilteredTasks.map((task) => (
                   <TableRow key={task.id}>
                     <TableCell className="font-medium">{task.name}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       <Link
                         href={`/dashboard/projects/${task.projectId}`}
                         className="hover:underline text-muted-foreground"
@@ -342,7 +342,7 @@ export default function TasksPage() {
                         {task.projectName}
                       </Link>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
                             <AvatarImage src={task.assignee.avatar} alt={task.assignee.name} data-ai-hint="employee avatar" />
@@ -351,7 +351,7 @@ export default function TasksPage() {
                         <span>{task.assignee.name}</span>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <DueDateDisplay dueDate={task.dueDate} status={task.status} />
                     </TableCell>
                     <TableCell>

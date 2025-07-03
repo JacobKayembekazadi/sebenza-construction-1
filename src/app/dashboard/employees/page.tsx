@@ -208,8 +208,8 @@ export default function EmployeesPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
+                <TableHead className="hidden md:table-cell">Email</TableHead>
+                <TableHead className="hidden lg:table-cell">Phone</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead className="w-[50px] text-right">Actions</TableHead>
               </TableRow>
@@ -227,8 +227,8 @@ export default function EmployeesPage() {
                             <span>{employee.name}</span>
                         </div>
                     </TableCell>
-                    <TableCell>{employee.email}</TableCell>
-                    <TableCell>{employee.phone}</TableCell>
+                    <TableCell className="hidden md:table-cell">{employee.email}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{employee.phone}</TableCell>
                     <TableCell>
                       <Badge variant="secondary">
                         {employee.role}

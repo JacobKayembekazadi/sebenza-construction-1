@@ -142,9 +142,9 @@ export default function AccountingPage() {
                       <TableHeader>
                           <TableRow>
                               <TableHead>Bank</TableHead>
-                              <TableHead>Account Number</TableHead>
+                              <TableHead className="hidden sm:table-cell">Account Number</TableHead>
                               <TableHead>Current Balance</TableHead>
-                              <TableHead>Last Imported</TableHead>
+                              <TableHead className="hidden md:table-cell">Last Imported</TableHead>
                               <TableHead className="w-[50px] text-right">Actions</TableHead>
                           </TableRow>
                       </TableHeader>
@@ -155,9 +155,9 @@ export default function AccountingPage() {
                                       <Image src={account.logoUrl} alt={account.bankName} width={24} height={24} data-ai-hint="bank logo"/>
                                       {account.bankName}
                                   </TableCell>
-                                  <TableCell>{account.accountNumber}</TableCell>
+                                  <TableCell className="hidden sm:table-cell">{account.accountNumber}</TableCell>
                                   <TableCell>${account.balance.toLocaleString()}</TableCell>
-                                  <TableCell>Today</TableCell>
+                                  <TableCell className="hidden md:table-cell">Today</TableCell>
                                   <TableCell className="text-right">
                                       <DropdownMenu>
                                           <DropdownMenuTrigger asChild>
