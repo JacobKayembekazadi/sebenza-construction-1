@@ -255,67 +255,67 @@ export default function DashboardPage() {
     <>
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Welcome back, Jane!</h1>
-        <p className="text-muted-foreground">Here's your command center for today.</p>
+        <h1 className="text-5xl font-semibold text-center tracking-tight">Welcome back, Jane!</h1>
+        <p className="text-muted-foreground text-center">Here's your command center for today.</p>
       </div>
       
       {/* Financial KPI Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Profit</CardTitle>
-              <Scale className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+              <CardTitle>Total Profit</CardTitle>
           </CardHeader>
           <CardContent>
-              <div className="text-2xl font-bold">${financialSummary.totalProfit.toLocaleString()}</div>
+              <Scale className="h-4 w-4 text-muted-foreground mb-4" />
+              <div className="text-6xl font-bold">${financialSummary.totalProfit.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
               Last 6 months
               </p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Income</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+              <CardTitle>Income</CardTitle>
           </CardHeader>
           <CardContent>
-              <div className="text-2xl font-bold">${financialSummary.totalIncome.toLocaleString()}</div>
+              <TrendingUp className="h-4 w-4 text-muted-foreground mb-4" />
+              <div className="text-6xl font-bold">${financialSummary.totalIncome.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
               Last 6 months
               </p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Expenses</CardTitle>
-              <TrendingDown className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+              <CardTitle>Expenses</CardTitle>
           </CardHeader>
           <CardContent>
-              <div className="text-2xl font-bold">${financialSummary.totalExpenses.toLocaleString()}</div>
+              <TrendingDown className="h-4 w-4 text-muted-foreground mb-4" />
+              <div className="text-6xl font-bold">${financialSummary.totalExpenses.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
               Last 6 months
               </p>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
-              <FileStack className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+              <CardTitle>Outstanding</CardTitle>
           </CardHeader>
           <CardContent>
-              <div className="text-2xl font-bold">${financialSummary.totalOutstanding.toLocaleString()}</div>
+              <FileStack className="h-4 w-4 text-muted-foreground mb-4" />
+              <div className="text-6xl font-bold">${financialSummary.totalOutstanding.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
               Invoices and quotes
               </p>
           </CardContent>
         </Card>
          <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Unbilled Time</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+              <CardTitle>Unbilled Time</CardTitle>
           </CardHeader>
           <CardContent>
-              <div className="text-2xl font-bold">{financialSummary.unbilledHours} hrs</div>
+              <Clock className="h-4 w-4 text-muted-foreground mb-4" />
+              <div className="text-6xl font-bold">{financialSummary.unbilledHours} hrs</div>
               <p className="text-xs text-muted-foreground">
               Across all projects
               </p>
@@ -330,9 +330,11 @@ export default function DashboardPage() {
             <FinancialSnapshotChart data={financialData} />
             <Card>
                 <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="text-yellow-500" />
-                    Needs Your Attention
+                <CardTitle>
+                    <div className="flex items-center gap-2">
+                        <AlertTriangle className="text-yellow-500" />
+                        <span>Needs Your Attention</span>
+                    </div>
                 </CardTitle>
                 <CardDescription>
                     These projects are 'At Risk' or 'Off Track'. Review them to take action.
@@ -342,7 +344,7 @@ export default function DashboardPage() {
                     <div className="space-y-4">
                         {attentionProjects.map((project) => (
                             <Link href={`/dashboard/projects/${project.id}`} key={project.id} className="block">
-                                <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted transition-colors">
+                                <div className="flex items-center justify-between p-4 rounded-lg border border-transparent hover:border-glass-border hover:bg-glass-background/50 transition-colors">
                                     <div>
                                         <p className="font-semibold">{project.name}</p>
                                         <p className="text-sm text-muted-foreground">{project.manager}</p>
@@ -375,18 +377,25 @@ export default function DashboardPage() {
               <CardHeader>
                   <CardTitle>Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-4">
-                  <Button variant="outline" onClick={() => setIsAddProjectDialogOpen(true)}><GanttChartSquare className="mr-2 h-4 w-4"/>New Job</Button>
-                  <Button variant="outline" onClick={() => setIsAddTaskDialogOpen(true)}><ListChecks className="mr-2 h-4 w-4"/>New Task</Button>
-                  <Button variant="outline" onClick={() => setIsAddInvoiceDialogOpen(true)}><Receipt className="mr-2 h-4 w-4"/>New Invoice</Button>
-                  <Button variant="outline" onClick={() => setIsAddExpenseDialogOpen(true)}><DollarSign className="mr-2 h-4 w-4"/>New Expense</Button>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" onClick={() => setIsAddProjectDialogOpen(true)}><GanttChartSquare className="mr-2 h-4 w-4"/>New Job</Button>
+                    <Button variant="outline" onClick={() => setIsAddTaskDialogOpen(true)}><ListChecks className="mr-2 h-4 w-4"/>New Task</Button>
+                    <Button variant="outline" onClick={() => setIsAddInvoiceDialogOpen(true)}><Receipt className="mr-2 h-4 w-4"/>New Invoice</Button>
+                    <Button variant="outline" onClick={() => setIsAddExpenseDialogOpen(true)}><DollarSign className="mr-2 h-4 w-4"/>New Expense</Button>
+                </div>
               </CardContent>
           </Card>
            <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="flex items-center gap-2"><CalendarIcon className="h-5 w-5" /> Unified Calendar</CardTitle>
+                            <CardTitle>
+                                <div className="flex items-center gap-2">
+                                    <CalendarIcon className="h-5 w-5" /> 
+                                    <span>Unified Calendar</span>
+                                </div>
+                            </CardTitle>
                             <CardDescription>Deadlines for jobs, tasks, and events.</CardDescription>
                         </div>
                         <Button variant="outline" size="icon" onClick={handleOpenAddDialog}>
@@ -395,63 +404,65 @@ export default function DashboardPage() {
                         </Button>
                     </div>
                 </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-                <CalendarComponent
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    className="rounded-md border p-0"
-                    modifiers={calendarModifiers}
-                    modifiersClassNames={{
-                        project: "border-chart-3 border-2",
-                        task: "border-chart-1 border-2",
-                        invoice: "border-chart-2 border-2",
-                        custom: "border-chart-4 border-2",
-                    }}
-                />
-                <div className="flex-1">
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-lg font-semibold">
-                            Events for {selectedDate ? format(selectedDate, 'PPP') : '...'}
-                        </h3>
-                         <Button variant="link" asChild className="p-0 h-auto">
-                           <Link href="/dashboard/calendar">
-                             View Full Calendar &rarr;
-                           </Link>
-                        </Button>
-                    </div>
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                    {selectedDayEvents.length > 0 ? selectedDayEvents.map(event => {
-                       const config = eventTypeConfig[event.type];
-                       const Icon = config.icon;
-                       return (
-                        <div key={event.id} className={cn("p-2 rounded-md text-sm border-l-4 flex items-start justify-between", config.color)}>
-                            <div className="flex items-start gap-3">
-                                <Icon className="h-5 w-5 mt-0.5 text-muted-foreground" />
-                                <div>
-                                    <p className="font-semibold">{event.title}</p>
-                                    <p className="text-xs text-muted-foreground">{config.label}</p>
-                                    {event.link && (
-                                        <Link href={event.link} className="text-xs text-primary hover:underline">
-                                            View Details &rarr;
-                                        </Link>
-                                    )}
-                                </div>
-                            </div>
-                            {event.isCustom && (
-                                <div className="flex gap-1">
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleOpenEditDialog(event)}>
-                                        <Edit className="h-4 w-4" />
-                                    </Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => handleOpenDeleteDialog(event)}>
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            )}
+            <CardContent>
+                <div className="flex flex-col gap-4">
+                    <CalendarComponent
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        className="rounded-md border-glass-border"
+                        modifiers={calendarModifiers}
+                        modifiersClassNames={{
+                            project: "border-chart-3 border-2",
+                            task: "border-chart-1 border-2",
+                            invoice: "border-chart-2 border-2",
+                            custom: "border-chart-4 border-2",
+                        }}
+                    />
+                    <div className="flex-1">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-lg font-semibold">
+                                Events for {selectedDate ? format(selectedDate, 'PPP') : '...'}
+                            </h3>
+                            <Button variant="link" asChild className="p-0 h-auto">
+                            <Link href="/dashboard/calendar">
+                                View Full Calendar &rarr;
+                            </Link>
+                            </Button>
                         </div>
-                    )}) : (
-                        <p className="text-sm text-muted-foreground py-4 text-center">No events for this day.</p>
-                    )}
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {selectedDayEvents.length > 0 ? selectedDayEvents.map(event => {
+                        const config = eventTypeConfig[event.type];
+                        const Icon = config.icon;
+                        return (
+                            <div key={event.id} className={cn("p-2 rounded-md text-sm border-l-4 flex items-start justify-between", config.color)}>
+                                <div className="flex items-start gap-3">
+                                    <Icon className="h-5 w-5 mt-0.5 text-muted-foreground" />
+                                    <div>
+                                        <p className="font-semibold">{event.title}</p>
+                                        <p className="text-xs text-muted-foreground">{config.label}</p>
+                                        {event.link && (
+                                            <Link href={event.link} className="text-xs text-primary hover:underline">
+                                                View Details &rarr;
+                                            </Link>
+                                        )}
+                                    </div>
+                                </div>
+                                {event.isCustom && (
+                                    <div className="flex gap-1">
+                                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleOpenEditDialog(event)}>
+                                            <Edit className="h-4 w-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => handleOpenDeleteDialog(event)}>
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        )}) : (
+                            <p className="text-sm text-muted-foreground py-4 text-center">No events for this day.</p>
+                        )}
+                        </div>
                     </div>
                 </div>
             </CardContent>

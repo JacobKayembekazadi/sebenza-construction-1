@@ -240,9 +240,11 @@ export default function ProjectDetailPage() {
 
           <TabsContent value="tasks" className="mt-6">
               <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
-                      <div><CardTitle>Tasks</CardTitle><CardDescription>All tasks associated with this project.</CardDescription></div>
-                      <Button onClick={handleOpenAddDialog}><PlusCircle className="mr-2 h-4 w-4" />New Task</Button>
+                  <CardHeader>
+                    <div className="flex flex-row items-center justify-between">
+                        <div><CardTitle>Tasks</CardTitle><CardDescription>All tasks associated with this project.</CardDescription></div>
+                        <Button onClick={handleOpenAddDialog}><PlusCircle className="mr-2 h-4 w-4" />New Task</Button>
+                    </div>
                   </CardHeader>
                   <CardContent><TaskList tasks={tasks} onEdit={handleOpenEditDialog} onDelete={handleOpenDeleteDialog} /></CardContent>
               </Card>
@@ -251,7 +253,15 @@ export default function ProjectDetailPage() {
           <TabsContent value="budget" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><Receipt /> Invoices</CardTitle><CardDescription>Invoices generated for this project.</CardDescription></CardHeader>
+                <CardHeader>
+                    <CardTitle>
+                        <div className="flex items-center gap-2">
+                            <Receipt /> 
+                            <span>Invoices</span>
+                        </div>
+                    </CardTitle>
+                    <CardDescription>Invoices generated for this project.</CardDescription>
+                </CardHeader>
                 <CardContent>
                    <MiniTable title="Invoices" icon={<Receipt/>} items={projectInvoices} columns={['ID', 'Status', 'Total', 'Due Date']} renderRow={(item) => (
                       <>
@@ -264,7 +274,15 @@ export default function ProjectDetailPage() {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><DollarSign/> Expenses</CardTitle><CardDescription>Expenses logged against this project.</CardDescription></CardHeader>
+                <CardHeader>
+                    <CardTitle>
+                        <div className="flex items-center gap-2">
+                           <DollarSign/> 
+                           <span>Expenses</span>
+                        </div>
+                    </CardTitle>
+                    <CardDescription>Expenses logged against this project.</CardDescription>
+                </CardHeader>
                 <CardContent>
                   <MiniTable title="Expenses" icon={<DollarSign/>} items={projectExpenses} columns={['Date', 'Description', 'Category', 'Amount']} renderRow={(item) => (
                       <>
@@ -281,9 +299,11 @@ export default function ProjectDetailPage() {
           
           <TabsContent value="team" className="mt-6">
               <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <div><CardTitle>Project Team</CardTitle><CardDescription>Manage team members assigned to this project.</CardDescription></div>
-                    <Button onClick={() => setIsAddTeamMemberDialogOpen(true)}><UserPlus className="mr-2 h-4 w-4" /> Add Member</Button>
+                  <CardHeader>
+                    <div className="flex flex-row items-center justify-between">
+                        <div><CardTitle>Project Team</CardTitle><CardDescription>Manage team members assigned to this project.</CardDescription></div>
+                        <Button onClick={() => setIsAddTeamMemberDialogOpen(true)}><UserPlus className="mr-2 h-4 w-4" /> Add Member</Button>
+                    </div>
                   </CardHeader>
                   <CardContent>
                       {team.length > 0 ? (
@@ -296,7 +316,7 @@ export default function ProjectDetailPage() {
                                           <Avatar className="h-8 w-8"><AvatarImage src={member.avatar} alt={member.name} data-ai-hint="employee avatar" /><AvatarFallback>{member.name.substring(0, 2)}</AvatarFallback></Avatar>
                                           {member.name}
                                         </TableCell>
-                                        <TableCell><Badge variant="secondary">{member.role}</Badge></TableCell>
+                                        <TableCell><Badge variant="glass">{member.role}</Badge></TableCell>
                                         <TableCell className="text-right">
                                             <Button variant="ghost" size="icon" onClick={() => setMemberToRemove(member)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                                         </TableCell>
@@ -316,9 +336,11 @@ export default function ProjectDetailPage() {
           
           <TabsContent value="documents" className="mt-6">
               <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
-                    <div><CardTitle>Documents</CardTitle><CardDescription>All documents and files for this project.</CardDescription></div>
-                    <Button onClick={() => setIsAddDocumentDialogOpen(true)}><FileUp className="mr-2 h-4 w-4" /> Upload Document</Button>
+                  <CardHeader>
+                    <div className="flex flex-row items-center justify-between">
+                        <div><CardTitle>Documents</CardTitle><CardDescription>All documents and files for this project.</CardDescription></div>
+                        <Button onClick={() => setIsAddDocumentDialogOpen(true)}><FileUp className="mr-2 h-4 w-4" /> Upload Document</Button>
+                    </div>
                   </CardHeader>
                   <CardContent>
                       {documents.length > 0 ? (

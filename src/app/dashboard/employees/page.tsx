@@ -134,20 +134,20 @@ export default function EmployeesPage() {
 
        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Employees</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Total Employees</CardTitle>
           </CardHeader>
           <CardContent>
+            <Users className="h-4 w-4 text-muted-foreground mb-4" />
             <div className="text-2xl font-bold">{summary.totalEmployees} / {userLimit}</div>
           </CardContent>
         </Card>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Project Managers</CardTitle>
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <CardTitle>Project Managers</CardTitle>
           </CardHeader>
           <CardContent>
+            <Briefcase className="h-4 w-4 text-muted-foreground mb-4" />
             <div className="text-2xl font-bold">{summary.projectManagers}</div>
           </CardContent>
         </Card>
@@ -167,40 +167,42 @@ export default function EmployeesPage() {
       )}
 
       <Card>
-        <CardHeader className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <CardTitle>Employee Directory</CardTitle>
-            <CardDescription>
-              Search, filter, and manage all your team members.
-            </CardDescription>
-          </div>
-          <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
-            <div className="relative w-full sm:w-auto">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search by name or email..."
-                className="pl-8 w-full sm:w-[250px]"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+        <CardHeader>
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <CardTitle>Employee Directory</CardTitle>
+              <CardDescription>
+                Search, filter, and manage all your team members.
+              </CardDescription>
             </div>
-            <Select value={roleFilter} onValueChange={setRoleFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by role" />
-              </SelectTrigger>
-              <SelectContent>
-                {roles.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog} disabled={limitReached}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              New Employee
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+              <div className="relative w-full sm:w-auto">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search by name or email..."
+                  className="pl-8 w-full sm:w-[250px]"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Filter by role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roles.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {role}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button className="w-full sm:w-auto" onClick={handleOpenAddDialog} disabled={limitReached}>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                New Employee
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -230,7 +232,7 @@ export default function EmployeesPage() {
                     <TableCell className="hidden md:table-cell">{employee.email}</TableCell>
                     <TableCell className="hidden lg:table-cell">{employee.phone}</TableCell>
                     <TableCell>
-                      <Badge variant="secondary">
+                      <Badge variant="glass">
                         {employee.role}
                       </Badge>
                     </TableCell>

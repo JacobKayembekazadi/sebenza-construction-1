@@ -1,13 +1,14 @@
+
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const poppins = Poppins({
+const manrope = Manrope({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins'
+  variable: '--font-manrope'
 });
 
 export const metadata: Metadata = {
@@ -32,10 +33,10 @@ export default function RootLayout({
        <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <meta name="theme-color" content="#00A79D" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <meta name="theme-color" content="#000000" />
       </head>
-      <body className={`font-body antialiased ${inter.variable} ${poppins.variable}`}>
+      <body className={`font-body antialiased ${inter.variable} ${manrope.variable}`}>
         {children}
         <Toaster />
       </body>

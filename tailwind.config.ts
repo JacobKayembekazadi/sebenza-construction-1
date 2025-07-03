@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -9,15 +10,20 @@ export default {
   theme: {
     extend: {
       boxShadow: {
+        'neon-glow': '0 0 20px rgba(59, 130, 246, 0.25), inset 0 0 1.5px 1px rgba(59, 130, 246, 0.4)',
         subtle: '0 4px 12px rgba(0, 0, 0, 0.05)',
       },
       fontFamily: {
-        body: ['Inter', 'Poppins', 'sans-serif'],
-        headline: ['Inter', 'Poppins', 'sans-serif'],
+        body: ['Inter', 'Manrope', 'sans-serif'],
+        headline: ['Inter', 'Manrope', 'sans-serif'],
         code: ['monospace'],
         sans: ['var(--font-sans)', 'sans-serif'],
+        manrope: ['var(--font-manrope)', 'sans-serif'],
       },
       colors: {
+        'glass-background': 'rgba(20, 25, 40, 0.5)',
+        'glass-border': 'rgba(59, 130, 246, 0.3)',
+        'accent-blue': '#3B82F6',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -68,9 +74,9 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
-        'status-active': '#20C997',
-        'status-pending': '#FFC107',
-        'status-cancel': '#DC3545',
+        'status-active': 'hsl(var(--status-active))',
+        'status-pending': 'hsl(var(--status-pending))',
+        'status-cancel': 'hsl(var(--status-cancel))',
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -99,6 +105,9 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      backdropBlur: {
+        'lg': '12px',
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],

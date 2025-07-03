@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -17,6 +18,7 @@ const badgeVariants = cva(
         outline: "text-foreground",
         green: "border-transparent bg-status-active/10 text-status-active",
         yellow: "border-transparent bg-status-pending/10 text-status-pending",
+        glass: "border border-accent-blue/30 bg-accent-blue/10 text-foreground"
       },
     },
     defaultVariants: {
