@@ -149,6 +149,8 @@ export type PurchaseOrder = {
   id: string;
   supplierId: string;
   supplierName: string;
+  projectId: string;
+  projectName: string;
   lineItems: PurchaseOrderLineItem[];
   total: number;
   issueDate: Date;
@@ -320,48 +322,6 @@ export const suppliers: Supplier[] = [
     { id: "sup-3", name: "Lumber Liquidators", email: "contact@lumberliquidators.com", phone: "555-0203", address: "3 Wood St, Portland, OR" },
 ];
 
-export const purchaseOrders: PurchaseOrder[] = [
-    {
-        id: "po-001",
-        supplierId: "sup-1",
-        supplierName: "Steel & Co.",
-        lineItems: [
-            { id: "li-po-1", description: "I-Beams (20ft)", quantity: 50, unitPrice: 350, total: 17500 }
-        ],
-        total: 17500,
-        issueDate: new Date(2024, 5, 1),
-        deliveryDate: new Date(2024, 5, 30),
-        status: "Sent",
-        notes: "Deliver to Site A."
-    },
-    {
-        id: "po-002",
-        supplierId: "sup-2",
-        supplierName: "Concrete King",
-        lineItems: [
-            { id: "li-po-2", description: "5000 PSI Concrete (cubic yards)", quantity: 100, unitPrice: 150, total: 15000 }
-        ],
-        total: 15000,
-        issueDate: new Date(2024, 4, 20),
-        deliveryDate: new Date(2024, 5, 10),
-        status: "Fulfilled",
-        notes: ""
-    },
-    {
-        id: "po-003",
-        supplierId: "sup-3",
-        supplierName: "Lumber Liquidators",
-        lineItems: [
-            { id: "li-po-3", description: "2x4 Lumber (8ft)", quantity: 500, unitPrice: 8, total: 4000 }
-        ],
-        total: 4000,
-        issueDate: new Date(2024, 5, 5),
-        deliveryDate: new Date(2024, 5, 15),
-        status: "Draft",
-        notes: "Call Bob on arrival."
-    }
-];
-
 export const projects: Project[] = [
   {
     id: "proj-001",
@@ -419,6 +379,54 @@ export const projects: Project[] = [
     clientId: "client-1",
     clientName: "Global Corp"
   },
+];
+
+export const purchaseOrders: PurchaseOrder[] = [
+    {
+        id: "po-001",
+        supplierId: "sup-1",
+        supplierName: "Steel & Co.",
+        projectId: "proj-001",
+        projectName: "Johannesburg to Cape Town",
+        lineItems: [
+            { id: "li-po-1", description: "I-Beams (20ft)", quantity: 50, unitPrice: 350, total: 17500 }
+        ],
+        total: 17500,
+        issueDate: new Date(2024, 5, 1),
+        deliveryDate: new Date(2024, 5, 30),
+        status: "Sent",
+        notes: "Deliver to Site A."
+    },
+    {
+        id: "po-002",
+        supplierId: "sup-2",
+        supplierName: "Concrete King",
+        projectId: "proj-002",
+        projectName: "Durban Port Clearance",
+        lineItems: [
+            { id: "li-po-2", description: "5000 PSI Concrete (cubic yards)", quantity: 100, unitPrice: 150, total: 15000 }
+        ],
+        total: 15000,
+        issueDate: new Date(2024, 4, 20),
+        deliveryDate: new Date(2024, 5, 10),
+        status: "Fulfilled",
+        notes: ""
+    },
+    {
+        id: "po-003",
+        supplierId: "sup-3",
+        supplierName: "Lumber Liquidators",
+        projectId: "proj-004",
+        projectName: "Local Warehouse Distribution",
+        lineItems: [
+            { id: "li-po-3", description: "2x4 Lumber (8ft)", quantity: 500, unitPrice: 8, total: 4000 }
+        ],
+        total: 4000,
+        issueDate: new Date(2024, 5, 5),
+        deliveryDate: new Date(2024, 5, 15),
+        status: "Draft",
+        notes: "Call Bob on arrival."
+    }
 ];
 
 export const allTasks = tasks;

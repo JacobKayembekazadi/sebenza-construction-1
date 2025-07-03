@@ -34,7 +34,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import type { PurchaseOrder, Supplier } from "@/lib/data";
+import type { PurchaseOrder, Supplier, Project } from "@/lib/data";
 import { useEffect, useMemo } from "react";
 import { Textarea } from "./ui/textarea";
 
@@ -47,6 +47,7 @@ const lineItemSchema = z.object({
 
 const poSchema = z.object({
   supplierId: z.string().min(1, "Please select a supplier."),
+  projectId: z.string().min(1, "Please select a project."),
   status: z.enum(["Draft", "Sent", "Fulfilled", "Cancelled"]),
   issueDate: z.date(),
   deliveryDate: z.date(),
@@ -65,6 +66,7 @@ interface AddEditPODialogProps {
   onSave: (data: POFormValues, poId?: string) => void;
   purchaseOrder?: PurchaseOrder | null;
   suppliers: Supplier[];
+  projects: Project[];
 }
 
 export function AddEditPODialog({
@@ -73,11 +75,13 @@ export function AddEditPODialog({
   onSave,
   purchaseOrder,
   suppliers,
+  projects,
 }: AddEditPODialogProps) {
   const form = useForm<POFormValues>({
     resolver: zodResolver(poSchema),
     defaultValues: {
       supplierId: "",
+      projectId: "",
       status: "Draft",
       lineItems: [],
       notes: "",
@@ -101,6 +105,7 @@ export function AddEditPODialog({
       if (purchaseOrder) {
         form.reset({
           supplierId: purchaseOrder.supplierId,
+          projectId: purchaseOrder.projectId,
           status: purchaseOrder.status,
           issueDate: new Date(purchaseOrder.issueDate),
           deliveryDate: new Date(purchaseOrder.deliveryDate),
@@ -110,6 +115,7 @@ export function AddEditPODialog({
       } else {
         form.reset({
           supplierId: "",
+          projectId: "",
           status: "Draft",
           issueDate: new Date(),
           deliveryDate: new Date(new Date().setDate(new Date().getDate() + 14)),
@@ -147,17 +153,12 @@ export function AddEditPODialog({
                         <FormMessage />
                     </FormItem>
                 )}/>
-                 <FormField control={form.control} name="status" render={({ field }) => (
+                <FormField control={form.control} name="projectId" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Status</FormLabel>
+                        <FormLabel>Project</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
-                            <SelectContent>
-                                <SelectItem value="Draft">Draft</SelectItem>
-                                <SelectItem value="Sent">Sent</SelectItem>
-                                <SelectItem value="Fulfilled">Fulfilled</SelectItem>
-                                <SelectItem value="Cancelled">Cancelled</SelectItem>
-                            </SelectContent>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Select project" /></SelectTrigger></FormControl>
+                            <SelectContent>{projects.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
                         </Select>
                         <FormMessage />
                     </FormItem>
@@ -189,6 +190,22 @@ export function AddEditPODialog({
                     </FormItem>
                 )}/>
             </div>
+
+            <FormField control={form.control} name="status" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Select status" /></SelectTrigger></FormControl>
+                        <SelectContent>
+                            <SelectItem value="Draft">Draft</SelectItem>
+                            <SelectItem value="Sent">Sent</SelectItem>
+                            <SelectItem value="Fulfilled">Fulfilled</SelectItem>
+                            <SelectItem value="Cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+            )}/>
             
             <div className="p-4 border rounded-lg space-y-4">
                 <div className="space-y-2">

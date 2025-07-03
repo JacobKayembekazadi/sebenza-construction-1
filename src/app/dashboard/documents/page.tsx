@@ -45,11 +45,12 @@ import {
   Printer,
   FileCheck2
 } from "lucide-react";
-import { purchaseOrders as initialPOs, suppliers, type PurchaseOrder } from "@/lib/data";
+import { purchaseOrders as initialPOs, suppliers, projects, type PurchaseOrder, type Project } from "@/lib/data";
 import { AddEditPODialog, type POFormValues } from "@/components/add-edit-document-dialog";
 import { DeletePODialog } from "@/components/delete-document-dialog";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function PurchaseOrdersPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>(initialPOs);
@@ -111,13 +112,15 @@ export default function PurchaseOrdersPage() {
 
   const handleSavePO = (data: POFormValues, poId?: string) => {
     const supplier = suppliers.find(c => c.id === data.supplierId);
-    if (!supplier) return;
+    const project = projects.find(p => p.id === data.projectId);
+    if (!supplier || !project) return;
 
     const total = data.lineItems.reduce((acc, item) => acc + (item.quantity * item.unitPrice), 0);
 
     const finalData = {
         ...data,
         supplierName: supplier.name,
+        projectName: project.name,
         total,
         lineItems: data.lineItems.map((li, index) => ({
             ...li,
@@ -152,8 +155,12 @@ export default function PurchaseOrdersPage() {
     }
   };
 
-  const handleAction = (message: string) => {
-    toast({ title: "Action Triggered", description: message });
+  const handleAction = (po: PurchaseOrder, action: string) => {
+    let description = action;
+    if (action.includes('convert')) {
+        description = `PO ${po.id.toUpperCase()} for project '${po.projectName}' marked for conversion. This will appear as an expense.`
+    }
+    toast({ title: "Action Triggered", description });
   }
 
   return (
@@ -235,6 +242,7 @@ export default function PurchaseOrdersPage() {
               <TableRow>
                 <TableHead>PO ID</TableHead>
                 <TableHead>Supplier</TableHead>
+                <TableHead>Project</TableHead>
                 <TableHead>Issue Date</TableHead>
                 <TableHead>Expected Delivery</TableHead>
                 <TableHead>Total</TableHead>
@@ -248,6 +256,11 @@ export default function PurchaseOrdersPage() {
                   <TableRow key={po.id}>
                     <TableCell className="font-medium">{po.id.toUpperCase()}</TableCell>
                     <TableCell>{po.supplierName}</TableCell>
+                    <TableCell>
+                      <Link href={`/dashboard/projects/${po.projectId}`} className="hover:underline text-muted-foreground">
+                        {po.projectName}
+                      </Link>
+                    </TableCell>
                     <TableCell>{format(po.issueDate, "PPP")}</TableCell>
                     <TableCell>{format(po.deliveryDate, "PPP")}</TableCell>
                     <TableCell>${po.total.toLocaleString()}</TableCell>
@@ -268,16 +281,16 @@ export default function PurchaseOrdersPage() {
                           <DropdownMenuItem onClick={() => handleOpenEditDialog(po)}>
                             Edit PO
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleAction('This would email the PO to the supplier.')}>
+                          <DropdownMenuItem onClick={() => handleAction(po, 'This would email the PO to the supplier.')}>
                             <Send />
                             Send to Supplier
                           </DropdownMenuItem>
-                           <DropdownMenuItem onClick={() => handleAction('This would open a print dialog.')}>
+                           <DropdownMenuItem onClick={() => handleAction(po, 'This would open a print dialog.')}>
                             <Printer />
                             Print/Download
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                           <DropdownMenuItem onClick={() => handleAction('This would convert the PO to a bill/expense.')}>
+                           <DropdownMenuItem onClick={() => handleAction(po, 'convert')}>
                             <FileCheck2 />
                             Convert to Bill
                           </DropdownMenuItem>
@@ -293,7 +306,7 @@ export default function PurchaseOrdersPage() {
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={8}
                     className="h-24 text-center text-muted-foreground"
                   >
                     No purchase orders found.
@@ -311,6 +324,7 @@ export default function PurchaseOrdersPage() {
         onSave={handleSavePO}
         purchaseOrder={selectedPO}
         suppliers={suppliers}
+        projects={projects}
       />
       
       <DeletePODialog
