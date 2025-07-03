@@ -23,6 +23,7 @@ import {
   FileStack,
   Clock,
   Calendar,
+  Plus,
 } from "lucide-react";
 import { FinancialSnapshotChart } from "@/components/dashboard/financial-snapshot-chart";
 import { cn } from "@/lib/utils";
@@ -31,6 +32,7 @@ import { ResourceAllocationChart } from "@/components/dashboard/resource-allocat
 import { WeatherForecast } from "@/components/dashboard/weather-forecast";
 import { QuickAddButton } from "@/components/quick-add-button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Button } from '@/components/ui/button';
 
 export default function DashboardPage() {
   const financialSummary = useMemo(() => {
@@ -87,7 +89,14 @@ export default function DashboardPage() {
             type: 'invoice',
             link: `/dashboard/invoices`
         }));
-        return [...taskEvents, ...invoiceEvents];
+        const projectEvents = projects.map(project => ({
+            id: `project-${project.id}`,
+            date: project.endDate,
+            title: `Job Deadline: ${project.name}`,
+            type: 'project',
+            link: `/dashboard/projects/${project.id}`
+        }));
+        return [...taskEvents, ...invoiceEvents, ...projectEvents];
     }, []);
 
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -98,7 +107,7 @@ export default function DashboardPage() {
             event.date.getDate() === selectedDate.getDate() &&
             event.date.getMonth() === selectedDate.getMonth() &&
             event.date.getFullYear() === selectedDate.getFullYear()
-        );
+        ).sort((a,b) => a.date.getTime() - b.date.getTime());
     }, [selectedDate, calendarEvents]);
 
   return (
@@ -216,10 +225,18 @@ export default function DashboardPage() {
         <div className="space-y-8">
           <WeatherForecast forecasts={weatherForecast} />
            <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Unified Calendar</CardTitle>
-                <CardDescription>Upcoming deadlines for tasks and invoices.</CardDescription>
-            </CardHeader>
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5" /> Unified Calendar</CardTitle>
+                            <CardDescription>Upcoming deadlines for jobs, tasks, and invoices.</CardDescription>
+                        </div>
+                        <Button variant="outline" size="sm" disabled>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create Event
+                        </Button>
+                    </div>
+                </CardHeader>
             <CardContent className="flex flex-col gap-4">
                 <CalendarComponent
                     mode="single"
@@ -241,8 +258,10 @@ export default function DashboardPage() {
                     {selectedDayEvents.length > 0 ? selectedDayEvents.map(event => (
                         <Link href={event.link} key={event.id}>
                             <div className={cn(
-                                "p-2 rounded-md text-sm cursor-pointer hover:bg-muted",
-                                event.type === 'task' ? 'border-l-4 border-accent-foreground' : 'border-l-4 border-chart-2'
+                                "p-2 rounded-md text-sm cursor-pointer hover:bg-muted border-l-4",
+                                event.type === 'task' && 'border-chart-1',
+                                event.type === 'invoice' && 'border-chart-2',
+                                event.type === 'project' && 'border-chart-3',
                             )}>
                                 {event.title}
                             </div>
