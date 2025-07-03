@@ -51,7 +51,7 @@ type SortConfig = {
 
 const priorityIcons = {
     "Urgent": <AlertCircle className="h-5 w-5 text-destructive" />,
-    "High": <ArrowUp className="h-5 w-5 text-accent" />,
+    "High": <ArrowUp className="h-5 w-5 text-yellow-500" />,
     "Medium": <Equal className="h-5 w-5 text-blue-500" />,
     "Low": <ArrowDown className="h-5 w-5 text-muted-foreground" />,
 };
@@ -208,12 +208,12 @@ export default function TasksPage() {
     }
   };
 
-  const statusVariant = (status: Task['status']) => {
+  const statusVariant = (status: Task['status']): 'green' | 'yellow' | 'outline' => {
     switch (status) {
       case "Done":
-        return "default";
+        return "green";
       case "In Progress":
-        return "secondary";
+        return "yellow";
       case "To Do":
         return "outline";
       default:

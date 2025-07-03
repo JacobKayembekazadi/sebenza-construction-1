@@ -73,12 +73,12 @@ export default function DashboardPage() {
     (p) => p.status === "At Risk" || p.status === "Off Track"
   );
   
-  const statusVariant = (status: string) => {
+  const statusVariant = (status: string): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
       case "On Track":
-        return "default";
+        return "green";
       case "At Risk":
-        return "secondary";
+        return "yellow";
       case "Off Track":
         return "destructive";
       default:
@@ -183,7 +183,7 @@ export default function DashboardPage() {
             <Card>
                 <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="text-destructive" />
+                    <AlertTriangle className="text-status-pending" />
                     Needs Your Attention
                 </CardTitle>
                 <CardDescription>

@@ -83,10 +83,10 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
     }
   };
   
-  const statusVariant = (status: string) => {
+  const statusVariant = (status: string): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
-      case "On Track": return "default";
-      case "At Risk": return "secondary";
+      case "On Track": return "green";
+      case "At Risk": return "yellow";
       case "Off Track": return "destructive";
       default: return "outline";
     }

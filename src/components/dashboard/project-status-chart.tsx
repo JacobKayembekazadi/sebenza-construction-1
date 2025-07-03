@@ -10,17 +10,17 @@ interface ProjectStatusChartProps {
 }
 
 const COLORS = {
-  "On Track": "hsl(var(--chart-1))",
-  "At Risk": "hsl(var(--chart-2))",
-  "Off Track": "hsl(var(--destructive))",
+  "On Track": "var(--color-status-active)",
+  "At Risk": "var(--color-status-pending)",
+  "Off Track": "var(--color-status-cancel)",
 }
 
-const statusVariant = (status: string) => {
+const statusVariant = (status: string): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
       case "On Track":
-        return "default";
+        return "green";
       case "At Risk":
-        return "secondary";
+        return "yellow";
       case "Off Track":
         return "destructive";
       default:
@@ -63,7 +63,7 @@ export function ProjectStatusChart({ projects }: ProjectStatusChartProps) {
                   strokeWidth={4}
                 >
                   {data.map((entry) => (
-                    <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name as keyof typeof COLORS]} />
+                    <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name as keyof typeof COLORS].replace('var(--color-', 'hsl(var(--').replace(')', '))')} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -82,7 +82,7 @@ export function ProjectStatusChart({ projects }: ProjectStatusChartProps) {
                 <div className="flex items-center gap-2">
                   <span
                     className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: COLORS[entry.name as keyof typeof COLORS] }}
+                    style={{ backgroundColor: COLORS[entry.name as keyof typeof COLORS].replace('var(--color-', 'hsl(var(--').replace(')', '))') }}
                   />
                   <span>{entry.name}</span>
                 </div>

@@ -29,10 +29,10 @@ interface TaskListProps {
 }
 
 export function TaskList({ tasks, onEdit, onDelete }: TaskListProps) {
-    const statusVariant = (status: string) => {
+    const statusVariant = (status: Task['status']): 'green' | 'yellow' | 'outline' => {
         switch (status) {
-            case "Done": return "default";
-            case "In Progress": return "secondary";
+            case "Done": return "green";
+            case "In Progress": return "yellow";
             case "To Do": return "outline";
             default: return "outline";
         }

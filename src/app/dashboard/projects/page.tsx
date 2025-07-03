@@ -87,12 +87,12 @@ export default function ProjectsPage() {
       });
   }, [projects, searchTerm, statusFilter, managerFilter]);
 
-  const statusVariant = (status: string) => {
+  const statusVariant = (status: string): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
       case "On Track":
-        return "default";
+        return "green";
       case "At Risk":
-        return "secondary";
+        return "yellow";
       case "Off Track":
         return "destructive";
       default:

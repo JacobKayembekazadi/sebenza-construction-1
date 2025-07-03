@@ -75,10 +75,10 @@ export default function EstimatesPage() {
     });
   }, [estimates, searchTerm, statusFilter]);
 
-  const statusVariant = (status: Estimate['status']) => {
+  const statusVariant = (status: Estimate['status']): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
-      case "Accepted": return "default";
-      case "Sent": return "secondary";
+      case "Accepted": return "green";
+      case "Sent": return "yellow";
       case "Draft": return "outline";
       case "Declined": return "destructive";
       default: return "outline";

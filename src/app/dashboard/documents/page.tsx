@@ -75,10 +75,10 @@ export default function PurchaseOrdersPage() {
     });
   }, [purchaseOrders, searchTerm, statusFilter]);
 
-  const statusVariant = (status: PurchaseOrder['status']) => {
+  const statusVariant = (status: PurchaseOrder['status']): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
-      case "Fulfilled": return "default";
-      case "Sent": return "secondary";
+      case "Fulfilled": return "green";
+      case "Sent": return "yellow";
       case "Draft": return "outline";
       case "Cancelled": return "destructive";
       default: return "outline";

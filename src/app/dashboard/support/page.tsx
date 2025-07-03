@@ -91,13 +91,13 @@ export default function SupportPage() {
     toast({ title: "Action", description: message });
   };
   
-  const statusVariant = (status: SupportTicket['status']) => {
+  const statusVariant = (status: SupportTicket['status']): 'green' | 'yellow' | 'outline' => {
     switch (status) {
       case "Resolved":
       case "Closed":
-        return "default";
+        return "green";
       case "In Progress":
-        return "secondary";
+        return "yellow";
       case "Open":
       default:
         return "outline";

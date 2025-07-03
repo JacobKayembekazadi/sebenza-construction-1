@@ -98,11 +98,11 @@ export default function InvoicesPage() {
     });
   }, [invoices, searchTerm, statusFilter]);
 
-  const statusVariant = (status: Invoice['status']) => {
+  const statusVariant = (status: Invoice['status']): 'green' | 'yellow' | 'destructive' | 'outline' => {
     switch (status) {
-      case "Paid": return "default";
-      case "Sent": return "secondary";
-      case "Partial": return "secondary";
+      case "Paid": return "green";
+      case "Sent": return "yellow";
+      case "Partial": return "yellow";
       case "Draft": return "outline";
       case "Overdue": return "destructive";
       default: return "outline";
