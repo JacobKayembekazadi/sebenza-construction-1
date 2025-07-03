@@ -27,10 +27,10 @@ export function WeatherForecast({ forecasts }: WeatherForecastProps) {
         <CardTitle>5-Day Weather Forecast</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex justify-between gap-2">
+        <div className="flex flex-wrap justify-center gap-4">
           {forecasts.map((forecast, index) => (
             <div key={forecast.day} className={cn(
-                "flex flex-col items-center gap-2 text-center flex-1 p-2 rounded-md",
+                "flex flex-col items-center gap-2 text-center flex-1 p-2 rounded-md min-w-[60px]",
                 index === 0 && "bg-muted"
             )}>
               <p className="font-semibold text-sm">{forecast.day}</p>

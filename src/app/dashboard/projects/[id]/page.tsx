@@ -87,7 +87,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
       </div>
 
       <Tabs defaultValue="overview">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3 gap-1 sm:grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="tasks">Tasks</TabsTrigger>
           <TabsTrigger value="budget">Budget</TabsTrigger>
