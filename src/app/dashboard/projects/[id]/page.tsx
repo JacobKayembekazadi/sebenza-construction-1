@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { projects as initialProjects, employees as allEmployees, invoices as allInvoices, expenses as allExpenses, type Task, type Project, type Employee, type Document } from "@/lib/data";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import Link from "next/link";
 import {
   Card,
@@ -72,7 +72,8 @@ function MiniTable({ icon, title, items, columns, renderRow }: { icon: React.Rea
     )
 }
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
+export default function ProjectDetailPage() {
+  const params = useParams<{ id: string }>();
   // We use state for the project to make it reactive to changes
   const [project] = useState(() => findProject(params.id));
   const [tasks, setTasks] = useState<Task[]>(project?.tasks || []);
