@@ -92,6 +92,9 @@ export type Invoice = {
   isRecurring?: boolean;
   recurringInterval?: 'days' | 'weeks' | 'months';
   recurringPeriod?: number;
+  lateFeeType?: 'Percentage' | 'Flat Rate';
+  lateFeeValue?: number;
+  automatedReminders?: boolean;
 };
 
 export type Employee = {
@@ -503,7 +506,8 @@ export const invoices: Invoice[] = [
         dueDate: new Date(2024, 6, 1), 
         status: "Paid",
         notes: "Thank you for your business.",
-        terms: "Payment due upon receipt."
+        terms: "Payment due upon receipt.",
+        automatedReminders: true,
     },
     { 
         id: "inv-002", 
@@ -518,7 +522,10 @@ export const invoices: Invoice[] = [
         total: (75000 * 1.10) - 5000,
         issueDate: new Date(2024, 5, 5), 
         dueDate: new Date(2024, 6, 5), 
-        status: "Sent"
+        status: "Sent",
+        lateFeeType: 'Percentage',
+        lateFeeValue: 1.5,
+        automatedReminders: true,
     },
     { 
         id: "inv-003", 
@@ -533,7 +540,10 @@ export const invoices: Invoice[] = [
         total: 120000,
         issueDate: new Date(2024, 4, 1), 
         dueDate: new Date(2024, 5, 20), 
-        status: "Overdue"
+        status: "Overdue",
+        lateFeeType: 'Flat Rate',
+        lateFeeValue: 250,
+        automatedReminders: true,
     },
     { 
         id: "inv-004", 
@@ -548,7 +558,8 @@ export const invoices: Invoice[] = [
         total: 35000,
         issueDate: new Date(2024, 5, 10), 
         dueDate: new Date(2024, 6, 10), 
-        status: "Draft" 
+        status: "Draft",
+        automatedReminders: false,
     },
     { 
         id: "inv-005", 
@@ -566,7 +577,8 @@ export const invoices: Invoice[] = [
         status: "Partial", 
         isRecurring: true, 
         recurringInterval: 'days', 
-        recurringPeriod: 30 
+        recurringPeriod: 30,
+        automatedReminders: true,
     },
 ];
 

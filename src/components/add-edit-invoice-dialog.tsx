@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Trash2 } from "lucide-react";
+import { CalendarIcon, Paperclip, PlusCircle, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Invoice, Client, Project } from "@/lib/data";
@@ -63,6 +63,9 @@ const invoiceSchema = z.object({
   isRecurring: z.boolean().default(false),
   recurringInterval: z.enum(["days", "weeks", "months"]).optional(),
   recurringPeriod: z.coerce.number().min(1).optional(),
+  lateFeeType: z.enum(["Percentage", "Flat Rate"]).optional(),
+  lateFeeValue: z.coerce.number().min(0).optional(),
+  automatedReminders: z.boolean().default(false),
 }).refine(data => data.dueDate >= data.issueDate, {
   message: "Due date cannot be before issue date.",
   path: ["dueDate"],
@@ -82,6 +85,13 @@ const invoiceSchema = z.object({
         message: "Period is required for recurring invoices.",
       });
     }
+  }
+  if (data.lateFeeValue && !data.lateFeeType) {
+    ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["lateFeeType"],
+        message: "Type is required if a late fee value is set.",
+    });
   }
 });
 
@@ -119,6 +129,9 @@ export function AddEditInvoiceDialog({
       isRecurring: false,
       recurringInterval: 'days',
       recurringPeriod: 30,
+      lateFeeType: undefined,
+      lateFeeValue: 0,
+      automatedReminders: false,
     },
   });
 
@@ -156,6 +169,9 @@ export function AddEditInvoiceDialog({
           isRecurring: invoice.isRecurring ?? false,
           recurringInterval: invoice.recurringInterval ?? 'days',
           recurringPeriod: invoice.recurringPeriod,
+          lateFeeType: invoice.lateFeeType,
+          lateFeeValue: invoice.lateFeeValue,
+          automatedReminders: invoice.automatedReminders,
         });
       } else {
         form.reset({
@@ -172,6 +188,9 @@ export function AddEditInvoiceDialog({
           isRecurring: false,
           recurringInterval: 'days',
           recurringPeriod: 30,
+          lateFeeType: undefined,
+          lateFeeValue: 0,
+          automatedReminders: false,
         });
       }
     }
@@ -308,15 +327,77 @@ export function AddEditInvoiceDialog({
                   </div>
                 )}
             </div>
+             <Separator />
 
+            <div className="grid grid-cols-2 gap-6 pt-2">
+                <div className="space-y-2 rounded-lg border p-3 shadow-sm">
+                    <Label>Late Fees</Label>
+                    <FormDescription>Apply a fee if the invoice becomes overdue.</FormDescription>
+                    <div className="flex gap-2 pt-2">
+                        <FormField
+                            control={form.control}
+                            name="lateFeeType"
+                            render={({ field }) => (
+                                <FormItem className="flex-1">
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Fee Type" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="Flat Rate">Flat Rate ($)</SelectItem>
+                                            <SelectItem value="Percentage">Percentage (%)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="lateFeeValue"
+                            render={({ field }) => (
+                                <FormItem className="flex-1">
+                                    <FormControl>
+                                        <Input type="number" placeholder="Value" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                </div>
+                <FormField
+                    control={form.control}
+                    name="automatedReminders"
+                    render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5"><FormLabel>Automated Reminders</FormLabel><FormDescription>Send reminders for overdue invoices automatically.</FormDescription></div>
+                        <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                    </FormItem>
+                    )}
+                />
+            </div>
+            
             <Separator />
 
-            <div className="space-y-2 pt-2">
-                <Label>Payment Schedule</Label>
-                <FormDescription>Divide the total amount into multiple payment installments.</FormDescription>
-                <Button type="button" variant="outline" className="w-full" disabled>
-                    Set Up Payment Schedule
-                </Button>
+            <div className="grid grid-cols-2 gap-6 pt-2">
+                <div className="space-y-2">
+                    <Label>Payment Schedule</Label>
+                    <FormDescription>Divide the total amount into multiple payment installments.</FormDescription>
+                    <Button type="button" variant="outline" className="w-full" disabled>
+                        Set Up Payment Schedule
+                    </Button>
+                </div>
+                 <div className="space-y-2">
+                    <Label>Attachments</Label>
+                    <FormDescription>Attach relevant files like contracts or timesheets.</FormDescription>
+                    <Button type="button" variant="outline" className="w-full" disabled>
+                        <Paperclip className="mr-2 h-4 w-4" />
+                        Attach Files
+                    </Button>
+                </div>
             </div>
 
             <DialogFooter className="pt-4">
