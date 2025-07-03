@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, invoices, estimates, Task, allEvents, UnifiedEvent } from "@/lib/data";
+import { projects, allTasks, financialData, recentActivity, resourceAllocation, weatherForecast, invoices, estimates, Task, allEvents, UnifiedEvent, newsUpdates } from "@/lib/data";
 import Link from "next/link";
 import {
   Activity,
@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { RecentActivityFeed } from "@/components/dashboard/recent-activity-feed";
 import { ResourceAllocationChart } from "@/components/dashboard/resource-allocation-chart";
 import { WeatherForecast } from "@/components/dashboard/weather-forecast";
+import { NewsAndUpdates } from "@/components/dashboard/news-and-updates";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from '@/components/ui/button';
 import { format, isSameDay } from "date-fns";
@@ -216,6 +217,7 @@ export default function DashboardPage() {
 
         {/* Right Column */}
         <div className="space-y-8">
+          <NewsAndUpdates updates={newsUpdates} />
           <WeatherForecast forecasts={weatherForecast} />
            <Card>
                 <CardHeader>

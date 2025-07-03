@@ -257,6 +257,16 @@ export type Service = {
   defaultRate: number; // Per hour
 };
 
+export type NewsUpdate = {
+  id: string;
+  title: string;
+  content: string;
+  date: Date;
+  category: 'New Feature' | 'Announcement' | 'Tip';
+  link?: string;
+  linkText?: string;
+};
+
 export const employees: Employee[] = [
     { id: "emp-001", name: "Jane Doe", email: "jane.doe@example.com", phone: "555-0101", role: "Project Manager", avatar: "https://placehold.co/32x32.png" },
     { id: "emp-002", name: "Bob Builder", email: "bob.builder@example.com", phone: "555-0102", role: "Site Supervisor", avatar: "https://placehold.co/32x32.png" },
@@ -873,4 +883,30 @@ export const allEvents: UnifiedEvent[] = [
     ...taskEvents,
     ...invoiceEvents,
     ...customUnifiedEvents,
+];
+
+export const newsUpdates: NewsUpdate[] = [
+    {
+        id: 'news-1',
+        title: 'New Feature: AI-Powered Reporting!',
+        content: 'Generate insightful project and financial reports instantly with our new AI analysis tools. Find it in the Accounting section.',
+        date: new Date(2024, 5, 28),
+        category: 'New Feature',
+        link: '/dashboard/ai-report',
+        linkText: 'Try it now'
+    },
+    {
+        id: 'news-2',
+        title: 'Tip: Quick Add Menu',
+        content: 'Did you know you can press the "+" button on any page to quickly add a new task, expense, or log entry?',
+        date: new Date(2024, 5, 20),
+        category: 'Tip',
+    },
+    {
+        id: 'news-3',
+        title: 'Scheduled Maintenance',
+        content: 'We will be performing scheduled maintenance on Sunday at 2 AM. The platform may be unavailable for up to 15 minutes.',
+        date: new Date(2024, 5, 15),
+        category: 'Announcement',
+    }
 ];
