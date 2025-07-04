@@ -1,4 +1,6 @@
 
+"use client";
+
 import {
   SidebarProvider,
   Sidebar,
@@ -15,14 +17,19 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { QuickAddButton } from "@/components/quick-add-button";
 import { LiveChatWidget } from "@/components/live-chat-widget";
 import { WhatsAppWidget } from "@/components/whatsapp-widget";
+import { ProtectedRoute } from "@/components/protected-route";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useAuth();
+  
   return (
-    <SidebarProvider>
+    <ProtectedRoute>
+      <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="p-4">
           <Link
@@ -40,12 +47,12 @@ export default function DashboardLayout({
           <div className="flex items-center gap-2 p-4">
             <Avatar>
               <AvatarImage src="https://placehold.co/40x40.png" alt="User" data-ai-hint="user avatar" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="font-semibold">Jane Doe</span>
+              <span className="font-semibold">{user?.name || 'User'}</span>
               <span className="text-xs text-sidebar-foreground/70">
-                Project Manager
+                {user?.role === 'admin' ? 'Administrator' : user?.role === 'owner' ? 'Owner' : 'Member'}
               </span>
             </div>
           </div>
@@ -61,5 +68,6 @@ export default function DashboardLayout({
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   );
 }

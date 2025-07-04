@@ -14,12 +14,16 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-
-// In a real application, this would come from an authentication context/provider.
-const userRole = 'admin'; // 'admin', 'owner', or 'member'
+import { useAuth } from "@/contexts/auth-context"
 
 export function DashboardHeader() {
   const router = useRouter()
+  const { user, logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    router.push("/auth/login")
+  }
 
   return (
     <header className="flex items-center justify-between p-4 bg-background border-b">
@@ -45,14 +49,14 @@ export function DashboardHeader() {
                   alt="User"
                   data-ai-hint="user avatar"
                 />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback>{user?.name?.substring(0, 2).toUpperCase() || 'U'}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{user?.email || 'My Account'}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {['admin', 'owner'].includes(userRole) && (
+            {['admin', 'owner'].includes(user?.role || '') && (
               <DropdownMenuItem onClick={() => router.push('/dashboard/settings')} className="cursor-pointer">
                 Settings
               </DropdownMenuItem>
@@ -61,7 +65,7 @@ export function DashboardHeader() {
               Support
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => router.push('/auth/login')} className="cursor-pointer">
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>

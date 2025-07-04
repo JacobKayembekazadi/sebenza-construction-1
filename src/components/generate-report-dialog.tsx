@@ -26,8 +26,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, FileDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { GenerateFinancialReportOutput } from "@/ai/flows/generate-financial-report";
 import { useToast } from "@/hooks/use-toast";
+
+// Define the report output type locally since we removed the AI flows
+export interface GenerateFinancialReportOutput {
+  summary: string;
+  totalRevenue: number;
+  totalExpenses: number;
+  netProfit: number;
+  profitMargin: number;
+}
 
 const reportSchema = z.object({
   startDate: z.date(),
@@ -175,8 +183,8 @@ export function GenerateReportDialog({
 
         {report && (
             <div className="max-w-none text-sm space-y-4">
-                <h2 className="text-xl font-bold">{report.title}</h2>
-                <p className="text-muted-foreground">{report.period}</p>
+                <h2 className="text-xl font-bold">Financial Report</h2>
+                <p className="text-muted-foreground">Generated Report</p>
                 <div className="grid grid-cols-3 gap-4 my-6 p-4 border rounded-lg bg-muted/50">
                     <div className="text-center">
                         <p className="text-lg font-semibold text-green-600">${report.totalRevenue.toLocaleString()}</p>
@@ -194,17 +202,7 @@ export function GenerateReportDialog({
 
                 <div>
                     <h3 className="font-semibold mb-2">Summary</h3>
-                    <p className="text-muted-foreground leading-relaxed">{report.summary}</p>
-                </div>
-                
-                <div>
-                    <h3 className="font-semibold mb-2">Recommendations</h3>
-                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                        {report.recommendations.split('\n').map((rec, i) => {
-                           const cleanedRec = rec.trim().replace(/^(•|-|\*)\s*/, '');
-                           return cleanedRec ? <li key={i}>{cleanedRec}</li> : null;
-                        })}
-                    </ul>
+                    <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{report.summary}</div>
                 </div>
 
                 <DialogFooter className="pt-6">

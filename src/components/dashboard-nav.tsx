@@ -25,10 +25,7 @@ import {
   ConciergeBell,
   LifeBuoy,
 } from "lucide-react";
-
-// In a real application, this would come from an authentication context/provider.
-// You can change this to 'member' to test the role-based visibility.
-const userRole = 'admin'; // 'admin', 'owner', 'member'
+import { useAuth } from "@/contexts/auth-context";
 
 const allLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -50,6 +47,8 @@ const allLinks = [
 
 export function DashboardNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const userRole = user?.role || 'member';
 
   const links = allLinks.filter(link => {
     // If a link has no roles defined, it's visible to everyone.

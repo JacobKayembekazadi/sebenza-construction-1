@@ -16,9 +16,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
+import { useAuth } from "@/contexts/auth-context"
 
 export default function LoginPage() {
     const [isClient, setIsClient] = useState(false)
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
     useEffect(() => {
         setIsClient(true)
@@ -26,14 +29,32 @@ export default function LoginPage() {
 
     const router = useRouter()
     const { toast } = useToast()
+    const { login, isLoading, user } = useAuth()
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Redirect if already logged in
+    useEffect(() => {
+        if (user) {
+            router.push("/dashboard")
+        }
+    }, [user, router])
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        toast({
-            title: "Login Successful",
-            description: "Redirecting you to the dashboard.",
-        })
-        router.push("/dashboard")
+        
+        try {
+            await login(email, password)
+            toast({
+                title: "Login Successful",
+                description: "Redirecting you to the dashboard.",
+            })
+            router.push("/dashboard")
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: "Please check your credentials and try again.",
+            })
+        }
     }
 
     if (!isClient) {
@@ -57,7 +78,8 @@ export default function LoginPage() {
               type="email"
               placeholder="m@example.com"
               required
-              defaultValue="jane.doe@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-2">
@@ -67,10 +89,16 @@ export default function LoginPage() {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required defaultValue="password" />
+            <Input 
+              id="password" 
+              type="password" 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Signing in..." : "Login"}
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
