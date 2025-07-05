@@ -1,4 +1,3 @@
-
 export type Task = {
   id: string;
   name: string;
@@ -237,6 +236,26 @@ export type BankAccount = {
     accountNumber: string;
     balance: number;
     logoUrl: string;
+};
+
+export type ChartOfAccount = {
+    id: string;
+    accountCode: string;
+    accountName: string;
+    accountType: 'Asset' | 'Liability' | 'Equity' | 'Income' | 'Expense';
+    subType: string;
+    description: string;
+    isActive: boolean;
+    parentAccountId?: string;
+    balance: number;
+    debitBalance: number;
+    creditBalance: number;
+    createdDate: Date;
+    lastModified: Date;
+    createdBy: string;
+    taxType?: 'Taxable' | 'Non-Taxable' | 'Tax-Only';
+    bankAccountId?: string;
+    tags: string[];
 };
 
 export type InventoryItem = {
@@ -858,6 +877,37 @@ export const services: Service[] = [
     { id: 'srv-5', name: 'Last-Mile Delivery', description: 'Final step of the delivery process from a distribution center to the end user.', defaultRate: 75 },
 ];
 
+export type FinancialReport = {
+  id: string;
+  title: string;
+  description: string;
+  type: 'profit-loss' | 'balance-sheet' | 'cash-flow' | 'general-ledger' | 'trial-balance' | 'custom';
+  status: 'draft' | 'active' | 'archived';
+  isScheduled: boolean;
+  scheduleFrequency?: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+  dateRange: {
+    startDate: Date;
+    endDate: Date;
+  };
+  createdDate: Date;
+  lastGenerated?: Date;
+  parameters: {
+    includeSubaccounts: boolean;
+    showComparisons: boolean;
+    groupByCategory: boolean;
+    includeCharts: boolean;
+    format: 'pdf' | 'excel' | 'csv';
+  };
+  filters: {
+    accountTypes?: string[];
+    projects?: string[];
+    clients?: string[];
+    minimumAmount?: number;
+  };
+  createdBy: string;
+  tags: string[];
+};
+
 export const supportTickets: SupportTicket[] = [
   {
     id: 'tic-001',
@@ -919,5 +969,487 @@ export const newsUpdates: NewsUpdate[] = [
         content: 'We will be performing scheduled maintenance on Sunday at 2 AM. The platform may be unavailable for up to 15 minutes.',
         date: new Date(2024, 5, 15),
         category: 'Announcement',
+    }
+];
+
+export const financialReports: FinancialReport[] = [
+    {
+        id: 'rpt-001',
+        title: 'Monthly Profit & Loss Report',
+        description: 'Comprehensive P&L analysis for the current month',
+        type: 'profit-loss',
+        status: 'active',
+        isScheduled: true,
+        scheduleFrequency: 'monthly',
+        dateRange: {
+            startDate: new Date(2024, 5, 1),
+            endDate: new Date(2024, 5, 30)
+        },
+        createdDate: new Date(2024, 4, 15),
+        lastGenerated: new Date(2024, 5, 25),
+        parameters: {
+            includeSubaccounts: true,
+            showComparisons: true,
+            groupByCategory: true,
+            includeCharts: true,
+            format: 'pdf'
+        },
+        filters: {
+            accountTypes: ['Income', 'Expense'],
+            projects: [],
+            clients: [],
+            minimumAmount: 100
+        },
+        createdBy: 'Sarah Chen',
+        tags: ['monthly', 'automated', 'critical']
+    },
+    {
+        id: 'rpt-002',
+        title: 'Balance Sheet - Q2 2024',
+        description: 'Quarterly balance sheet showing assets, liabilities, and equity',
+        type: 'balance-sheet',
+        status: 'active',
+        isScheduled: true,
+        scheduleFrequency: 'quarterly',
+        dateRange: {
+            startDate: new Date(2024, 3, 1),
+            endDate: new Date(2024, 5, 30)
+        },
+        createdDate: new Date(2024, 3, 1),
+        lastGenerated: new Date(2024, 5, 30),
+        parameters: {
+            includeSubaccounts: true,
+            showComparisons: false,
+            groupByCategory: true,
+            includeCharts: false,
+            format: 'excel'
+        },
+        filters: {
+            accountTypes: ['Asset', 'Liability', 'Equity']
+        },
+        createdBy: 'Michael Rodriguez',
+        tags: ['quarterly', 'compliance']
+    },
+    {
+        id: 'rpt-003',
+        title: 'Cash Flow Analysis',
+        description: 'Monthly cash flow statement tracking operating, investing, and financing activities',
+        type: 'cash-flow',
+        status: 'draft',
+        isScheduled: false,
+        dateRange: {
+            startDate: new Date(2024, 5, 1),
+            endDate: new Date(2024, 5, 30)
+        },
+        createdDate: new Date(2024, 5, 20),
+        parameters: {
+            includeSubaccounts: false,
+            showComparisons: true,
+            groupByCategory: true,
+            includeCharts: true,
+            format: 'pdf'
+        },
+        filters: {
+            minimumAmount: 500
+        },
+        createdBy: 'Sarah Chen',
+        tags: ['cash-flow', 'liquidity']
+    },
+    {
+        id: 'rpt-004',
+        title: 'Project Revenue Report',
+        description: 'Custom report analyzing revenue by project and client',
+        type: 'custom',
+        status: 'active',
+        isScheduled: true,
+        scheduleFrequency: 'weekly',
+        dateRange: {
+            startDate: new Date(2024, 5, 1),
+            endDate: new Date(2024, 5, 30)
+        },
+        createdDate: new Date(2024, 4, 10),
+        lastGenerated: new Date(2024, 5, 28),
+        parameters: {
+            includeSubaccounts: true,
+            showComparisons: true,
+            groupByCategory: false,
+            includeCharts: true,
+            format: 'excel'
+        },
+        filters: {
+            accountTypes: ['Income'],
+            projects: ['proj-001', 'proj-002'],
+            clients: ['client-001']
+        },
+        createdBy: 'Michael Rodriguez',
+        tags: ['project-based', 'weekly', 'revenue']
+    },
+    {
+        id: 'rpt-005',
+        title: 'General Ledger Summary',
+        description: 'Complete ledger entries for all accounts',
+        type: 'general-ledger',
+        status: 'archived',
+        isScheduled: false,
+        dateRange: {
+            startDate: new Date(2024, 2, 1),
+            endDate: new Date(2024, 2, 31)
+        },
+        createdDate: new Date(2024, 2, 25),
+        lastGenerated: new Date(2024, 3, 1),
+        parameters: {
+            includeSubaccounts: true,
+            showComparisons: false,
+            groupByCategory: false,
+            includeCharts: false,
+            format: 'csv'
+        },
+        filters: {},
+        createdBy: 'Sarah Chen',
+        tags: ['archived', 'detailed']
+    }
+];
+
+export const chartOfAccounts: ChartOfAccount[] = [
+    {
+        id: 'coa-001',
+        accountCode: '1000',
+        accountName: 'Cash - Operating Account',
+        accountType: 'Asset',
+        subType: 'Current Assets',
+        description: 'Primary operating cash account for daily transactions',
+        isActive: true,
+        balance: 45000.00,
+        debitBalance: 45000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 15),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        bankAccountId: 'bank-1',
+        tags: ['primary', 'operating']
+    },
+    {
+        id: 'coa-002',
+        accountCode: '1010',
+        accountName: 'Petty Cash',
+        accountType: 'Asset',
+        subType: 'Current Assets',
+        description: 'Small cash fund for minor expenses',
+        isActive: true,
+        balance: 500.00,
+        debitBalance: 500.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 10),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        tags: ['cash', 'petty']
+    },
+    {
+        id: 'coa-003',
+        accountCode: '1100',
+        accountName: 'Accounts Receivable',
+        accountType: 'Asset',
+        subType: 'Current Assets',
+        description: 'Money owed by customers for completed work',
+        isActive: true,
+        balance: 125000.00,
+        debitBalance: 125000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 20),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Taxable',
+        tags: ['receivables', 'customers']
+    },
+    {
+        id: 'coa-004',
+        accountCode: '1200',
+        accountName: 'Inventory - Raw Materials',
+        accountType: 'Asset',
+        subType: 'Current Assets',
+        description: 'Construction materials and supplies inventory',
+        isActive: true,
+        balance: 75000.00,
+        debitBalance: 75000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 18),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        tags: ['inventory', 'materials']
+    },
+    {
+        id: 'coa-005',
+        accountCode: '1500',
+        accountName: 'Equipment',
+        accountType: 'Asset',
+        subType: 'Fixed Assets',
+        description: 'Construction equipment and machinery',
+        isActive: true,
+        balance: 250000.00,
+        debitBalance: 250000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 5),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Non-Taxable',
+        tags: ['equipment', 'fixed-assets']
+    },
+    {
+        id: 'coa-006',
+        accountCode: '1510',
+        accountName: 'Accumulated Depreciation - Equipment',
+        accountType: 'Asset',
+        subType: 'Fixed Assets',
+        description: 'Accumulated depreciation on construction equipment',
+        isActive: true,
+        balance: -45000.00,
+        debitBalance: 0.00,
+        creditBalance: 45000.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 31),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        tags: ['depreciation', 'equipment']
+    },
+    {
+        id: 'coa-007',
+        accountCode: '2000',
+        accountName: 'Accounts Payable',
+        accountType: 'Liability',
+        subType: 'Current Liabilities',
+        description: 'Money owed to suppliers and vendors',
+        isActive: true,
+        balance: -35000.00,
+        debitBalance: 0.00,
+        creditBalance: 35000.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 22),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Non-Taxable',
+        tags: ['payables', 'vendors']
+    },
+    {
+        id: 'coa-008',
+        accountCode: '2100',
+        accountName: 'Sales Tax Payable',
+        accountType: 'Liability',
+        subType: 'Current Liabilities',
+        description: 'Sales tax collected and owed to tax authorities',
+        isActive: true,
+        balance: -8500.00,
+        debitBalance: 0.00,
+        creditBalance: 8500.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 25),
+        createdBy: 'Sarah Chen',
+        taxType: 'Tax-Only',
+        tags: ['tax', 'payable']
+    },
+    {
+        id: 'coa-009',
+        accountCode: '2500',
+        accountName: 'Equipment Loan',
+        accountType: 'Liability',
+        subType: 'Long-term Liabilities',
+        description: 'Long-term loan for equipment purchases',
+        isActive: true,
+        balance: -125000.00,
+        debitBalance: 0.00,
+        creditBalance: 125000.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 1),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Non-Taxable',
+        tags: ['loan', 'equipment']
+    },
+    {
+        id: 'coa-010',
+        accountCode: '3000',
+        accountName: 'Owner Equity',
+        accountType: 'Equity',
+        subType: 'Owner Equity',
+        description: 'Owner investment and retained earnings',
+        isActive: true,
+        balance: -185000.00,
+        debitBalance: 0.00,
+        creditBalance: 185000.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 30),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        tags: ['equity', 'owner']
+    },
+    {
+        id: 'coa-011',
+        accountCode: '4000',
+        accountName: 'Construction Revenue',
+        accountType: 'Income',
+        subType: 'Operating Revenue',
+        description: 'Revenue from construction projects',
+        isActive: true,
+        balance: -450000.00,
+        debitBalance: 0.00,
+        creditBalance: 450000.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 25),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Taxable',
+        tags: ['revenue', 'construction']
+    },
+    {
+        id: 'coa-012',
+        accountCode: '4100',
+        accountName: 'Equipment Rental Income',
+        accountType: 'Income',
+        subType: 'Other Revenue',
+        description: 'Income from renting equipment to other contractors',
+        isActive: true,
+        balance: -25000.00,
+        debitBalance: 0.00,
+        creditBalance: 25000.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 15),
+        createdBy: 'Sarah Chen',
+        taxType: 'Taxable',
+        tags: ['rental', 'equipment']
+    },
+    {
+        id: 'coa-013',
+        accountCode: '5000',
+        accountName: 'Material Costs',
+        accountType: 'Expense',
+        subType: 'Cost of Goods Sold',
+        description: 'Direct costs for construction materials',
+        isActive: true,
+        balance: 180000.00,
+        debitBalance: 180000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 20),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Taxable',
+        tags: ['materials', 'cogs']
+    },
+    {
+        id: 'coa-014',
+        accountCode: '5100',
+        accountName: 'Subcontractor Costs',
+        accountType: 'Expense',
+        subType: 'Cost of Goods Sold',
+        description: 'Payments to subcontractors',
+        isActive: true,
+        balance: 95000.00,
+        debitBalance: 95000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 18),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        tags: ['subcontractors', 'cogs']
+    },
+    {
+        id: 'coa-015',
+        accountCode: '6000',
+        accountName: 'Office Rent',
+        accountType: 'Expense',
+        subType: 'Operating Expenses',
+        description: 'Monthly office space rental',
+        isActive: true,
+        balance: 18000.00,
+        debitBalance: 18000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 1),
+        createdBy: 'Sarah Chen',
+        taxType: 'Non-Taxable',
+        tags: ['rent', 'office']
+    },
+    {
+        id: 'coa-016',
+        accountCode: '6100',
+        accountName: 'Insurance Expense',
+        accountType: 'Expense',
+        subType: 'Operating Expenses',
+        description: 'General liability and equipment insurance',
+        isActive: true,
+        balance: 12000.00,
+        debitBalance: 12000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 10),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Non-Taxable',
+        tags: ['insurance', 'liability']
+    },
+    {
+        id: 'coa-017',
+        accountCode: '6200',
+        accountName: 'Vehicle Expenses',
+        accountType: 'Expense',
+        subType: 'Operating Expenses',
+        description: 'Fuel, maintenance, and vehicle-related costs',
+        isActive: true,
+        balance: 8500.00,
+        debitBalance: 8500.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 12),
+        createdBy: 'Sarah Chen',
+        taxType: 'Taxable',
+        tags: ['vehicles', 'fuel']
+    },
+    {
+        id: 'coa-018',
+        accountCode: '6300',
+        accountName: 'Professional Services',
+        accountType: 'Expense',
+        subType: 'Operating Expenses',
+        description: 'Legal, accounting, and consulting fees',
+        isActive: true,
+        balance: 15000.00,
+        debitBalance: 15000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 8),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Non-Taxable',
+        tags: ['professional', 'services']
+    },
+    {
+        id: 'coa-019',
+        accountCode: '6400',
+        accountName: 'Equipment Maintenance',
+        accountType: 'Expense',
+        subType: 'Operating Expenses',
+        description: 'Maintenance and repairs for construction equipment',
+        isActive: true,
+        balance: 22000.00,
+        debitBalance: 22000.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 14),
+        createdBy: 'Sarah Chen',
+        taxType: 'Taxable',
+        tags: ['maintenance', 'equipment']
+    },
+    {
+        id: 'coa-020',
+        accountCode: '6500',
+        accountName: 'Depreciation Expense',
+        accountType: 'Expense',
+        subType: 'Operating Expenses',
+        description: 'Monthly depreciation on equipment and assets',
+        isActive: true,
+        balance: 7500.00,
+        debitBalance: 7500.00,
+        creditBalance: 0.00,
+        createdDate: new Date(2024, 0, 1),
+        lastModified: new Date(2024, 5, 31),
+        createdBy: 'Michael Rodriguez',
+        taxType: 'Non-Taxable',
+        tags: ['depreciation', 'non-cash']
     }
 ];

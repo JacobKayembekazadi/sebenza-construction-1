@@ -57,6 +57,11 @@ This documentation is organized into **three phases** to serve different stakeho
 - **[User Guide](USER_GUIDE.md)** - Quick reference for common tasks
 - **[Changelog](changelog.md)** - Version history and release notes
 
+#### Feature Documentation
+- **[Bank Reconciliation Feature](docs/RECONCILIATION_FEATURE.md)** - Complete CRUD system for bank transaction management
+- **[Financial Reports CRUD Feature](docs/REPORTS_CRUD_FEATURE.md)** - Comprehensive financial report management system
+- **[Chart of Accounts CRUD Feature](docs/CHART_OF_ACCOUNTS_CRUD_FEATURE.md)** - Full accounting structure and account management system
+
 ### 🔗 **Integration & Advanced Topics**
 
 #### Integrations

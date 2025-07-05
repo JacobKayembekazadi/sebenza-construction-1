@@ -24,6 +24,7 @@ import {
   Boxes,
   ConciergeBell,
   LifeBuoy,
+  RefreshCw,
 } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -37,6 +38,7 @@ const allLinks = [
   { href: "/dashboard/estimates", label: "Quotes", icon: FileText },
   { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/expenses", label: "Expenses", icon: DollarSign },
+  { href: "/dashboard/reconciliation", label: "Reconciliation", icon: RefreshCw, roles: ['admin', 'owner'] },
   { href: "/dashboard/documents", label: "Purchase Orders", icon: ShoppingCart },
   { href: "/dashboard/inventory", label: "Inventory", icon: Boxes },
   { href: "/dashboard/services", label: "Services", icon: ConciergeBell },
